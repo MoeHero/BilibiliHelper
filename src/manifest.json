@@ -1,0 +1,26 @@
+{
+    "manifest_version" : 2,
+    "name": "BilibiliHelper",
+
+    "permissions": [
+        "*://*.bilibili.com/*",
+        "tabs",
+        "notifications"
+    ],
+    "browser_action": {
+        "default_icon": "icon.png"
+    },
+    "background": {
+        "scripts": [
+            "jquery-3.1.1.min.js",
+            "background.min.js"
+        ]
+    },
+    "externally_connectable": {
+        "ids": ["*"],
+        "matches": ["*://*.bilibili.com/*"]
+    },
+    "web_accessible_resources": ["bilibili_live_inject.min.js", "jquery-3.1.1.min.js", "build.json", "/options/*"],
+    "options_page": "/options/options.html",
+    "homepage_url": "http://www.moehero.com/"
+}
