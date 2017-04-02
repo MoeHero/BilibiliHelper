@@ -88,14 +88,15 @@
         var date = new Date();
         if(store.get('BH_SignDate') != date.toLocaleDateString()) {
             $.getJSON('/sign/doSign').done(function(result) {
-                if(result.code === 0) {
+                if(result.code === 0) {//签到成功
                     Live.console.sign(result.code, result.data.text);
                     $('.sign-up-btn>.dp-inline-block>span:first-child').hide();
                     $('.sign-up-btn>.has-new').hide();
                     $('.sign-up-btn>.dp-inline-block>.dp-none').show();
                     store.set('BH_SignDate', date.toLocaleDateString());
-                } else if(result.code == -500){
+                } else if(result.code == -500) {//已签到
                     Live.console.sign(result.code, result.msg);
+                    store.set('BH_SignDate', date.toLocaleDateString());
                 } else {
                     Live.console.sign(result.code, result.msg);
                 }
