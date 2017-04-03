@@ -126,7 +126,7 @@ module.exports = function(grunt) {
     grunt.registerTask('build', ['eslint', 'htmlmin', 'cssmin', 'uglify', 'copy:build', 'manifestSync:build', 'buildnumber:build', 'crx:crx', 'crx:zip', 'rename']);
     grunt.registerTask('buildnumber', function(arg) {
         var json = {buildnumber: arg == 'build' ? process.env.TRAVIS_BUILD_NUMBER : -1};
-        grunt.file.write((arg == 'build' ? 'build' : 'debug') + '/src/version.json', JSON.stringify(json));
+        grunt.file.write((arg == 'build' ? 'build' : 'debug') + '/src/info.json', JSON.stringify(json));
     });
     grunt.registerTask('rename', function() {
         var filename = 'build/BilibiliHelper-V' + grunt.config.get('pkg').version + '-Build' + process.env.TRAVIS_BUILD_NUMBER;

@@ -15,7 +15,6 @@ var Treasure = {
         Treasure.tabID = false;
     }
 };
-
 var SmallTV = {
     showID: false,
     tabID: false,
@@ -31,8 +30,21 @@ var SmallTV = {
         SmallTV.tabID = false;
     }
 };
+var Option = {
+    live_autoSign: true,
+    live_autoTreasure: true,
+    live_autoSmallTV: true,
+    live: true,
+    notify_autoSign: true,
+    notify_autoTreasure: true,
+    notify_autoSmallTV: true,
+    notify: true,
+};
+var Info = {};
 
-var Options = {};
+function saveOption() {
+    window.localStorage.bh_option = JSON.stringify(Option);
+}
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
     if (changeInfo.status == 'complete' &&
@@ -69,8 +81,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     case 'delSmallTV':
         sendResponse(SmallTV.delSmallTV());
         break;
-    case 'getOptions':
-        sendResponse(Options);
+    case 'getInfo':
+        sendResponse(Info);
+        break;
+    case 'getOption':
+        sendResponse(Option);
         break;
     }
 });
@@ -79,10 +94,16 @@ chrome.runtime.onMessageExternal.addListener(function(request, sender) {
     chrome.tabs.sendMessage(sender.tab.id, request);
 });
 
-$.getJSON('version.json').promise().done(function(result) {
-    Options.buildNumber = result.buildnumber;
-    Options.extensionID = chrome.i18n.getMessage('@@extension_id');
-    Options.version = chrome.runtime.getManifest().version;
+$.getJSON('info.json').promise().done(function(result) {
+    Info.version = chrome.runtime.getManifest().version;
+    Info.buildNumber = result.buildnumber;
+    Info.extensionID = chrome.i18n.getMessage('@@extension_id');
 });
+
+if(window.localStorage.bh_option) {
+    Option = JSON.parse(window.localStorage.bh_option);
+} else {
+    saveOption();
+}
 
 console.log('Loaded');

@@ -20,7 +20,6 @@
         "no-unused-expressions": [2, {"allowShortCircuit": true}],
         "no-useless-escape": 2,
         "wrap-iife": 2,
-        "no-unused-vars": 2,
         "no-use-before-define": 2,
         "eol-last": 2,
         "indent": 2,
