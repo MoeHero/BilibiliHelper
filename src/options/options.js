@@ -18,10 +18,12 @@ $(function() {
         setOption(this.id, state);
     });
 
-
     for(var i in background.Option) {
-        console.log(i);
         $('.' + i).bootstrapSwitch('disabled', !background.Option[i]);
         $('#' + i).bootstrapSwitch('state', background.Option[i]);
     }
+
+    $.get('updatelog.html').done(function(result) {
+        $('#updatelog').html(result);
+    });
 });

@@ -1,17 +1,31 @@
 p {
-    margin: 0;
+  margin: 0;
+}
+
+hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+h2 {
+  margin-bottom: 10px;
+  font-size: 150%;
 }
 
 ul > li {
-    height: 62px;
+  height: 62px;
 }
 
 li > .am-fl {
-    line-height: 36px;
+  line-height: 36px;
 }
 
 .logo {
-    margin-top: -5px;
-    width: 100px;
-    height: 45px;
+  margin-top: -5px;
+  width: 100px;
+  height: 45px;
+}
+
+.version {
+  font-size: 150%;
 }
