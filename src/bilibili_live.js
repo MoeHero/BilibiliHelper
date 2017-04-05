@@ -265,10 +265,9 @@
                     Live.notify.smallTV('get', '获得' + result.reward.num + '个' + $this.rewardName[result.reward.id]);
                     Live.store.smallTV.add(result.reward.id, result.reward.num);
                 } else if(result.status == 2) {//正在开奖
-                    $this.awardCountdown && $this.awardCountdown.clearCountdown();
-                    $this.awardCountdown = new Live.awardCountdown(5, function() {
+                    setTimeout(function() {
                         $this.getAward(TVID);
-                    });
+                    }, 5000);
                 } else {
                     console.log(result);
                     $this.getAward(TVID);
