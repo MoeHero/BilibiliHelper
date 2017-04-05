@@ -434,7 +434,7 @@
             }
             if(endTime.getTime() <= dateNow.getTime()) {
                 clearInterval(interval);
-                element.text('00:00');
+                element && element.text('00:00');
                 typeof callback == 'function' && callback();
             }
         }, 1000);
