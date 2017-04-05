@@ -18,7 +18,7 @@
         return $.get('/' + showID);
     };
     Live.getRoomID = function(showID, callback) {
-        var rid = store.get('BH_RoomID')[showID] || 0;
+        var rid = Live.store.roomID.get(showID);
         if(rid) {
             typeof callback == 'function' && callback(rid);
         } else {
@@ -26,9 +26,7 @@
                 var reg = new RegExp('var ROOMID = ([\\d]+)');
                 rid = reg.exec(result)[1] || 0;
                 if(rid) {
-                    var o = store.get('BH_RoomID');
-                    o[showID] = rid;
-                    store.set('BH_RoomID', o);
+                    Live.store.roomID.add(showID, rid);
                     typeof callback == 'function' && callback(rid);
                 } else {
                     typeof callback == 'function' && callback(0);
@@ -78,11 +76,13 @@
                         Live.console.sign(result.code, result.data.text);
                         Live.dom.sign();
                         Live.store.sign.set();
+                        Live.notify.sign('签到成功,' + result.data.text);
                     } else if(result.code == -500) {//已签到
                         Live.console.sign(result.code, result.msg);
                         Live.store.sign.set();
                     } else {
                         Live.console.sign(result.code, result.msg);
+                        Live.notify.sign('签到失败,' + result.data.text);
                     }
                 });
             }
@@ -94,12 +94,14 @@
             if(!Live.option.live || !Live.option.live_autoTreasure) {
                 return;
             }
-            var $this = this;
-            Live.dom.treasure.init();
             this.canvas = document.createElement('canvas');
             this.canvas.width = 120;
             this.canvas.height = 40;
             this.canvas = this.canvas.getContext('2d');
+            Live.dom.treasure.init();
+        },
+        start: function() {
+            var $this = this;
             Live.sendMessage({command: 'getTreasure'}, function(result) {
                 if(!result.showID) {
                     $(window).on('beforeunload', function() {
@@ -109,6 +111,7 @@
                     });
                     Live.sendMessage({command: 'setTreasure', showID: Live.showID});
                     Live.console.treasure('已启动');
+                    Live.notify.treasure('start', '已启动');
                     if(!Live.store.treasure.get()) {
                         Live.getMessage(function(request) {
                             if(request.command == 'checkNewTask') {
@@ -119,11 +122,13 @@
                     } else {
                         Live.console.treasure('领取完毕');
                         Live.dom.treasure.setState('领取完毕');
+                        Live.notify.treasure('end', '领取完毕');
                     }
                 } else {
+                    Live.sendMessage({command: 'checkNewTask'});
                     Live.dom.treasure.setState('已在' + result.showID + '启动');
                     Live.console.treasure('已在直播间' + result.showID + '启动');
-                    Live.sendMessage({command: 'checkNewTask'});
+                    Live.notify.treasure('start', '已在直播间' + result.showID + '启动');
                 }
             });
         },
@@ -145,10 +150,12 @@
                 } else if(result.code == -101) {//未登录
                     Live.console.treasure('未登录');
                     Live.dom.treasure.setState('请先登录');
+                    Live.notify.treasure('nologin', '请先登录');
                 } else if(result.code == -10017) {//领取完毕
+                    Live.store.treasure.set();
                     Live.console.treasure('领取完毕');
                     Live.dom.treasure.setState('领取完毕');
-                    Live.store.treasure.set();
+                    Live.notify.treasure('end', '领取完毕');
                 } else {
                     console.log(result);
                 }
@@ -166,6 +173,7 @@
                 .done(function(result) {
                     if(result.code === 0) {//领取成功
                         Live.console.treasure('已领取' + result.data.awardSilver + '瓜子 总瓜子:' + result.data.silver);
+                        Live.notify.treasure('get', '已领取' + result.data.awardSilver + '瓜子');
                         $this.checkNewTask();
                     } else if(result.code == -99) {//在其他地方领取
                         $this.checkNewTask();
@@ -202,6 +210,7 @@
         }
     };
     Live.smallTV = {
+        countdown: {},
         rewardName: {'1': '小电视抱枕', '2': '蓝白胖次', '3': 'B坷垃', '4': '喵娘', '5': '爱心便当', '6': '银瓜子', '7': '辣条'},
         init: function() {
             if(!Live.option.live || !Live.option.live_autoSmallTV) {
@@ -210,20 +219,22 @@
             var $this = this;
             Live.sendMessage({command: 'getSmallTV'}, function(result) {
                 if(!result.showID) {
-                    Live.sendMessage({command: 'setSmallTV', showID: Live.showID});
-                    Live.console.smallTV('已启动');
-                    Live.getMessage(function(request) {
-                        if(request.cmd == 'SYS_MSG' && request.tv_id && request.real_roomid) {
-                            $this.join(request.real_roomid, request.tv_id);
-                        }
-                    });
                     $(window).on('beforeunload', function() {
                         Live.sendMessage({command: 'getSmallTV'}, function(result) {
                             result.showID == Live.showID && Live.sendMessage({command: 'delSmallTV'});
                         });
                     });
+                    Live.sendMessage({command: 'setSmallTV', showID: Live.showID});
+                    Live.getMessage(function(request) {
+                        if(request.cmd == 'SYS_MSG' && request.tv_id && request.real_roomid) {
+                            $this.join(request.real_roomid, request.tv_id);
+                        }
+                    });
+                    Live.console.smallTV('已启动');
+                    Live.notify.smallTV('start', '已启动');
                 } else {
                     Live.console.smallTV('已在直播间' + result.showID + '启动');
+                    Live.notify.smallTV('start', '已在直播间' + result.showID + '启动');
                 }
             });
         },
@@ -250,7 +261,9 @@
             $.getJSON('/SmallTV/getReward', {id: TVID}).done(function(result) {
                 result = result.data;
                 if(result.status === 0) {//领取成功
-                    Live.console.smallTV('已获得' + result.reward.num + '个' + $this.rewardName[result.reward.id]);
+                    Live.console.smallTV('获得' + result.reward.num + '个' + $this.rewardName[result.reward.id]);
+                    Live.notify.smallTV('get', '获得' + result.reward.num + '个' + $this.rewardName[result.reward.id]);
+                    Live.store.smallTV.add(result.reward.id, result.reward.num);
                 } else if(result.status == 2) {//正在开奖
                     $this.awardCountdown && $this.awardCountdown.clearCountdown();
                     $this.awardCountdown = new Live.awardCountdown(5, function() {
@@ -264,8 +277,9 @@
         }
     };
     Live.console = {
-        info: function(info) {
-            console.log('%c' + info, 'color:#FFF;background-color:#57D2F7;padding:5px;border-radius:7px;line-height:30px;');
+        info: function(info, backgroundColor) {
+            backgroundColor = backgroundColor || '57D2F7';
+            console.log('%c' + info, 'color:#FFF;background-color:#' + backgroundColor + ';padding:5px;border-radius:7px;line-height:30px;');
         },
         warn: function(log) {
             console.warn('%c' + log, 'color:#FFF;background-color:#F29F3F;padding:5px;border-radius:7px;line-height:30px;');
@@ -279,7 +293,7 @@
             } else if(code == -1) {
                 this.info('自动签到: 已启动');
             } else {
-                this.error('自动签到: 签到错误, ' + msg);
+                this.info('自动签到: ' + msg, 'F29F3F');
             }
         },
         treasure: function(msg) {
@@ -291,7 +305,15 @@
     };
     Live.dom = {
         init: function() {
-            $('.control-panel').prepend('<div class="ctrl-item" id="bh-info"></div>');
+            $('.control-panel').prepend('<div class="ctrl-item" id="bh-info"><div class="ctrl-item" id="bh-smalltv"><a class="link bili-link" id="bh-smalltv-statinfo">查看小电视统计信息</a></div></div>');
+            $('#bh-smalltv-statinfo').on('click', function() {
+                var statinfoJson = Live.store.smallTV.getAll();
+                var statinfoStr = '';
+                for(var i in statinfoJson) {
+                    statinfoStr += Live.smallTV.rewardName[i] + '*' + statinfoJson[i] + '\n';
+                }
+                alert(statinfoStr);
+            });
         },
         sign: function() {
             $('.sign-up-btn>.dp-inline-block>span:first-child').hide();
@@ -299,12 +321,9 @@
             $('.sign-up-btn>.dp-inline-block>.dp-none').show();
         },
         treasure: {
-            state: false,
-            times: false,
-            countdown: false,
             init: function() {
                 $('.treasure-box-ctnr').hide();
-                $('#bh-info').append('<div id="bh-treasure">自动领瓜子: <span id="bh-treasure-state">初始化中...</span><span id="bh-treasure-times" style="display:none;">0/9</span> <span id="bh-treasure-countdown" style="display:none;">00:00</span></div>');
+                $('#bh-info').append('<div class="ctrl-item" id="bh-treasure">自动领瓜子: <span id="bh-treasure-state">初始化中...</span><span id="bh-treasure-times" style="display:none;">0/9</span> <span id="bh-treasure-countdown" style="display:none;">00:00</span></div>');
                 this.state = $('#bh-treasure-state');
                 this.times = $('#bh-treasure-times');
                 this.countdown = $('#bh-treasure-countdown');
@@ -325,6 +344,22 @@
         }
     };
     Live.store = {
+        init: function() {
+            !store.get('BH_RoomID') && store.set('BH_RoomID', {});
+            !store.get('BH_SignDate') && store.set('BH_SignDate', '1970/1/1');
+            !store.get('BH_TreasureDate') && store.set('BH_TreasureDate', '1970/1/1');
+            !store.get('BH_SmallTVStatInfo') && store.set('BH_SmallTVStatInfo', {});
+        },
+        roomID: {
+            get: function(showID) {
+                return store.get('BH_RoomID')[showID] || 0;
+            },
+            add: function(showID, roomID) {
+                var o = store.get('BH_RoomID');
+                o[showID] = roomID;
+                store.set('BH_RoomID', o);
+            }
+        },
         sign: {
             get: function() {
                 return store.get('BH_SignDate') == new Date().toLocaleDateString();
@@ -340,6 +375,43 @@
             set: function() {
                 store.set('BH_TreasureDate', new Date().toLocaleDateString());
             }
+        },
+        smallTV: {
+            get: function(key) {
+                return store.get('BH_SmallTVStatInfo')[key] || 0;
+            },
+            getAll: function() {
+                return store.get('BH_SmallTVStatInfo');
+            },
+            add: function(key, count) {
+                count += this.get(key);
+                var o = store.get('BH_SmallTVStatInfo');
+                o[key] = count;
+                store.set('BH_SmallTVStatInfo', o);
+            }
+        }
+    };
+    Live.notify = {
+        create: function(id, title, message, timeout) {
+            if(Live.option.notify) {
+                Live.sendMessage({command: 'createNotifications',
+                    param: {
+                        id: id,
+                        title: title,
+                        message: message,
+                        timeout: timeout
+                    }
+                });
+            }
+        },
+        sign: function(message) {
+            Live.option.notify_autoSign && Live.notify.create('sign', 'Bilibili助手 - 自动签到', message);
+        },
+        treasure: function(id, message) {
+            Live.option.notify_autoTreasure && Live.notify.create('treasure_' + id, 'Bilibili助手 - 自动领瓜子', message);
+        },
+        smallTV: function(id, message) {
+            Live.option.notify_autoSmallTV && Live.notify.create('smalltv_' + id, 'Bilibili助手 - 自动小电视', message);
         }
     };
     Live.countdown = function(endTime, callback, element) {
@@ -396,7 +468,7 @@
     };
     Live.start = function(callback) {
         var init = 0;
-        !store.get('BH_RoomID') && store.set('BH_RoomID', {});
+        Live.store.init();
         Live.dom.init();
         Live.getRoomID(Live.showID, function() {
             Live.roomID = store.get('BH_RoomID')[Live.showID];
@@ -432,9 +504,10 @@
         Live.addScriptByText('var extensionID=\'' + Live.info.extensionID + '\';');
         Live.addScriptByFile('bilibili_live_inject.min.js');
         Live.start(function() {
+            Live.treasure.init();
             Live.timer(1 * 60 * 60 * 1000, function() {
                 Live.sign.do();
-                Live.treasure.init();
+                Live.treasure.start();
             });
 
             Live.smallTV.init();

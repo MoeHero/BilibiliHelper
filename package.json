@@ -1,7 +1,7 @@
 {
   "name": "bilibili-helper",
   "description": "Bilibili助手",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "index.js",
   "author": "MoeHero",
   "license": "MPL-2.0",

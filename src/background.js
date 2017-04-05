@@ -45,6 +45,21 @@ var Info = {};
 function saveOption() {
     window.localStorage.bh_option = JSON.stringify(Option);
 }
+function createNotifications(param) {
+    console.log(param);
+    chrome.notifications.create('bh-' + param.id, {
+        type: 'basic',
+        iconUrl: 'icon.png',
+        title: param.title,
+        message: param.message
+    }, function(id) {
+        if(param.timeout > 0) {
+            setTimeout(function() {
+                chrome.notifications.clear(id);
+            }, param.timeout);
+        }
+    });
+}
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
     if (changeInfo.status == 'complete' &&
@@ -86,6 +101,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         break;
     case 'getOption':
         sendResponse(Option);
+        break;
+    case 'createNotifications':
+        createNotifications(request.param);
         break;
     }
 });
