@@ -2,3 +2,4 @@ node_modules/
 debug/
 build/
 BilibiliHelper.pem
+.idea/
