@@ -1,9 +1,60 @@
 /* globals store */
 var Live = {options: {}, userInfo: {}};
-Live.showID = (function() {
+Live.showID = function() {
     return location.pathname.substr(1);
-}());
-Live.start = function(callback) {
+}();
+Live.addScriptByFile = function(fileName) {
+    var script = document.createElement('script');
+    script.src = chrome.extension.getURL(fileName);
+    document.head.appendChild(script);
+};
+Live.addScriptByText = function(text) {
+    var script = document.createElement('script');
+    script.innerHTML = text;
+    document.head.appendChild(script);
+};
+Live.addStylesheetByFile = function(fileName) {
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = chrome.extension.getURL(fileName);
+    document.head.appendChild(link);
+};
+Live.getRoomID = function(showID, callback) {
+    var rid = Live.store.roomID.get(showID);
+    if(!rid) {
+        $.get('/' + showID).done(function(result) {
+            var reg = new RegExp('var ROOMID = ([\\d]+)');
+            rid = reg.exec(result)[1] || 0;
+            if(rid) {
+                Live.store.roomID.add(showID, rid);
+            }
+        });
+    }
+    typeof callback == 'function' && callback(rid);
+};
+Live.getRoomInfo = function(roomID, callback) {
+    var roomInfo = {};
+    $.getJSON('/live/getInfo?roomid=' + roomID).done(function(result) {
+        if(result.code === 0) {
+            roomInfo.nickname = result.data.ANCHOR_NICK_NAME;
+        }
+    });
+    typeof callback == 'function' && callback(roomInfo);
+};
+Live.getUserInfo = function(callback) {
+    $.getJSON('/user/getuserinfo').done(function(result) {
+        if(result.code == 'REPONSE_OK') {
+            Live.userInfo.vip = result.data.vip || result.data.svip;
+            $.getJSON('//space.bilibili.com/ajax/member/MyInfo').done(function(result) {
+                if(result.status == 'true') {
+                    Live.userInfo.mobileVerified = result.data.mobile_verified;
+                }
+            });
+        }
+    });
+    typeof callback == 'function' && callback();
+};
+Live.init = function(callback) {
     var init = 0;
     Live.store.init();
     Live.dom.init();
@@ -28,61 +79,4 @@ Live.start = function(callback) {
             clearInterval(interval);
         }
     }, 100);
-};
-Live.addScriptByFile = function(fileName) {
-    var script = document.createElement('script');
-    script.src = chrome.extension.getURL(fileName);
-    document.head.appendChild(script);
-};
-Live.addScriptByText = function(text) {
-    var script = document.createElement('script');
-    script.innerHTML = text;
-    document.head.appendChild(script);
-};
-Live.getRoomHTML = function(showID) {
-    return $.get('/' + showID);
-};
-Live.getRoomID = function(showID, callback) {
-    var rid = Live.store.roomID.get(showID);
-    if(rid) {
-        typeof callback == 'function' && callback(rid);
-    } else {
-        Live.getRoomHTML(showID).done(function(result) {
-            var reg = new RegExp('var ROOMID = ([\\d]+)');
-            rid = reg.exec(result)[1] || 0;
-            if(rid) {
-                Live.store.roomID.add(showID, rid);
-                typeof callback == 'function' && callback(rid);
-            } else {
-                typeof callback == 'function' && callback(0);
-            }
-        });
-    }
-};
-Live.getRoomInfo = function(roomID, callback) {
-    $.getJSON('/live/getInfo?roomid=' + roomID).done(function(result) {
-        var roomInfo = {};
-        if(result.code === 0) {
-            result = result.data;
-            roomInfo.nickname = result.ANCHOR_NICK_NAME;
-            typeof callback == 'function' && callback(roomInfo);
-        } else {
-            typeof callback == 'function' && callback({});
-        }
-    });
-};
-Live.getUserInfo = function(callback) {
-    $.getJSON('/user/getuserinfo').done(function(result) {
-        if(result.code == 'REPONSE_OK') {
-            result = result.data;
-            Live.userInfo.vip = result.vip || result.svip;
-            $.getJSON('//space.bilibili.com/ajax/member/MyInfo').done(function(result) {
-                if(result.status == 'true') {
-                    result = result.data;
-                    Live.userInfo.mobile_verified = result.mobile_verified;
-                }
-            });
-        }
-    });
-    typeof callback == 'function' && callback();
 };

@@ -51,7 +51,8 @@ Live.smallTV = {
             result = result.data;
             if(result.status === 0) {
                 var award = {awardNumber: result.reward.num, awardName:Live.smallTV.rewardName[result.reward.id]};
-                Live.store.smallTV.add(result.reward.id, result.reward.num);
+                Live.store.smallTV.addStatInfo(result.reward.id, result.reward.num);
+                Live.store.smallTV.addCount();
                 Live.notify.smallTV('award', award);
                 Live.console.smallTV('award', award);
             } else if(result.status == 2) { //正在开奖

@@ -18,6 +18,7 @@
   "browser": true,
   "jquery": true,
   "node": true,
+  "multistr": true,
   "quotmark": "single",
   "globals": {
     "chrome": true

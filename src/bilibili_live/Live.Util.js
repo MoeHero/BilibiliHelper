@@ -123,73 +123,13 @@ Live.console = {
         this.info(msg);
     }
 };
-Live.dom = {
-    init: function() {
-        $('.control-panel').prepend('<div class="ctrl-item" id="bh-info"><div class="ctrl-item" id="bh-smalltv"><a class="link bili-link" id="bh-smalltv-statinfo">查看小电视统计信息</a></div></div>');
-        $('#bh-smalltv-statinfo').on('click', function() {
-            var statinfoJson = Live.store.smallTV.getAll();
-            var statinfoStr = '';
-            for(var i in statinfoJson) {
-                statinfoStr += Live.smallTV.rewardName[i] + '*' + statinfoJson[i] + '\n';
-            }
-            alert(statinfoStr); //jshint ignore:line
-        });
-    },
-    sign: function() {
-        $('.sign-up-btn>.dp-inline-block>span:first-child').hide();
-        $('.sign-up-btn>.has-new').hide();
-        $('.sign-up-btn>.dp-inline-block>.dp-none').show();
-    },
-    treasure: {
-        init: function() {
-            $('.treasure-box-ctnr').hide();
-            $('#bh-info').append(
-                '<div class="ctrl-item" id="bh-treasure">' +
-                '<span id="bh-treasure-title"></span>' +
-                '<span id="bh-treasure-state"></span>' +
-                '<span id="bh-treasure-times" style="display:none;">0/0</span>' + ' ' +
-                '<span id="bh-treasure-countdown" style="display:none;">00:00</span>' +
-                '</div>'
-            );
-            $('#bh-treasure-title').text(Live.localize.treasure.title + ': ');
-            this.state = $('#bh-treasure-state').text(Live.localize.init);
-            this.times = $('#bh-treasure-times');
-            this.countdown = $('#bh-treasure-countdown');
-        },
-        setState: function(key, param) {
-            var treasure = Live.localize.treasure;
-            var text = '';
-            switch(key) {
-                case 'noLogin':
-                    text = treasure.action.noLogin;
-                    break;
-                case 'end':
-                    text = treasure.action.end;
-                    break;
-                case 'exist':
-                    text = Live.format(Live.localize.treasure.action.exist, param);
-                    break;
-            }
-            this.state.text(text).show();
-            this.times.hide();
-            this.countdown.hide();
-        },
-        setTimes: function(text) {
-            this.times.text(text).show();
-            this.state.hide();
-        },
-        showCountdown: function() {
-            this.countdown.show();
-            this.state.hide();
-        }
-    }
-};
 Live.store = {
     init: function() {
         !store.get('BH_RoomID') && store.set('BH_RoomID', {});
         !store.get('BH_SignDate') && store.set('BH_SignDate', '1970/1/1');
         !store.get('BH_TreasureDate') && store.set('BH_TreasureDate', '1970/1/1');
         !store.get('BH_SmallTVStatInfo') && store.set('BH_SmallTVStatInfo', {});
+        !store.get('BH_SmallTVCount') && store.set('BH_SmallTVCount', 0);
     },
     roomID: {
         get: function(showID) {
@@ -218,17 +158,19 @@ Live.store = {
         }
     },
     smallTV: {
-        get: function(key) {
-            return store.get('BH_SmallTVStatInfo')[key] || 0;
+        addCount: function() {
+            store.set('BH_SmallTVCount', store.get('BH_SmallTVCount') + 1);
         },
-        getAll: function() {
+        getCount: function() {
+            return store.get('BH_SmallTVCount');
+        },
+        addStatInfo: function(key, count) {
+            var statInfo = store.get('BH_SmallTVStatInfo');
+            statInfo[key] = (statInfo[key] || 0) + count;
+            store.set('BH_SmallTVStatInfo', statInfo);
+        },
+        getStatInfo: function() {
             return store.get('BH_SmallTVStatInfo');
-        },
-        add: function(key, count) {
-            count += this.get(key);
-            var o = store.get('BH_SmallTVStatInfo');
-            o[key] = count;
-            store.set('BH_SmallTVStatInfo', o);
         }
     }
 };
@@ -298,7 +240,7 @@ Live.countdown = function(endTime, callback, element) {
     if(!(this instanceof Live.countdown)) {
         return new Live.countdown(endTime, callback, element);
     }
-    if(!endTime || !(endTime instanceof Date) || isNaN(endTime)) {
+    if(!endTime || (!(endTime instanceof Date) && isNaN(endTime))) {
         console.error('倒计时时间设置错误!');
         return;
     }
@@ -307,7 +249,7 @@ Live.countdown = function(endTime, callback, element) {
         time.setSeconds(time.getSeconds() + endTime);
         endTime = time;
     }
-    this.countdown = setInterval(function() {
+    var countdown = setInterval(function() {
         var dateNow = new Date();
         if(element !== undefined) {
             var time = (endTime.getTime() - dateNow.getTime()) / 1000;
@@ -318,11 +260,12 @@ Live.countdown = function(endTime, callback, element) {
             element.text(min + ':' + sec);
         }
         if(endTime.getTime() <= dateNow.getTime()) {
-            clearInterval(this.countdown);
+            clearInterval(countdown);
             element && element.text('00:00');
             typeof callback == 'function' && callback();
         }
     }, 1000);
+    this.countdown = countdown;
 };
 Live.countdown.prototype.clearCountdown = function() {
     clearInterval(this.countdown);
