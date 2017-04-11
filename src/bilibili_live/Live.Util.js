@@ -2,7 +2,7 @@
 Live.format = function(template, context) {
     var tokenReg = /(\\)?\{([^\{\}\\]+)(\\)?\}/g;
     return template.replace(tokenReg, function(word, slash1, token, slash2) {
-        if (slash1 || slash2) {
+        if(slash1 || slash2) {
             return word.replace('\\', '');
         }
         var variables = token.replace(/\s/g, '').split('.');
@@ -12,55 +12,84 @@ Live.format = function(template, context) {
         for (i = 0; i < length; i++) {
             variable = variables[i];
             currentObject = currentObject[variable];
-            if (currentObject === undefined || currentObject === null) {
+            if(currentObject === undefined || currentObject === null) {
                 return '';
             }
         }
         return currentObject;
     });
 };
+Live.localize = {
+    helper: 'Bilibili助手',
+    enabled: '已启用',
+    init: '初始化中...',
+    sign: {
+        title: '自动签到',
+        action: {
+            award: '签到成功, 获得{award}',
+            exist: '今日已签到'
+        }
+    },
+    treasure: {
+        title: '自动领瓜子',
+        action: {
+            award: '已领取{award}瓜子',
+            exist: '已在直播间{showID}启动',
+            awarding: '领取中...',
+            totalSilver: '总瓜子:{silver}',
+            noLogin: '未登录',
+            end: '领取完毕'
+        }
+    },
+    smallTV: {
+        title: '自动小电视',
+        action: {
+            award: '获得{awardNumber}个{awardName}',
+            exist: '已在直播间{showID}启动',
+            joinSuccess: '参加成功',
+            joinError: '参加失败, {msg}'
+        }
+    }
+};
 Live.console = {
-    info: function(info, backgroundColor) {
-        backgroundColor = backgroundColor || '57D2F7';
-        console.log('%c' + info, 'color:#FFF;background-color:#' + backgroundColor + ';padding:5px;border-radius:7px;line-height:30px;');
+    info: function(msg, color) {
+        color = color || '57D2F7';
+        console.log('%c' + msg, 'color:#FFF;background-color:#' + color + ';padding:5px;border-radius:7px;line-height:30px;');
     },
-    warn: function(log) {
-        console.warn('%c' + log, 'color:#FFF;background-color:#F29F3F;padding:5px;border-radius:7px;line-height:30px;');
+    warn: function(msg) {
+        console.warn('%c' + msg, 'color:#FFF;background-color:#F29F3F;padding:5px;border-radius:7px;line-height:30px;');
     },
-    error: function(log) {
-        console.error('%c' + log, 'color:#FFF;background-color:#EB3F2F;padding:5px;border-radius:7px;line-height:30px;');
+    error: function(msg) {
+        console.error('%c' + msg, 'color:#FFF;background-color:#EB3F2F;padding:5px;border-radius:7px;line-height:30px;');
     },
     sign: function(key, param) {
         var sign = Live.localize.sign;
         var msg = sign.title + ': ';
         switch(key) {
             case 'enabled':
-                msg += sign.action.enabled;
+                msg += Live.localize.enabled;
                 break;
             case 'award':
                 msg += Live.format(sign.action.award, param);
                 break;
-            case 'error':
-                msg += Live.format(sign.action.error, param);
-                break;
         }
-        this.info(msg, key == 'error' ? 'F29F3F' : false);
+        this.info(msg);
     },
     treasure: function(key, param) {
         var treasure = Live.localize.treasure;
         var msg = treasure.title + ': ';
         switch(key) {
             case 'enabled':
-                msg += treasure.action.enabled;
+                msg += Live.localize.enabled;
+                break;
+            case 'awarding':
+                msg += Live.localize.awarding;
                 break;
             case 'award':
                 msg += Live.format(treasure.action.award + ' ' + treasure.action.totalSilver, param);
                 break;
             case 'exist':
                 msg += Live.format(treasure.action.exist, param);
-                break;
-            case 'newTask':
-                msg += Live.format(treasure.action.newTask, param);
                 break;
             case 'noLogin':
                 msg += treasure.noLogin;
@@ -76,7 +105,7 @@ Live.console = {
         var msg = smallTV.title + ': ';
         switch(key) {
             case 'enabled':
-                msg += smallTV.action.enabled;
+                msg += Live.localize.enabled;
                 break;
             case 'award':
                 msg += Live.format(smallTV.action.award, param);
@@ -85,45 +114,13 @@ Live.console = {
                 msg += Live.format(smallTV.action.exist, param);
                 break;
             case 'joinSuccess':
-                msg += smallTV.action.joinSuccess;
+                msg += smallTV.action.joinSuccess + Live.format(' RoomID:{roomID} TVID:{TVID}', param);
                 break;
             case 'joinError':
                 msg += Live.format(smallTV.action.joinError, param);
                 break;
         }
         this.info(msg);
-    }
-};
-Live.localize = {
-    sign: {
-        title: '自动签到',
-        action: {
-            enabled: '已启用',
-            award: '签到成功, 获得{award}',
-            error: '签到失败, {msg}'
-        }
-    },
-    treasure: {
-        title: '自动领瓜子',
-        action: {
-            enabled: '已启用',
-            award: '已领取{award}瓜子',
-            exist: '已在直播间{roomID}启动',
-            totalSilver: '总瓜子:{silver}',
-            newTask: '新任务 结束时间:{endTime}',
-            noLogin: '未登录',
-            end: '领取完毕'
-        }
-    },
-    smallTV: {
-        title: '自动小电视',
-        action: {
-            enabled: '已启用',
-            award: '获得{awardNumber}个{awardName}',
-            exist: '已在直播间{roomID}启动',
-            joinSuccess: '参加成功',
-            joinError: '参加失败, {msg}'
-        }
     }
 };
 Live.dom = {
@@ -146,12 +143,33 @@ Live.dom = {
     treasure: {
         init: function() {
             $('.treasure-box-ctnr').hide();
-            $('#bh-info').append('<div class="ctrl-item" id="bh-treasure">自动领瓜子: <span id="bh-treasure-state">初始化中...</span><span id="bh-treasure-times" style="display:none;">0/9</span> <span id="bh-treasure-countdown" style="display:none;">00:00</span></div>');
-            this.state = $('#bh-treasure-state');
+            $('#bh-info').append(
+                '<div class="ctrl-item" id="bh-treasure">' +
+                '<span id="bh-treasure-title"></span>' +
+                '<span id="bh-treasure-state"></span>' +
+                '<span id="bh-treasure-times" style="display:none;">0/0</span>' + ' ' +
+                '<span id="bh-treasure-countdown" style="display:none;">00:00</span>' +
+                '</div>'
+            );
+            $('#bh-treasure-title').text(Live.localize.treasure.title + ': ');
+            this.state = $('#bh-treasure-state').text(Live.localize.init);
             this.times = $('#bh-treasure-times');
             this.countdown = $('#bh-treasure-countdown');
         },
-        setState: function(text) {
+        setState: function(key, param) {
+            var treasure = Live.localize.treasure;
+            var text = '';
+            switch(key) {
+                case 'noLogin':
+                    text = treasure.action.noLogin;
+                    break;
+                case 'end':
+                    text = treasure.action.end;
+                    break;
+                case 'exist':
+                    text = Live.format(Live.localize.treasure.action.exist, param);
+                    break;
+            }
             this.state.text(text).show();
             this.times.hide();
             this.countdown.hide();
@@ -184,18 +202,18 @@ Live.store = {
         }
     },
     sign: {
-        get: function() {
+        isSigned: function() {
             return store.get('BH_SignDate') == new Date().toLocaleDateString();
         },
-        set: function() {
+        setSigned: function() {
             store.set('BH_SignDate', new Date().toLocaleDateString());
         }
     },
     treasure: {
-        isSigned: function() {
-            store.get('BH_TreasureDate') == new Date().toLocaleDateString();
+        isEnd: function() {
+            return store.get('BH_TreasureDate') == new Date().toLocaleDateString();
         },
-        setSigned: function() {
+        setEnd: function() {
             store.set('BH_TreasureDate', new Date().toLocaleDateString());
         }
     },
@@ -227,23 +245,67 @@ Live.notify = {
             });
         }
     },
-    sign: function(id, message) {
-        Live.option.notify_autoSign && Live.notify.create('sign_' + id, 'Bilibili助手 - 自动签到', message);
+    sign: function(key, param) {
+        var sign = Live.localize.sign;
+        var msg = '';
+        switch(key) {
+            case 'enabled':
+                msg = Live.localize.enabled;
+                break;
+            case 'award':
+                msg = Live.format(sign.action.award, param);
+                break;
+            case 'end':
+                msg = sign.action.end;
+                break;
+
+        }
+        Live.option.notify_autoSign && Live.notify.create('sign_' + key, Live.localize.helper + ' - ' + sign.title, msg);
     },
-    treasure: function(id, message) {
-        Live.option.notify_autoTreasure && Live.notify.create('treasure_' + id, 'Bilibili助手 - 自动领瓜子', message);
+    treasure: function(key, param) {
+        var treasure = Live.localize.treasure;
+        var msg = '';
+        switch(key) {
+            case 'enabled':
+                msg = Live.localize.enabled;
+                break;
+            case 'award':
+                msg = Live.format(treasure.action.award, param);
+                break;
+            case 'noLogin':
+                msg = treasure.action.noLogin;
+                break;
+            case 'end':
+                msg = treasure.action.end;
+        }
+        Live.option.notify_autoTreasure && Live.notify.create('treasure_' + key, Live.localize.helper + ' - ' + treasure.title, msg);
     },
-    smallTV: function(id, message) {
-        Live.option.notify_autoSmallTV && Live.notify.create('smalltv_' + id, 'Bilibili助手 - 自动小电视', message);
+    smallTV: function(key, param) {
+        var smallTV = Live.localize.smallTV;
+        var msg = '';
+        switch(key) {
+            case 'enabled':
+                msg = Live.localize.enabled;
+                break;
+            case 'award':
+                msg = Live.format(smallTV.action.award, param);
+                break;
+        }
+        Live.option.notify_autoSmallTV && Live.notify.create('smalltv_' + key, Live.localize.helper + ' - ' + smallTV.title, msg);
     }
 };
 Live.countdown = function(endTime, callback, element) {
-    if (!(this instanceof Live.countdown)) {
+    if(!(this instanceof Live.countdown)) {
         return new Live.countdown(endTime, callback, element);
     }
-    if (!endTime || !(endTime instanceof Date)) {
+    if(!endTime || !(endTime instanceof Date) || isNaN(endTime)) {
         console.error('倒计时时间设置错误!');
         return;
+    }
+    if(!(endTime instanceof Date)) {
+        var time = new Date();
+        time.setSeconds(time.getSeconds() + endTime);
+        endTime = time;
     }
     this.countdown = setInterval(function() {
         var dateNow = new Date();
@@ -266,7 +328,7 @@ Live.countdown.prototype.clearCountdown = function() {
     clearInterval(this.countdown);
 };
 Live.timer = function(ms, callback) {
-    if (!(this instanceof Live.timer)) {
+    if(!(this instanceof Live.timer)) {
         return new Live.timer(ms, callback);
     }
     this.timer = setInterval(function() {
