@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+- node
+cache:
+  directories:
+  - node_modules
+before_script:
+  - openssl aes-256-cbc -K $encrypted_bf6d36bb5210_key -iv $encrypted_bf6d36bb5210_iv -in BilibiliHelper.encrypt -out BilibiliHelper.pem -d
+script:
+- npm run gulp
+deploy:
+  provider: releases
+  api_key:
+    secure: aTkoWnQjQKC0Vvbxhh84mPotZl5yISFKq01Gf1WJHLQDIikAzM3chIL/VyHtgllx8KvbLLZdAx0377lSwY5kCco0m33+TFaFXWV3zymfh0s0HnwW3NO9T1zViZZAjO2+1cRTI2MulAOuugC4O6DPdjMZDWzKPJOLFR4xfUA11xzcsN5unpNvNYIJwxK2MnzN43uUGEO+rFCWeZlPrDm3YZttVyFaDkhSaU/yfGp31sOdifYrJ+ylmysi4G2wSX1HS7cxc/Fy15bqmBfvFPwccKy3TS9Z7BJDEyNGoTRDajyZuPbuUNqNUnm6nzS1+n4CMqt1z1eKci2THH/TE4KKOlDdH7FMrAGDPiCXUmpM41kxkkA8uv+aA+zuhzKOJFbtV7RY/e6arQfVlBKoR7uPQp+4Pigz0KcHffh03QT0EmwU7QmRFtw6xYh5QPN/tYIztdf7kRhvjfUpjzMwUQucFRMh9Hil4XYU8EtFgOtdR5o0qzrKuvHEDQAwqQU9j9EMweRyBYlWcd+Hj6/7y5Y9MUFULzjuMFgWFhCISwNbiFTiOTh25XPbIUszk3GI8YD3OsaZZT1BXHrl5+jAdiIEqj0SY8EgPiMxwyLviEX+7C14XTQ+JOy3r+Y5vf+FaFzr+V5gaRGgiXcuPb7zTBo3Dv38+WcZhM0NSCLZmUjw3BQ=
+  file_glob: true
+  file:
+    - release/BilibiliHelper*.crx
+    - release/BilibiliHelper*.zip
+  skip_cleanup: true
+  on:
+    tags: true
+branches:
+  only:
+    - /^[Vv]\d+\.\d+\.\d+$/
