@@ -75,10 +75,26 @@ Live.dom = {
                 <span class="v-top">' + Live.localize.smallTV.title + '</span>\
             </a>\
             <div class="live-hover-panel arrow-top tvcount" id="bh-smalltv-statinfo-content">\
+                <h4 class="smalltv-title">'+ Live.localize.smallTV.statinfoTitle +'</h4>\
+                <span class="f-right" id="bh-smalltv-statinfo-count"></span>\
                 <ul></ul>\
             </div>');
-            var content = $('#bh-smalltv-statinfo-content');
+            var content = $('#bh-smalltv-statinfo-content').on('click', function(event) {
+                event.stopPropagation();
+            });
+            /*
+            <div class="tv reward-panel">
+                <div class="reward-title">
+                    小电视抽奖
+                    <span class="reward-counter">1028 次</span>
+                </div>
+                <div class="reward-container">
+                    <span class="gift">没有获奖记录</span>
+                </div>
+            </div>
+            */
             $('#bh-smalltv-statinfo').on('click', function(event) {
+                $('#bh-smalltv-statinfo-count').text(Live.store.smallTV.getCount() + ' ' + Live.localize.times);
                 content.find('ul').html(
                     function() {
                         var statinfoJson = Live.store.smallTV.getStatInfo();
