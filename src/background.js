@@ -46,7 +46,6 @@ function saveOption() {
     window.localStorage.bh_option = JSON.stringify(Option);
 }
 function createNotifications(param) {
-    console.log(param);
     chrome.notifications.create('bh-' + param.id, {
         type: 'basic',
         iconUrl: 'icon.png',
