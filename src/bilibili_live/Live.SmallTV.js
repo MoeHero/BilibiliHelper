@@ -6,6 +6,7 @@ Live.smallTV = {
         if(!Live.option.live || !Live.option.live_autoSmallTV) {
             return;
         }
+        Live.dom.smallTV.init();
         Live.sendMessage({command: 'getSmallTV'}, function(result) {
             if(!result.showID) {
                 Live.sendMessage({command: 'setSmallTV', showID: Live.showID});

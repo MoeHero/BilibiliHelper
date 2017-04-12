@@ -43,6 +43,7 @@ Live.localize = {
     },
     smallTV: {
         title: '自动小电视',
+        noStatinfo: '暂无统计信息',
         action: {
             award: '获得{awardNumber}个{awardName}',
             exist: '已在直播间{showID}启动',

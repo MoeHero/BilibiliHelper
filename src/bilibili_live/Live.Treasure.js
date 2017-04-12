@@ -5,11 +5,11 @@ Live.treasure = {
         if(!Live.option.live || !Live.option.live_autoTreasure) {
             return;
         }
+        Live.dom.treasure.init();
         this.canvas = document.createElement('canvas');
         this.canvas.width = 120;
         this.canvas.height = 40;
         this.canvas = this.canvas.getContext('2d');
-        Live.dom.treasure.init();
         Live.sendMessage({command: 'getTreasure'}, function(result) {
             if(!result.showID) {
                 Live.sendMessage({command: 'setTreasure', showID: Live.showID});

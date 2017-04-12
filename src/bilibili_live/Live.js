@@ -57,7 +57,6 @@ Live.getUserInfo = function(callback) {
 Live.init = function(callback) {
     var init = 0;
     Live.store.init();
-    Live.dom.init();
     Live.getRoomID(Live.showID, function() {
         Live.roomID = store.get('BH_RoomID')[Live.showID];
         init++;
@@ -75,6 +74,7 @@ Live.init = function(callback) {
     });
     var interval = setInterval(function() {
         if(init == 4) {
+            Live.dom.init();
             typeof callback == 'function' && callback();
             clearInterval(interval);
         }

@@ -1,0 +1,10 @@
+.tvcount {
+    left: 5px;
+    top: 90px;
+    width: 300px;
+}
+
+.tvcount li {
+    display: inline-block;
+    margin-right: 15px;
+}
