@@ -1,10 +1,14 @@
 .tvcount {
-    left: 5px;
-    top: 90px;
+    left: 15px;
+    top: 125px;
     width: 300px;
 }
 
 .tvcount li {
     display: inline-block;
     margin-right: 15px;
+}
+
+.head-info-panel .anchor-info-row {
+    margin-top: 0;
 }

@@ -10,14 +10,15 @@ Live.dom = {
         } //瓜子数量旁插件信息
 
         {
-            $('.profile-ctrl').append('<a href="javascript: void(0)" class="profile-ctrl-item f-right bili-link">直播设置</a>');
+            //$('.profile-ctrl').append('<a href="javascript: void(0)" class="profile-ctrl-item f-right bili-link">直播设置</a>');
         } //弹幕框下方直播设置
 
         if(Live.option.live && (Live.option.live_autoTreasure || Live.option.live_autoSmallTV)) {
             var partition = $('.room-info-row a')[0];
             partition.className = 'share-link';
             $('.room-title-row').append($('.room-title-row>.report-link')[0]).append(partition);
-            $('.room-info-row').html('');
+            $('.room-info-row').remove();
+            $('.anchor-info-row').after('<div class="room-info-row" style="margin-top:15px;">');
         } //直播间名称下方统计信息
     },
     sign: function() {
@@ -29,11 +30,11 @@ Live.dom = {
         init: function() {
             $('.treasure-box-ctnr').hide();
             $('.room-info-row').append('\
-            <a class="room-info">\
-                <i class="live-icon silver-seed"></i>\
-                <span class="v-top" id="bh-treasure-state">' + Live.localize.init + '</span>\
-                <span class="v-top" id="bh-treasure-times" style="display:none;">0/0</span>&nbsp;\
-                <span class="v-top" id="bh-treasure-countdown" style="display:none;">00:00</span>\
+            <i class="live-icon silver-seed"></i>\
+            <a class="room-info v-top">\
+                <span id="bh-treasure-state">' + Live.localize.init + '</span>\
+                <span id="bh-treasure-times" style="display:none;">0/0</span>&nbsp;\
+                <span id="bh-treasure-countdown" style="display:none;">00:00</span>\
             </a>');
             this.state = $('#bh-treasure-state');
             this.times = $('#bh-treasure-times');
@@ -69,8 +70,8 @@ Live.dom = {
     smallTV: {
         init: function() {
             $('.room-info-row').append('\
-            <a class="room-info bili-link" id="bh-smalltv-statinfo">\
-                <i class="live-icon main-site dark"></i>\
+            <i class="live-icon main-site dark"></i>\
+            <a class="room-info bili-link v-top" id="bh-smalltv-statinfo">\
                 <span class="v-top">' + Live.localize.smallTV.title + '</span>\
             </a>\
             <div class="live-hover-panel arrow-top tvcount" id="bh-smalltv-statinfo-content">\
