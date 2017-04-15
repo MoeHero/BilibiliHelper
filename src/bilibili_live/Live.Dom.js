@@ -1,4 +1,4 @@
-/* globals Live */
+/* globals Live,GiftPackage */
 Live.dom = {
     init: function() {
         {
@@ -82,17 +82,6 @@ Live.dom = {
             var content = $('#bh-smalltv-statinfo-content').on('click', function(event) {
                 event.stopPropagation();
             });
-            /*
-            <div class="tv reward-panel">
-                <div class="reward-title">
-                    小电视抽奖
-                    <span class="reward-counter">1028 次</span>
-                </div>
-                <div class="reward-container">
-                    <span class="gift">没有获奖记录</span>
-                </div>
-            </div>
-            */
             $('#bh-smalltv-statinfo').on('click', function(event) {
                 $('#bh-smalltv-statinfo-count').text(Live.store.smallTV.getCount() + ' ' + Live.localize.times);
                 content.find('ul').html(
@@ -118,6 +107,11 @@ Live.dom = {
                     }, 400);
                 }
             });
+        }
+    },
+    giftPackage: {
+        init: function() {
+            var a = new GiftPackage();
         }
     }
 };

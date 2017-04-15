@@ -22,14 +22,16 @@ gulp.task('default', function() {
 
 gulp.task('set:r', function() {
     path = 'release';
+    return;
 });
 gulp.task('set:d', function() {
     path = 'debug';
+    return;
 });
 
 
 gulp.task('live', function() {
-    gulp.src('./src/bilibili_live/*.js')
+    return gulp.src('./src/bilibili_live/*.js')
         .pipe($.order(['Live.js', '!Core.js', 'Core.js']))
         .pipe($.jshintChannel())
         .pipe($.concat('bilibili_live.js'))
@@ -39,7 +41,7 @@ gulp.task('live', function() {
 });
 
 gulp.task('script', function() {
-    gulp.src(['./src/**/!(*.min).js', '!src/bilibili_live/*.js'])
+    return gulp.src(['./src/**/!(*.min).js', '!src/bilibili_live/*.js'])
         .pipe($.jshintChannel())
         .pipe($.if(path == 'release', $.uglify()))
         .pipe($.rename({suffix: '.min'}))
@@ -47,7 +49,7 @@ gulp.task('script', function() {
 });
 
 gulp.task('html', function() {
-    gulp.src('./src/**/*.html')
+    return gulp.src('./src/**/*.html')
         .pipe($.if(path == 'release', $.htmlmin({
             collapseBooleanAttributes: true,
             minifyCSS: true,
@@ -59,14 +61,14 @@ gulp.task('html', function() {
 });
 
 gulp.task('css', function() {
-    gulp.src('./src/**/!(*.min).css')
+    return gulp.src('./src/**/!(*.min).css')
         .pipe($.if(path == 'release', $.cleanCss()))
         .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
 });
 
 gulp.task('copy', function() {
-    gulp.src(['**/*.*', '!**/*.html', '!**/!(*.min).js', '!**/!(*.min).css', '!bilibili_live/**', '!manifest.json'], {cwd: './src'})
+    return gulp.src(['**/*.*', '!**/*.html', '!**/!(*.min).js', '!**/!(*.min).css', '!bilibili_live/**', '!manifest.json'], {cwd: './src'})
         .pipe(gulp.dest(path + '/src/'));
 });
 
@@ -79,10 +81,11 @@ gulp.task('manifest', function() {
         fs.mkdirSync(path + '/src');
     }
     fs.writeFileSync(path + '/src/manifest.json', JSON.stringify(manifest, null, '  '), {flag: 'w+'});
+    return;
 });
 
 gulp.task('crx', function() {
-    gulp.src(path + '/src/')
+    return gulp.src(path + '/src/')
         .pipe($.crxPack({
             privateKey: fs.readFileSync('BilibiliHelper.pem', 'utf8'),
             filename: filename + '.crx'
@@ -91,7 +94,7 @@ gulp.task('crx', function() {
 });
 
 gulp.task('zip', function() {
-    gulp.src(path + '/src/**')
+    return gulp.src(path + '/src/**')
         .pipe($.zip(filename + '.zip'))
         .pipe(gulp.dest(path + '/'));
 });

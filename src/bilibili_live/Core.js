@@ -1,4 +1,4 @@
-/* globals Live */
+/* globals Live,FuncTreasure */
 Live.sendMessage({command: 'getInfo'}, function(result) {
     Live.info = result;
     Live.console.info('BilibiliHelper V' + Live.info.version);
@@ -12,6 +12,8 @@ Live.sendMessage({command: 'getInfo'}, function(result) {
     Live.init(function() {
         Live.sign.init();
         Live.smallTV.init();
-        Live.treasure.init();
+        FuncTreasure.init();
+
+        Live.dom.giftPackage.init();
     });
 });
