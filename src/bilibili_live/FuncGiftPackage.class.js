@@ -1,5 +1,6 @@
+/* globals ModuleConsole,ModuleDom,ModuleNotify,ModuleStore */
 class FuncGiftPackage {
-    constructor() {
+    static init() {
         this.package = $('.items-package').clone();
         $('.items-package').after(this.package).remove();
 

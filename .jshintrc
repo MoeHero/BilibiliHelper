@@ -21,6 +21,7 @@
   "multistr": true,
   "quotmark": "single",
   "globals": {
-    "chrome": true
+    "chrome": true,
+    "Live": true
   }
 }
