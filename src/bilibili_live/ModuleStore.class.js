@@ -42,12 +42,20 @@ class ModuleStore {
         }
     }
 
-    static smallTV_addStatInfo(key, count) {
-        var statInfo = store.get('BH_SmallTVStatInfo');
-        statInfo[key] = (statInfo[key] || 0) + count;
-        store.set('BH_SmallTVStatInfo', statInfo);
-    }
-    static smallTV_getStatInfo() {
-        return store.get('BH_SmallTVStatInfo');
+    static smallTV(key, param) {
+        switch(key) {
+            case 'addStatInfo':
+                let statInfo = store.get('BH_SmallTVStatInfo');
+                statInfo[param.key] = (statInfo[param.key] || 0) + param.count;
+                store.set('BH_SmallTVStatInfo', statInfo);
+                break;
+            case 'getStatInfo':
+                return store.get('BH_SmallTVStatInfo');
+            case 'addCount':
+                store.set('BH_SmallTVCount', store.get('BH_SmallTVCount') + 1);
+                break;
+            case 'getCount':
+                return store.get('BH_SmallTVCount');
+        }
     }
 }

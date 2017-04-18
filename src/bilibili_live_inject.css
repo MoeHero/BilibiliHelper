@@ -7,14 +7,13 @@ i.bh-icon {
 
 i.bh-icon.treasure-init { background-position: 0 0; }
 i.bh-icon.treasure-exist { background-position: -20px 0; }
-i.bh-icon.treasure-enabled { background-position: -40px 0; }
+i.bh-icon.treasure-processing { background-position: -40px 0; }
 i.bh-icon.treasure-error { background-position: -60px 0; }
 i.bh-icon.treasure-end { background-position: -80px 0; }
 
 i.bh-icon.tv-init { background-position: 0 -20px; }
 i.bh-icon.tv-exist { background-position: -20px -20px; }
 i.bh-icon.tv-enabled { background-position: -40px -20px; }
-i.bh-icon.tv-error { background-position: -60px -20px; }
 
 .bh-func-info-row {
   margin-top: 15px;
@@ -26,19 +25,23 @@ i.bh-icon.tv-error { background-position: -60px -20px; }
   font-size: 13px;
 }
 
-
-.tvcount {
-  left: 15px;
-  top: 125px;
+#bh-tv-statinfo {
+  left: 0;
+  top: 118px;
   width: 300px;
 }
-
-.tvcount li {
+#bh-tv-statinfo hr {
+  margin-top: -5px;
+  margin-bottom: 10px;
+  border: 0;
+  height: 1px;
+  background-color: #CDDBE0;
+}
+#bh-tv-statinfo li {
   display: inline-block;
   margin-right: 15px;
 }
-
-.smalltv-title {
+#bh-tv-statinfo-title {
   display: inline-block;
   font-size: 15px;
   margin: 0;

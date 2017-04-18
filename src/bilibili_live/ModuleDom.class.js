@@ -1,12 +1,11 @@
-/* globals a */
+/* globals ModuleStore,FuncSmallTV */
 class ModuleDom {
     static init() {
         {
-            var bhInfo = $(`
+            $('.control-panel').prepend(`
             <div class="ctrl-item" id="bh-info">
                 <div class="ctrl-item">${Live.localize.helper} V${Live.info.version}</div>
             </div>`);
-            $('.control-panel').prepend(bhInfo);
         } //瓜子数量旁插件信息
 
         {
@@ -48,8 +47,8 @@ class ModuleDom {
         let treasure = Live.localize.treasure;
         let text, state;
         switch(key) {
-            case 'enabled':
-                state = 'enabled';
+            case 'processing':
+                state = 'processing';
                 break;
             case 'awarding':
                 text = treasure.action.awarding;
@@ -82,46 +81,56 @@ class ModuleDom {
     }
 
     static smallTV_init() {
-
-        this.treasure_state_icon = $('#bh-treasure-state-icon');
-
-        this.funcinfo_row.append('\
-        <i class="bh-icon tv-init" id="tv-state-icon"></i>\
-        <a class="func-info bili-link v-top" id="bh-smalltv-statinfo">\
-            <span class="v-top">' + Live.localize.smallTV.title + '</span>\
-        </a>\
-        <div class="live-hover-panel arrow-top tvcount" id="bh-smalltv-statinfo-content">\
-            <h4 class="smalltv-title">'+ Live.localize.smallTV.statinfoTitle +'</h4>\
-            <span class="f-right" id="bh-smalltv-statinfo-count"></span>\
-            <ul></ul>\
-        </div>');
-        var content = $('#bh-smalltv-statinfo-content').on('click', function(event) {
-            event.stopPropagation();
-        });
-        $('#bh-smalltv-statinfo').on('click', function(event) {
-            $('#bh-smalltv-statinfo-count').text(Live.store.smallTV.getCount() + ' ' + Live.localize.times);
-            content.find('ul').html(
+        this.funcinfo_row.append(`
+        <i class="bh-icon tv-init" id="bh-tv-state-icon"></i>
+        <a class="func-info bili-link v-top" id="bh-tv-state">${Live.localize.init}</a>
+        <div class="live-hover-panel arrow-top" id="bh-tv-statinfo">
+            <h4 id="bh-tv-statinfo-title">${Live.localize.smallTV.statinfoTitle}</h4>
+            <span class="f-right" id="bh-tv-statinfo-count"></span>
+            <hr>
+            <ul></ul>
+        </div>`);
+        this.smallTV_state_icon = $('#bh-tv-state-icon');
+        this.smallTV_statinfo = $('#bh-tv-statinfo').on('click', (event) => event.stopPropagation());
+        this.smallTV_statinfo_count = $('#bh-tv-statinfo-count');
+        this.smallTV_state = $('#bh-tv-state').on('click', (event) => {
+            this.smallTV_statinfo_count.text(ModuleStore.smallTV('getCount') + ' ' + Live.localize.times);
+            this.smallTV_statinfo.find('ul').html(
                 function() {
-                    var statinfoJson = Live.store.smallTV.getStatInfo();
-                    var statinfoStr = '';
-                    for(var i in statinfoJson) {
-                        statinfoStr += '<li>' + Live.smallTV.rewardName[i] + 'x' + statinfoJson[i] + '</li>';
+                    let statinfoJson = ModuleStore.smallTV('getStatInfo');
+                    let statinfoStr = '';
+                    for(let i in statinfoJson) {
+                        statinfoStr += '<li>' + FuncSmallTV.awardName[i] + 'x' + statinfoJson[i] + '</li>';
                     }
                     return statinfoStr || '<li>' + Live.localize.smallTV.noStatinfo + '</li>';
                 }()
             );
-            if(!content.hasClass('show')) {
+            if(!this.smallTV_statinfo.hasClass('show')) {
+                this.smallTV_statinfo.addClass('show');
                 event.stopPropagation();
-                content.addClass('show');
             }
         }); //显示&退出动画
-        $(document).on('click', function(event) {
-            if(content.hasClass('show')) {
-                content.addClass('out');
-                setTimeout(function() {
-                    content.removeClass('out show');
-                }, 400);
+        $(document).on('click', (event) => {
+            if(this.smallTV_statinfo.hasClass('show')) {
+                this.smallTV_statinfo.addClass('out');
+                setTimeout(() => this.smallTV_statinfo.removeClass('out show'), 400);
             }
         });
+    }
+    static smallTV_setState(key, param) {
+        let smallTV = Live.localize.smallTV;
+        let text, state;
+        switch(key) {
+            case 'enabled':
+                state = 'enabled';
+                text = Live.localize.enabled;
+                break;
+            case 'exist':
+                state = 'exist';
+                text = Live.format(smallTV.action.exist, param);
+                break;
+        }
+        state && this.smallTV_state_icon.attr('class', 'bh-icon tv-' + state);
+        text && this.smallTV_state.text(text);
     }
 }

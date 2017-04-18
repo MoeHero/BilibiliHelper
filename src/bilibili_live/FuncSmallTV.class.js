@@ -5,6 +5,8 @@ class FuncSmallTV {
             return;
         }
         ModuleDom.smallTV_init();
+        FuncSmallTV.countdown = {};
+        FuncSmallTV.awardName = {1: '小电视抱枕', 2: '蓝白胖次', 3: 'B坷垃', 4: '喵娘', 5: '爱心便当', 6: '银瓜子', 7: '辣条'};
         Live.sendMessage({command: 'getSmallTV'}, (result) => {
             if(!result.showID) {
                 Live.sendMessage({command: 'setSmallTV', showID: Live.showID});
@@ -16,10 +18,11 @@ class FuncSmallTV {
                         this.join(request.real_roomid, request.tv_id);
                     }
                 });
+                ModuleDom.smallTV_setState('enabled');
                 ModuleNotify.smallTV('enabled');
                 ModuleConsole.smallTV('enabled');
             } else {
-                //ModuleDom
+                ModuleDom.smallTV_setState('exist', result);
                 ModuleConsole.smallTV('exist', result);
             }
         });
@@ -28,19 +31,17 @@ class FuncSmallTV {
     static join(roomID, TVID) {
         $.getJSON('/SmallTV/join', {roomid: roomID, id: TVID}).done((result) => {
             if(result.code === 0) {
-                Live.smallTV.countdown[TVID] && Live.smallTV.countdown[TVID].clearCountdown();
-                Live.smallTV.countdown[TVID] = new Live.countdown(result.data.dtime, () => {
-                    Live.smallTV.getAward(TVID);
-                });
-                Live.console.smallTV('joinSuccess', {roomID:roomID, TVID: TVID});
+                this.countdown[TVID] && this.countdown[TVID].clearCountdown();
+                this.countdown[TVID] = new Live.countdown(result.data.dtime, () => this.getAward(TVID));
+                ModuleConsole.smallTV('joinSuccess', {roomID:roomID, TVID: TVID});
             } else if(result.code == -400) { //已经错过
-                Live.console.smallTV('joinError', result);
+                ModuleConsole.smallTV('joinError', result);
             } else {
                 console.log(result);
-                Live.smallTV.join();
+                this.join();
             }
         }).fail(() => {
-            Live.countdown(2, () => {Live.smallTV.join();});
+            Live.countdown(2, () => this.join());
         });
     }
 
@@ -48,22 +49,19 @@ class FuncSmallTV {
         $.getJSON('/SmallTV/getReward', {id: TVID}).done((result) => {
             result = result.data;
             if(result.status === 0) {
-                let award = {awardNumber: result.reward.num, awardName:Live.smallTV.rewardName[result.reward.id]};
-                Live.store.smallTV.addStatInfo(result.reward.id, result.reward.num);
-                Live.store.smallTV.addCount();
-                Live.notify.smallTV('award', award);
-                Live.console.smallTV('award', award);
+                let award = {awardNumber: result.reward.num, awardName: Live.smallTV.rewardName[result.reward.id]};
+                ModuleStore.smallTV('addStatInfo', {key: result.reward.id, count: result.reward.num});
+                ModuleStore.smallTV('addCount');
+                ModuleNotify.smallTV('award', award);
+                ModuleConsole.smallTV('award', award);
             } else if(result.status == 2) { //正在开奖
-                Live.countdown(15, () => {Live.smallTV.getAward(TVID);});
+                Live.countdown(15, () => this.getAward(TVID));
             } else {
                 console.log(result);
-                Live.smallTV.getAward(TVID);
+                this.getAward(TVID);
             }
         }).fail(() => {
-            Live.countdown(2, () => {Live.smallTV.getAward(TVID);});
+            Live.countdown(2, () => this.getAward(TVID));
         });
     }
 }
-
-FuncSmallTV.countdown = {};
-FuncSmallTV.awardName = {1: '小电视抱枕', 2: '蓝白胖次', 3: 'B坷垃', 4: '喵娘', 5: '爱心便当', 6: '银瓜子', 7: '辣条'};

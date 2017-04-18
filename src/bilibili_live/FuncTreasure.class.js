@@ -2,8 +2,6 @@
 class FuncTreasure {
     static init() {
         if(!Live.option.live || !Live.option.live_autoTreasure) {
-            console.log(Live.option.live);
-            console.log(Live.option.live_autoTreasure);
             return;
         }
         ModuleDom.treasure_init();
@@ -22,10 +20,8 @@ class FuncTreasure {
                         this.checkNewTask();
                     }
                 });
-                ModuleDom.treasure_setState('enabled');
                 ModuleNotify.treasure('enabled');
                 ModuleConsole.treasure('enabled');
-                this.checkNewTask();
                 Live.timer(60 * 60 * 1000, () => this.checkNewTask());
             } else {
                 Live.sendMessage({command: 'checkNewTask'});
@@ -47,6 +43,7 @@ class FuncTreasure {
                         ModuleDom.treasure_setState('awarding');
                         this.getAward();
                     }, ModuleDom.treasure_countdown);
+                    ModuleDom.treasure_setState('processing');
                     ModuleDom.treasure_showCountdown();
                 } else if(result.code == -101) { //未登录
                     ModuleDom.treasure_setState('noLogin');
@@ -70,28 +67,27 @@ class FuncTreasure {
     }
 
     static getAward() {
-        var image = new Image();
+        let image = new Image();
         image.onload = () => {
             this.canvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.canvas.drawImage(image, 0, 0);
             this.answer = eval(this.correctQuestion(OCRAD(this.canvas))); //jshint ignore:line
-            $.getJSON('/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer})
-                .done(function(result) {
-                    if(result.code === 0) {
-                        ModuleNotify.treasure('award', {award: result.data.awardSilver});
-                        ModuleConsole.treasure('award', {award: result.data.awardSilver, silver: result.data.silver});
-                        this.checkNewTask();
-                    } else if(result.code == -99) { //在其他地方领取
-                        this.checkNewTask();
-                    } else if(result.code == -400) { //验证码错误
-                        this.getAward();
-                    } else {
-                        console.log(result);
-                        this.checkNewTask();
-                    }
-                }).fail(() => {
-                    Live.countdown(2, () => this.getAward());
-                });
+            $.getJSON('/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done((result) => {
+                if(result.code === 0) {
+                    ModuleNotify.treasure('award', {award: result.data.awardSilver});
+                    ModuleConsole.treasure('award', {award: result.data.awardSilver, silver: result.data.silver});
+                    this.checkNewTask();
+                } else if(result.code == -99) { //在其他地方领取
+                    this.checkNewTask();
+                } else if(result.code == -400) { //验证码错误
+                    this.getAward();
+                } else {
+                    console.log(result);
+                    this.checkNewTask();
+                }
+            }).fail(() => {
+                Live.countdown(2, () => this.getAward());
+            });
         };
         image.onerror = () => {
             Live.countdown(2, () => this.getAward());

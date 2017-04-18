@@ -6,7 +6,6 @@ class FuncSign {
         }
         ModuleNotify.sign('enabled');
         ModuleConsole.sign('enabled');
-        this.do();
         Live.timer(60 * 60 * 1000, () => this.do());
     }
 
