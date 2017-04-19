@@ -19,6 +19,7 @@
   "jquery": true,
   "node": true,
   "multistr": true,
+  "loopfunc": true,
   "quotmark": "single",
   "globals": {
     "chrome": true,

@@ -59,6 +59,11 @@ function createNotifications(param) {
         }
     });
 }
+function addScriptByText(text) {
+    let script = document.createElement('script');
+    script.innerHTML = text;
+    document.head.appendChild(script);
+}
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
     if (changeInfo.status == 'complete' &&
@@ -74,36 +79,36 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     switch(request.command) {
-    case 'getTreasure':
-        sendResponse(Treasure.getTreasure());
-        break;
-    case 'setTreasure':
-        Treasure.setTreasure({tabID: sender.tab.id, showID: request.showID});
-        break;
-    case 'delTreasure':
-        sendResponse(Treasure.delTreasure());
-        break;
-    case 'checkNewTask':
-        chrome.tabs.sendMessage(Treasure.tabID, {command: 'checkNewTask'});
-        break;
-    case 'getSmallTV':
-        sendResponse(SmallTV.getSmallTV());
-        break;
-    case 'setSmallTV':
-        SmallTV.setSmallTV({tabID: sender.tab.id, showID: request.showID});
-        break;
-    case 'delSmallTV':
-        sendResponse(SmallTV.delSmallTV());
-        break;
-    case 'getInfo':
-        sendResponse(Info);
-        break;
-    case 'getOption':
-        sendResponse(Option);
-        break;
-    case 'createNotifications':
-        createNotifications(request.param);
-        break;
+        case 'getTreasure':
+            sendResponse(Treasure.getTreasure());
+            break;
+        case 'setTreasure':
+            Treasure.setTreasure({tabID: sender.tab.id, showID: request.showID});
+            break;
+        case 'delTreasure':
+            sendResponse(Treasure.delTreasure());
+            break;
+        case 'checkNewTask':
+            chrome.tabs.sendMessage(Treasure.tabID, {command: 'checkNewTask'});
+            break;
+        case 'getSmallTV':
+            sendResponse(SmallTV.getSmallTV());
+            break;
+        case 'setSmallTV':
+            SmallTV.setSmallTV({tabID: sender.tab.id, showID: request.showID});
+            break;
+        case 'delSmallTV':
+            sendResponse(SmallTV.delSmallTV());
+            break;
+        case 'getInfo':
+            sendResponse(Info);
+            break;
+        case 'getOption':
+            sendResponse(Option);
+            break;
+        case 'createNotifications':
+            createNotifications(request.param);
+            break;
     }
 });
 

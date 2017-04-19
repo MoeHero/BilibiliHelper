@@ -54,7 +54,7 @@ Live.countdown = function(endTime, callback, element) {
     }
     let countdown = setInterval(() => {
         let dateNow = new Date();
-        let time = Math.ceil((endTime.getTime() - dateNow.getTime()) / 1000);
+        let time = Math.round((endTime.getTime() - dateNow.getTime()) / 1000);
         if(element instanceof jQuery) {
             let min = Math.floor(time / 60);
             let sec = Math.floor(time % 60);

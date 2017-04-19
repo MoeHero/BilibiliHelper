@@ -14,7 +14,7 @@ class FuncSmallTV {
                     Live.sendMessage({command: 'getSmallTV'}, (result) => result.showID == Live.showID && Live.sendMessage({command: 'delSmallTV'}));
                 });
                 Live.getMessage((request) => {
-                    if(request.cmd == 'SYS_MSG' && request.tv_id && request.real_roomid) {
+                    if(request.cmd && request.cmd == 'SYS_MSG' && request.tv_id && request.real_roomid) {
                         this.join(request.real_roomid, request.tv_id);
                     }
                 });
