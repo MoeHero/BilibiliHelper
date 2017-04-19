@@ -25,7 +25,7 @@ class FuncSign {
                     this.do();
                 }
             }).fail(() => {
-                Live.countdown(2, () => Live.sign.do());
+                Live.countdown(2, () => this.do());
             });
         }
     }

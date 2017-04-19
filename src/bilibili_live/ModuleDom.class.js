@@ -110,7 +110,7 @@ class ModuleDom {
                 event.stopPropagation();
             }
         }); //显示&退出动画
-        $(document).on('click', (event) => {
+        $(document).on('click', () => {
             if(this.smallTV_statinfo.hasClass('show')) {
                 this.smallTV_statinfo.addClass('out');
                 setTimeout(() => this.smallTV_statinfo.removeClass('out show'), 400);
