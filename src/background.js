@@ -34,6 +34,7 @@ var Option = {
     live_autoSign: true,
     live_autoTreasure: true,
     live_autoSmallTV: true,
+    live_giftPackage: true,
     live: true,
     notify_autoSign: true,
     notify_autoTreasure: true,
