@@ -1,6 +1,9 @@
 /* globals ModuleConsole,ModuleDom,ModuleNotify,ModuleStore */
 class FuncGiftPackage {
     static init() {
+        if(!Live.option.live || !Live.option.live_giftPackage) {
+            return;
+        }
         this.package = $('.items-package').clone();
         $('.items-package').after(this.package).remove();
 
