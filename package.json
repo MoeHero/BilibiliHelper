@@ -30,5 +30,8 @@
     "jshint": "^2.9.4",
     "jshint-stylish": "^2.2.1",
     "lazypipe": "^1.0.1"
+  },
+  "dependencies": {
+    "google-closure-compiler": "^20170409.0.0"
   }
 }

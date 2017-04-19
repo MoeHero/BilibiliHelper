@@ -61,7 +61,7 @@ function createNotifications(param) {
     });
 }
 function addScriptByText(text) {
-    let script = document.createElement('script');
+    var script = document.createElement('script');
     script.innerHTML = text;
     document.head.appendChild(script);
 }
