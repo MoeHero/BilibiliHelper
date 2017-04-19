@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var lazypipe = require('lazypipe');
+var closureCompiler = require('google-closure-compiler').gulp();
 var fs = require('fs');
 var pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
@@ -35,8 +36,12 @@ gulp.task('live', function() {
         .pipe($.order(['Live*.js', 'Module*.class.js', 'Func*.class.js', '!Core.js', 'Core.js']))
         .pipe($.jshintChannel())
         .pipe($.concat('bilibili_live.js'))
-        .pipe($.if(path == 'release', $.uglify()))
-        .pipe($.rename({suffix: '.min'}))
+        .pipe(gulp.dest(path + '/src/'))
+        .pipe($.if(path == 'release', closureCompiler({
+            compilation_level: 'SIMPLE',
+            language_in: 'ECMASCRIPT6_STRICT',
+            js_output_file: 'bilibili_live.min.js'
+        })))
         .pipe(gulp.dest(path + '/src/'));
 });
 
