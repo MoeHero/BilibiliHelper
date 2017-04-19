@@ -1,7 +1,7 @@
 {
   "bitwise": true,
   "curly": true,
-  "esversion": 5,
+  "esversion": 6,
   "freeze": true,
   "funcscope": true,
   "latedef": "nofunc",
@@ -19,8 +19,10 @@
   "jquery": true,
   "node": true,
   "multistr": true,
+  "loopfunc": true,
   "quotmark": "single",
   "globals": {
-    "chrome": true
+    "chrome": true,
+    "Live": true
   }
 }
