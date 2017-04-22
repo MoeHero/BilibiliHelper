@@ -19,7 +19,7 @@ class FuncGiftPackage {
         <div class="number-group">
             <span class="number-btn">1</span><span class="number-btn">5</span><span class="number-btn">10</span><span class="number-btn">50</span><span class="number-btn">100</span>
             <span class="number-btn">5%</span><span class="number-btn">10%</span><span class="number-btn">50%</span><span class="number-btn">80%</span><span class="number-btn">MAX</span>
-        </div>`);
+        </div>`.trim());
         this.countInput = this.sendPanel.find('.send-ctrl>input');
         this.sendPanel.find('.send-ctrl>button').on('click', () => this.sendGift());
 
@@ -31,20 +31,6 @@ class FuncGiftPackage {
 
         this.sendPanel.find('.number-btn').on('click', (event) => this.setNumber($(event.currentTarget)));
         this.sendPanel.find('.close-btn').on('click', () => this.sendPanel.hide());
-
-        Live.addScriptByText(`
-        function bh_sendGift(giftID, number, bagID) {
-            window.avalon.vmodels.giftPackageCtrl.$fire('all!sendGift', {
-                type: 'package',
-                data: {
-                    giftId: giftID,
-                    num: number,
-                    coinType: 'gold',
-                    bagId: bagID
-                },
-                callback: (result) => chrome.runtime.sendMessage(extensionID, {command: 'sendGiftCallback', result: result})
-            });
-        }`);
     }
 
     static openGiftPackage() {
@@ -130,10 +116,10 @@ class FuncGiftPackage {
         let number = target.text();
         if(number == 'MAX') {
             number = this.currentGift.count;
-        } else if(number.indexOf('%') != -1) {
+        } else if(number.endsWith('%')) {
             number = Math.round(this.currentGift.count * parseInt(number) * 0.01);
         }
-        if(number > this.currentGift.count) {
+        if(number > this.currentGift.count || isNaN(number)) {
             number = this.currentGift.count;
         } else if(number < 1) {
             number = 1;
@@ -144,7 +130,6 @@ class FuncGiftPackage {
         this.sendGiftCallback = Live.getMessage((request) => {
             if(request.command && request.command == 'sendGiftCallback') {
                 let result = request.result;
-                console.log(result);
                 if(result.code === 0) {
                     if(result.data.remain === 0) {
                         this.currentGift.element.remove();
@@ -157,7 +142,7 @@ class FuncGiftPackage {
                         this.currentGift.element.find('.gift-count').text('x' + result.data.remain);
                         this.currentGift.count = result.data.remain;
                     }
-                } else if(result.code == 200005) {//无法给自己赠送道具
+                } else if(result.code == 200005) { //无法给自己赠送道具
                 } else {
                     console.log(result);
                 }
@@ -165,5 +150,4 @@ class FuncGiftPackage {
         });
         Live.addScriptByText(`bh_sendGift(${this.currentGift.giftID}, ${this.countInput.val()}, ${this.currentGift.bagID});`);
     }
-
 }

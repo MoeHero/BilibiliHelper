@@ -5,7 +5,7 @@ class ModuleDom {
             $('.control-panel').prepend(`
             <div class="ctrl-item" id="bh-info">
                 <div class="ctrl-item">${Live.localize.helper} V${Live.info.version}</div>
-            </div>`);
+            </div>`.trim());
         } //瓜子数量旁插件信息
 
         {
@@ -16,7 +16,7 @@ class ModuleDom {
             $('.anchor-info-row').css('margin-top', 0).append(`
             <div class="row-item">
                 <span>分区: </span>${$('.room-info-row a')[0].outerHTML}
-            </div>`).after('<div class="bh-func-info-row"></div>');
+            </div>`.trim()).after('<div class="bh-func-info-row"></div>');
             $('.room-info-row').remove();
             this.funcinfo_row = $('.bh-func-info-row');
         } //直播间名称下方信息
@@ -37,7 +37,7 @@ class ModuleDom {
             <span id="bh-treasure-state">${Live.localize.init}</span>
             <span id="bh-treasure-times" style="display:none;">0/0</span>&nbsp;
             <span id="bh-treasure-countdown" style="display:none;">00:00</span>
-        </a>`);
+        </a>`.trim());
         this.treasure_state_icon = $('#bh-treasure-state-icon');
         this.treasure_state = $('#bh-treasure-state');
         this.treasure_times = $('#bh-treasure-times');
@@ -89,7 +89,7 @@ class ModuleDom {
             <span class="f-right" id="bh-tv-statinfo-count"></span>
             <hr>
             <ul></ul>
-        </div>`);
+        </div>`.trim());
         this.smallTV_state_icon = $('#bh-tv-state-icon');
         this.smallTV_statinfo = $('#bh-tv-statinfo').on('click', (event) => event.stopPropagation());
         this.smallTV_statinfo_count = $('#bh-tv-statinfo-count');

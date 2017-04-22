@@ -49,7 +49,7 @@ class FuncSmallTV {
         $.getJSON('/SmallTV/getReward', {id: TVID}).done((result) => {
             result = result.data;
             if(result.status === 0) {
-                let award = {awardNumber: result.reward.num, awardName: Live.smallTV.rewardName[result.reward.id]};
+                let award = {awardNumber: result.reward.num, awardName: this.rewardName[result.reward.id]};
                 ModuleStore.smallTV('addStatInfo', {key: result.reward.id, count: result.reward.num});
                 ModuleStore.smallTV('addCount');
                 ModuleNotify.smallTV('award', award);

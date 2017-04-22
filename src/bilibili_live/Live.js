@@ -60,11 +60,11 @@ Live.init = function(callback) {
         Live.roomID = roomID;
         init++;
     });
+    Live.getUserInfo(() => init++);
     Live.getRoomInfo(Live.roomID, (roomInfo) => {
         Live.roomInfo = roomInfo;
         init++;
     });
-    Live.getUserInfo(() => init++);
     Live.sendMessage({command: 'getOption'}, (result) => {
         Live.option = result;
         init++;
