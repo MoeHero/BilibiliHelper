@@ -22,6 +22,8 @@ $(function() {
         $('#' + i).bootstrapSwitch('state', background.Option[i]);
     }
 
+    $('.version').text('V' + background.Info.version);
+
     $.get('updatelog.html').done(function(result) {
         $('#updatelog').html(result);
     });

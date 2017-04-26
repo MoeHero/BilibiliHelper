@@ -36,12 +36,12 @@ gulp.task('live', function() {
         .pipe($.order(['Live*.js', 'Module*.class.js', 'Func*.class.js', '!Core.js', 'Core.js']))
         .pipe($.jshintChannel())
         .pipe($.concat('bilibili_live.js'))
-        .pipe(gulp.dest(path + '/src/'))
         .pipe($.if(path == 'release', closureCompiler({
-            compilation_level: 'SIMPLE',
-            language_in: 'ECMASCRIPT6_STRICT',
-            js_output_file: 'bilibili_live.min.js'
+            js_output_file: 'bilibili_live.js',
+            formatting: 'SINGLE_QUOTES',
+            assume_function_wrapper: 'true'
         })))
+        .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
 });
 

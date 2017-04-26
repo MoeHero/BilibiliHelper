@@ -5,8 +5,8 @@ class FuncSmallTV {
             return;
         }
         ModuleDom.smallTV_init();
-        FuncSmallTV.countdown = {};
-        FuncSmallTV.awardName = {1: '小电视抱枕', 2: '蓝白胖次', 3: 'B坷垃', 4: '喵娘', 5: '爱心便当', 6: '银瓜子', 7: '辣条'};
+        this.countdown = {};
+        this.awardName = {1: '小电视抱枕', 2: '蓝白胖次', 3: 'B坷垃', 4: '喵娘', 5: '爱心便当', 6: '银瓜子', 7: '辣条'};
         Live.sendMessage({command: 'getSmallTV'}, (result) => {
             if(!result.showID) {
                 Live.sendMessage({command: 'setSmallTV', showID: Live.showID});
@@ -49,7 +49,7 @@ class FuncSmallTV {
         $.getJSON('/SmallTV/getReward', {id: TVID}).done((result) => {
             result = result.data;
             if(result.status === 0) {
-                let award = {awardNumber: result.reward.num, awardName: Live.smallTV.rewardName[result.reward.id]};
+                let award = {awardNumber: result.reward.num, awardName: this.awardName[result.reward.id]};
                 ModuleStore.smallTV('addStatInfo', {key: result.reward.id, count: result.reward.num});
                 ModuleStore.smallTV('addCount');
                 ModuleNotify.smallTV('award', award);

@@ -44,7 +44,7 @@ Live.countdown = function(endTime, callback, element) {
         return new Live.countdown(endTime, callback, element);
     }
     if(!endTime || (!(endTime instanceof Date) && isNaN(endTime))) {
-        console.error('倒计时时间设置错误!');
+        console.error('时间设置错误!');
         return;
     }
     if(!isNaN(endTime)) {
@@ -53,8 +53,7 @@ Live.countdown = function(endTime, callback, element) {
         endTime = time;
     }
     let countdown = setInterval(() => {
-        let dateNow = new Date();
-        let time = Math.round((endTime.getTime() - dateNow.getTime()) / 1000);
+        let time = Math.round((endTime.getTime() - new Date().getTime()) / 1000);
         if(element instanceof jQuery) {
             let min = Math.floor(time / 60);
             let sec = Math.floor(time % 60);
@@ -62,16 +61,22 @@ Live.countdown = function(endTime, callback, element) {
             sec = sec < 10 ? '0' + sec : sec;
             element.text(min + ':' + sec);
         }
-        if(time === 0) {
+        if(time <= 0) {
             clearInterval(countdown);
             typeof callback == 'function' && callback();
         }
     }, 1000);
     this.countdown = countdown;
 };
-Live.countdown.prototype.clearCountdown = () => clearInterval(this.countdown);
+Live.countdown.prototype.clearCountdown = function() {
+    clearInterval(this.countdown);
+};
 
 Live.timer = function(ms, callback) {
+    if(!ms || isNaN(ms)) {
+        console.error('时间设置错误!');
+        return;
+    }
     if(!(this instanceof Live.timer)) {
         return new Live.timer(ms, callback);
     }
@@ -80,7 +85,9 @@ Live.timer = function(ms, callback) {
     }, ms);
     typeof callback == 'function' && callback();
 };
-Live.timer.prototype.clearTimer = () => clearInterval(this.timer);
+Live.timer.prototype.clearTimer = function() {
+    clearInterval(this.timer);
+};
 
 Live.sendMessage = (msg, callback) => chrome.runtime.sendMessage(msg, (response) => typeof callback == 'function' && callback(response));
 Live.getMessage = (callback) => chrome.runtime.onMessage.addListener((request, sender, sendResponse) => typeof callback == 'function' && callback(request, sender, sendResponse));
