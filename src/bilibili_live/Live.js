@@ -14,10 +14,18 @@ Live.addScriptByText = function(text) {
     document.head.appendChild(script);
 };
 Live.addStylesheetByFile = function(fileName) {
-    let link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = chrome.extension.getURL(fileName);
-    document.head.appendChild(link);
+    let link = $('<link/>');
+    link.attr('rel', 'stylesheet');
+    link.attr('href', chrome.extension.getURL(fileName));
+    $('head').append(link);
+    return link;
+};
+Live.addStylesheetByText = function(text) {
+    let style = $('<style/>');
+    style.attr('type', 'text/css');
+    style.text(text);
+    $('head').append(style);
+    return style;
 };
 //Live.exec
 Live.getRoomID = function(showID, callback) {
