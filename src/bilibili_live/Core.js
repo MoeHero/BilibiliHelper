@@ -11,8 +11,8 @@ Live.sendMessage({command: 'getInfo'}, (result) => {
     Live.addScriptByFile('bilibili_live_inject.min.js');
     Live.init(() => {
         FuncSign.init();
-        FuncSmallTV.init();
         FuncTreasure.init();
+        FuncSmallTV.init();
 
         FuncGiftPackage.init();
     });

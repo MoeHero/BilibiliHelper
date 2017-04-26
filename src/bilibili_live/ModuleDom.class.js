@@ -9,16 +9,43 @@ class ModuleDom {
         } //瓜子数量旁插件信息
 
         {
-            //$('.profile-ctrl').append('<a href="javascript: void(0)" class="profile-ctrl-item f-right bili-link">直播设置</a>');
+            $('.profile-ctrl').append('<a class="f-right live-btn ghost" id="bh-live-setting">直播设置</a>');
+            $('#bh-live-setting').on('click', (event) => {
+
+            });
+            $(document).on('click', () => {
+                if(this.smallTV_statinfo.hasClass('show')) {
+                    this.smallTV_statinfo.addClass('out');
+                    setTimeout(() => this.smallTV_statinfo.removeClass('out show'), 400);
+                }
+            });
+            this.smallTV_state = $('#bh-tv-state').on('click', (event) => {
+                this.smallTV_statinfo_count.text(ModuleStore.smallTV('getCount') + ' ' + Live.localize.times);
+                this.smallTV_statinfo.find('ul').html(
+                    function() {
+                        let statinfoJson = ModuleStore.smallTV('getStatInfo');
+                        let statinfoStr = '';
+                        for(let i in statinfoJson) {
+                            statinfoStr += '<li>' + FuncSmallTV.awardName[i] + 'x' + statinfoJson[i] + '</li>';
+                        }
+                        return statinfoStr || '<li>' + Live.localize.smallTV.noStatinfo + '</li>';
+                    }()
+                );
+                if(!this.smallTV_statinfo.hasClass('show')) {
+                    this.smallTV_statinfo.addClass('show');
+                    event.stopPropagation();
+                }
+            }); //显示&退出动画
+
         } //弹幕框下方直播设置
 
         if(Live.option.live && (Live.option.live_autoTreasure || Live.option.live_autoSmallTV)) {
-            $('.anchor-info-row').css('margin-top', 0).append(`
-            <div class="row-item">
+            $('.anchor-info-row').css('margin-top', 0).after('<div class="bh-func-info-row"></div>');
+            this.funcinfo_row = $('.bh-func-info-row').append(`
+            <div class="func-info v-top">
                 <span>分区: </span>${$('.room-info-row a')[0].outerHTML}
-            </div>`.trim()).after('<div class="bh-func-info-row"></div>');
+            </div>`.trim());
             $('.room-info-row').remove();
-            this.funcinfo_row = $('.bh-func-info-row');
         } //直播间名称下方信息
     }
 
@@ -31,7 +58,7 @@ class ModuleDom {
 
     static treasure_init() {
         $('.treasure-box-ctnr').remove();
-        this.funcinfo_row.append(`
+        this.funcinfo_row.prepend(`
         <i class="bh-icon treasure-init" id="bh-treasure-state-icon"></i>
         <a class="func-info v-top">
             <span id="bh-treasure-state">${Live.localize.init}</span>
@@ -81,7 +108,7 @@ class ModuleDom {
     }
 
     static smallTV_init() {
-        this.funcinfo_row.append(`
+        this.funcinfo_row.prepend(`
         <i class="bh-icon tv-init" id="bh-tv-state-icon"></i>
         <a class="func-info bili-link v-top" id="bh-tv-state">${Live.localize.init}</a>
         <div class="live-hover-panel arrow-top" id="bh-tv-statinfo">

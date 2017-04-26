@@ -72,3 +72,10 @@ i.bh-icon.tv-enabled { background-position: -40px -20px; }
   color: #FFF;
   background-color: #4FC1E9;
 }
+
+#bh-live-setting {
+  height: 22px;
+  width: 70px;
+  line-height: 21px;
+  padding: 0;
+}
