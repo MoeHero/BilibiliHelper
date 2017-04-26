@@ -27,5 +27,13 @@ li > .am-fl {
 }
 
 .version {
-  font-size: 150%;
+  padding-top: 20px;
+  padding-left: 30px;
+  font-size: 1.2em;
+}
+
+.topbar-item { display: inline-block; }
+
+.log-version {
+  font-size: 1.5em;
 }
