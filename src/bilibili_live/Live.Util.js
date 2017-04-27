@@ -39,21 +39,17 @@ Live.localize = {
     }
 };
 
-Live.countdown = function(endTime, callback, element) {
+Live.countdown = function(time, callback, element) {
     if(!(this instanceof Live.countdown)) {
-        return new Live.countdown(endTime, callback, element);
+        return new Live.countdown(time, callback, element);
     }
-    if(!endTime || (!(endTime instanceof Date) && isNaN(endTime))) {
+    if(!time || isNaN(time)) {
         console.error('时间设置错误!');
         return;
     }
-    if(!isNaN(endTime)) {
-        let time = new Date();
-        time.setSeconds(time.getSeconds() + endTime);
-        endTime = time;
-    }
+
     let countdown = setInterval(() => {
-        let time = Math.round((endTime.getTime() - new Date().getTime()) / 1000);
+        time = (time - 0.1).toFixed(1);
         if(element instanceof jQuery) {
             let min = Math.floor(time / 60);
             let sec = Math.floor(time % 60);
@@ -62,10 +58,10 @@ Live.countdown = function(endTime, callback, element) {
             element.text(min + ':' + sec);
         }
         if(time <= 0) {
-            clearInterval(countdown);
             typeof callback == 'function' && callback();
+            clearInterval(countdown);
         }
-    }, 1000);
+    }, 100);
     this.countdown = countdown;
 };
 Live.countdown.prototype.clearCountdown = function() {

@@ -15,5 +15,6 @@ Live.sendMessage({command: 'getInfo'}, (result) => {
         FuncSmallTV.init();
 
         FuncGiftPackage.init();
+        FuncLiveSetting.init();
     });
 });
