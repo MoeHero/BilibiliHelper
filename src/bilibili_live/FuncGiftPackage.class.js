@@ -31,6 +31,12 @@ class FuncGiftPackage {
 
         this.sendPanel.find('.number-btn').on('click', (event) => this.setNumber($(event.currentTarget)));
         this.sendPanel.find('.close-btn').on('click', () => this.sendPanel.hide());
+
+        Live.getMessage((request) => {
+            if(request.cmd && request.cmd == 'openGiftPackage') {
+                this.openGiftPackage();
+            }
+        });
     }
 
     static openGiftPackage() {
@@ -59,7 +65,7 @@ class FuncGiftPackage {
             } else if(gift.expireat === 0) {
                 gift.expireat = 9999;
             } else {
-                gift.expireat = parseInt(gift.expireat);
+                gift.expireat = Number.parseInt(gift.expireat);
             }
             if(result[gift.gift_id] === undefined) {
                 result[gift.gift_id] = [];
@@ -104,7 +110,7 @@ class FuncGiftPackage {
         this.currentGift = {
             giftID: target.attr('gift-id'),
             bagID: target.attr('bag-id'),
-            count: parseInt(target.find('.gift-count').text().substr(1)),
+            count: Number.parseInt(target.find('.gift-count').text().substr(1)),
             element: target
         };
         this.sendPanel.find('.gift-img').attr('class', 'gift-img float-left gift-' + this.currentGift.giftID);
@@ -117,7 +123,7 @@ class FuncGiftPackage {
         if(number == 'MAX') {
             number = this.currentGift.count;
         } else if(number.endsWith('%')) {
-            number = Math.round(this.currentGift.count * parseInt(number) * 0.01);
+            number = Math.round(this.currentGift.count * Number.parseInt(number) * 0.01);
         }
         if(number > this.currentGift.count || isNaN(number)) {
             number = this.currentGift.count;

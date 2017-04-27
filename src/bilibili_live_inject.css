@@ -81,8 +81,8 @@ hr {
   line-height: 21px;
   padding: 0;
 }
-#bh-live-setting {
+#bh-live-setting-panel {
   left: 0;
   top: -130px;
 }
-#bh-live-setting:before { left: 90%; }
+#bh-live-setting-panel:before { left: 90%; }

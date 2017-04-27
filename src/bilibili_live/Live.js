@@ -27,7 +27,6 @@ Live.addStylesheetByText = function(text) {
     $('head').append(style);
     return style;
 };
-//Live.exec
 Live.getRoomID = function(showID, callback) {
     let rid = ModuleStore.roomID_get(showID);
     if(!rid) {

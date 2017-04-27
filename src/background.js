@@ -70,10 +70,10 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
     if (changeInfo.status == 'complete' &&
         tabInfo.status == 'complete' &&
         tabInfo.url.indexOf('live.bilibili.com') != -1) {
-        chrome.tabs.executeScript(tabId, {'file': './jquery-3.1.1.min.js'});
-        chrome.tabs.executeScript(tabId, {'file': './ocrad.min.js'});
-        chrome.tabs.executeScript(tabId, {'file': './store.min.js'});
-        chrome.tabs.executeScript(tabId, {'file': './bilibili_live.min.js'});
+        chrome.tabs.executeScript(tabId, {file: './jquery-3.1.1.min.js'});
+        chrome.tabs.executeScript(tabId, {file: './ocrad.min.js'});
+        chrome.tabs.executeScript(tabId, {file: './store.min.js'});
+        chrome.tabs.executeScript(tabId, {file: './bilibili_live.min.js'});
         console.log('Execute Script: ' + tabInfo.url);
     }
 });
