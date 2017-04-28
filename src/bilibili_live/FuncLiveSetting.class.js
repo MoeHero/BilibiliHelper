@@ -1,26 +1,25 @@
-/* globals ModuleConsole,ModuleDom,ModuleNotify,ModuleStore */
 class FuncLiveSetting {
     static init() {
-        if(!Live.option.live || !Live.option.live) {
+        if(!Live.option.live || !Live.option.live_liveSetting) {
             return;
         }
         this.funcList = {
             gift: {name: '礼物信息', click: this.gift_click, state: true},
             vip: {name: '老爷进场', click: this.vip_click, state: true},
-            super_gift: {name: '礼物连击', click: this.super_gift_click, state: true}
+            'super-gift': {name: '礼物连击', click: this.super_gift_click, state: true}
         };
         this.initDOM();
     }
 
     static initDOM() {
-        this.liveSettingButton = $('<a>').addClass('f-right live-btn ghost').attr('id', 'bh-live-setting-btn').text('直播设置');
-        this.liveSettingPanel = $('<div>').addClass('live-hover-panel arrow-bottom show').attr('id', 'bh-live-setting-panel').hide();
+        this.liveSettingButton = $('<a>').addClass('bh-live-setting-btn f-right live-btn ghost').text('直播设置');
+        this.liveSettingPanel = $('<div>').addClass('bh-live-setting-panel live-hover-panel arrow-bottom show').hide();
         this.liveSettingPanel.append($('<h4>').addClass('bh-title').text('直播设置')).append($('<hr>'));
         let ul = $('<ul>');
         for(let key in this.funcList) {
             let li = $('<li>').addClass('clear-float');
             li.append($('<span>').text(this.funcList[key].name));
-            li.append($('<a>').addClass('link bili-link f-right bh-live-setting-btn').attr('key', key).text('隐藏'));
+            li.append($('<a>').addClass('bh-live-setting-btns link bili-link f-right').attr('key', key).text('隐藏'));
             ul.append(li);
         }
         this.liveSettingPanel.append(ul);
@@ -32,7 +31,7 @@ class FuncLiveSetting {
             this.liveSettingPanel.fadeToggle(300);
             event.stopPropagation();
         });
-        $('.bh-live-setting-btn').on('click', (event) => {
+        $('.bh-live-setting-btns').on('click', (event) => {
             let button = $(event.currentTarget);
             this.funcList[button.attr('key')].click.call(this);
             button.text(this.funcList[button.attr('key')].state ? '显示' : '隐藏');

@@ -35,6 +35,7 @@ var Option = {
     live_autoTreasure: true,
     live_autoSmallTV: true,
     live_giftPackage: true,
+    live_liveSetting: true,
     live: true,
     notify_autoSign: true,
     notify_autoTreasure: true,
@@ -67,7 +68,7 @@ function addScriptByText(text) {
 }
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
-    if (changeInfo.status == 'complete' &&
+    if(changeInfo.status == 'complete' &&
         tabInfo.status == 'complete' &&
         tabInfo.url.indexOf('live.bilibili.com') != -1) {
         chrome.tabs.executeScript(tabId, {file: './jquery-3.1.1.min.js'});
@@ -121,9 +122,8 @@ Info.version = chrome.runtime.getManifest().version;
 Info.extensionID = chrome.i18n.getMessage('@@extension_id');
 
 if(window.localStorage.bh_option) {
-    Option = JSON.parse(window.localStorage.bh_option);
-} else {
-    saveOption();
+    $.extend(Option, JSON.parse(window.localStorage.bh_option));
 }
+saveOption();
 
 console.log('Loaded');

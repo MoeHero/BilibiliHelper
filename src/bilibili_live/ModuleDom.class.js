@@ -1,5 +1,5 @@
 /* globals ModuleStore,FuncSmallTV */
-class ModuleDom {
+class ModuleDom {//TODO 重构 分散到各个模块
     static init() {
         {
             $('.control-panel').prepend(`

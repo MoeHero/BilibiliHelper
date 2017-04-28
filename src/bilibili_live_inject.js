@@ -9,7 +9,7 @@ window.server_callback = function(json) {
 window._flash_giftPackageOpen = window.flash_giftPackageOpen;
 window.flash_giftPackageOpen = function() {
     window._flash_giftPackageOpen();
-    chrome.runtime.sendMessage(extensionID, {cmd: 'openGiftPackage'});
+    chrome.runtime.sendMessage(extensionID, {command: 'openGiftPackage'});
 };
 
 function bh_sendGift(giftID, number, bagID) {

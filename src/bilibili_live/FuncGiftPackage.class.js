@@ -1,10 +1,16 @@
 /* globals ModuleConsole,ModuleDom,ModuleNotify,ModuleStore */
-class FuncGiftPackage {
+class FuncGiftPackage {//TODO 重构
     static init() {
         if(!Live.option.live || !Live.option.live_giftPackage) {
             return;
         }
+        this.numberGroup = ['1', '5', '10', '50', '100', '5%', '10%', '50%', '80%', 'MAX'];
+
         this.package = $('.items-package').clone();
+        this.packageButton = this.package.find('a');
+
+
+
         $('.items-package').after(this.package).remove();
 
         this.packagePanel = this.package.find('.gifts-package-panel');
@@ -33,7 +39,7 @@ class FuncGiftPackage {
         this.sendPanel.find('.close-btn').on('click', () => this.sendPanel.hide());
 
         Live.getMessage((request) => {
-            if(request.cmd && request.cmd == 'openGiftPackage') {
+            if(request.command && request.command == 'openGiftPackage') {
                 this.openGiftPackage();
             }
         });
@@ -85,7 +91,7 @@ class FuncGiftPackage {
             for(let i in gifts) {
                 let gift = gifts[i];
                 let giftDom = $('<span />').attr({
-                    'title': gift.gift_name,
+                    title: gift.gift_name,
                     'gift-id': id,
                     'bag-id': gift.id
                 });

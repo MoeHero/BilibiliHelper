@@ -4,7 +4,7 @@ i.bh-icon {
   width: 20px;
   background: url(chrome-extension://__MSG_@@extension_id__/resources.png) no-repeat;
 }
-
+/*TODO 重构 去除不必要样式*/
 i.bh-icon.treasure-init { background-position: 0 0; }
 i.bh-icon.treasure-exist { background-position: -20px 0; }
 i.bh-icon.treasure-processing { background-position: -40px 0; }
@@ -75,14 +75,14 @@ hr {
   background-color: #4FC1E9;
 }
 
-#bh-live-setting-btn {
+.bh-live-setting-btn {
   height: 22px;
   width: 70px;
   line-height: 21px;
   padding: 0;
 }
-#bh-live-setting-panel {
+.bh-live-setting-panel {
   left: 0;
   top: -130px;
 }
-#bh-live-setting-panel:before { left: 90%; }
+.bh-live-setting-panel:before { left: 90%; }
