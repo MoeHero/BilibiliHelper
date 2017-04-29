@@ -4,30 +4,29 @@ Live.showID = (function() {
     return location.pathname.substr(1);
 }());
 Live.addScriptByFile = function(fileName) {
-    let script = document.createElement('script');
-    script.src = chrome.extension.getURL(fileName);
-    document.head.appendChild(script);
+    let script = $('<script>');
+    script.attr('src', chrome.extension.getURL(fileName));
+    $('head').append(script);
+    return script;
 };
 Live.addScriptByText = function(text) {
-    let script = document.createElement('script');
-    script.innerHTML = text;
-    document.head.appendChild(script);
+    let script = $('<script>');
+    script.text(text);
+    $('head').append(script);
+    return script;
 };
 Live.addStylesheetByFile = function(fileName) {
-    let link = $('<link/>');
-    link.attr('rel', 'stylesheet');
-    link.attr('href', chrome.extension.getURL(fileName));
+    let link = $('<link>');
+    link.attr('rel', 'stylesheet').attr('href', chrome.extension.getURL(fileName));
     $('head').append(link);
     return link;
 };
 Live.addStylesheetByText = function(text) {
-    let style = $('<style/>');
-    style.attr('type', 'text/css');
-    style.text(text);
+    let style = $('<style>');
+    style.attr('type', 'text/css').text(text);
     $('head').append(style);
     return style;
 };
-//Live.exec
 Live.getRoomID = function(showID, callback) {
     let rid = ModuleStore.roomID_get(showID);
     if(!rid) {

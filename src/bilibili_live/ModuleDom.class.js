@@ -1,65 +1,12 @@
 /* globals ModuleStore,FuncSmallTV */
-class ModuleDom {
+class ModuleDom {//TODO 重构 分散到各个模块
     static init() {
         {
             $('.control-panel').prepend(`
             <div class="ctrl-item" id="bh-info">
-                <div class="ctrl-item">${Live.localize.helper} V${Live.info.version}　QQ群:<a class="bili-link" target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=2140a0a23e3640716a1b642dbcdfa94e85813f61fe5789f26c21142e0b44af9c">285795550</a></div>
+                <div class="ctrl-item">${Live.localize.helper} V${Live.info.version}　QQ群:<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">285795550</a></div>
             </div>`.trim());
         } //瓜子数量旁插件信息
-
-        {
-            $('.profile-ctrl').append(`
-            <a class="f-right live-btn ghost" id="bh-live-setting-btn">直播设置</a>
-            <div class="live-hover-panel arrow-bottom" id="bh-live-setting">
-                <h4 class="bh-title">直播设置</h4>
-                <hr>
-                <ul>
-                    <li class="clear-float"><span>礼物信息</span><a class="link bili-link f-right" id="bh-gift">隐藏</a></li>
-                    <li class="clear-float"><span>老爷进场</span><a class="link bili-link f-right" id="bh-vip">隐藏</a></li>
-                    <li class="clear-float"><span>礼物连击</span><a class="link bili-link f-right" id="bh-super-gift">隐藏</a></li>
-                </ul>
-            </div>`.trim());
-            $('#bh-live-setting').on('click', (event) => event.stopPropagation());
-            $('#bh-live-setting-btn').on('click', (event) => {
-                if(!$('#bh-live-setting').hasClass('show')) {
-                    $('#bh-live-setting').addClass('show');
-                    event.stopPropagation();
-                }
-            }); //显示&退出动画
-            $(document).on('click', () => {
-                if($('#bh-live-setting').hasClass('show')) {
-                    $('#bh-live-setting').addClass('out');
-                    setTimeout(() => $('#bh-live-setting').removeClass('out show'), 400);
-                }
-            });
-            this.gift = true;
-            this.vip = true;
-            this.superGift = true;
-            $('#bh-gift').on('click', () => {
-                if(this.gift) {
-                    this.giftCss = Live.addStylesheetByText('.gift-msg{display:none !important;}');
-                } else {
-                    this.giftCss.remove();
-                }
-                $('#bh-gift').text(this.gift ? '显示' : '隐藏');
-                this.gift = !this.gift;
-            });
-            $('#bh-vip').on('click', () => {
-                if(this.vip) {
-                    this.vipCss = Live.addStylesheetByText('.system-msg{display:none !important;}');
-                } else {
-                    this.vipCss.remove();
-                }
-                $('#bh-vip').text(this.vip ? '显示' : '隐藏');
-                this.vip = !this.vip;
-            });
-            $('#bh-super-gift').on('click', () => {
-                $('#bh-super-gift').text(this.superGift ? '显示' : '隐藏');
-                $('#super-gift-ctnr-haruna').toggleClass('hide');
-                this.superGift = !this.superGift;
-            });
-        } //弹幕框下方直播设置
 
         if(Live.option.live && (Live.option.live_autoTreasure || Live.option.live_autoSmallTV)) {
             $('.anchor-info-row').css('margin-top', 0).after('<div class="bh-func-info-row"></div>');

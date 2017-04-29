@@ -1,36 +1,68 @@
 /* globals ModuleConsole,ModuleDom,ModuleNotify,ModuleStore */
-class FuncGiftPackage {
+class FuncGiftPackage {//TODO 重构
     static init() {
         if(!Live.option.live || !Live.option.live_giftPackage) {
             return;
         }
-        this.package = $('.items-package').clone();
-        $('.items-package').after(this.package).remove();
+        this.numberGroup = ['1', '5', '10', '50', '100', '5%', '10%', '50%', '80%', 'MAX'];
 
+        this.package = $('.items-package').clone();
+        this.packageButton = this.package.find('a');
         this.packagePanel = this.package.find('.gifts-package-panel');
         this.packagePanelContent = this.packagePanel.find('.gifts-package-content');
-        this.openButton = this.package.find('a');
+        this.sendPanel = $('#gift-package-send-panel').clone();
+        this.sendPanelImage = this.sendPanel.find('.gift-img');
+        this.sendPanelInfo = this.sendPanel.find('.gift-info>p');
+        this.sendPanelButton = this.sendPanel.find('.send-ctrl>button');
+        this.sendPanelCloseButton = this.sendPanel.find('.close-btn');
+        this.sendPanelCount = this.sendPanel.find('.send-ctrl>input');
+        let div = $('<div>').addClass('number-group');
+        for(let key in this.numberGroup) {
+            let span = $('<span>').addClass('number-btn');
+            span.text(this.numberGroup[key]);
+            div.append(span);
+        }
+        this.sendPanel.find('.panel-content').append(div);
 
         this.packagePanel.find('.live-tips').remove();
-
-        this.sendPanel = $('#gift-package-send-panel').clone();
+        $('.items-package').after(this.package).remove();
         $('#gift-package-send-panel').after(this.sendPanel).remove();
-        this.sendPanel.find('.panel-content').append(`
-        <div class="number-group">
-            <span class="number-btn">1</span><span class="number-btn">5</span><span class="number-btn">10</span><span class="number-btn">50</span><span class="number-btn">100</span>
-            <span class="number-btn">5%</span><span class="number-btn">10%</span><span class="number-btn">50%</span><span class="number-btn">80%</span><span class="number-btn">MAX</span>
-        </div>`.trim());
-        this.countInput = this.sendPanel.find('.send-ctrl>input');
-        this.sendPanel.find('.send-ctrl>button').on('click', () => this.sendGift());
-
-        this.openButton.on('click', () => this.openGiftPackage());
 
         this.packagePanel.on('click', (event) => event.stopPropagation());
         this.sendPanel.on('click', (event) => event.stopPropagation());
         $(document).on('click', () => this.packagePanel.fadeOut(200));
 
-        this.sendPanel.find('.number-btn').on('click', (event) => this.setNumber($(event.currentTarget)));
-        this.sendPanel.find('.close-btn').on('click', () => this.sendPanel.hide());
+        this.packageButton.on('click', () => this.openGiftPackage());
+        this.sendPanelButton.on('click', () => this.sendGift());
+        this.sendPanelCloseButton.on('click', () => this.sendPanel.hide());
+        $('.number-btn').on('click', (event) => this.setNumber($(event.currentTarget)));
+
+        Live.getMessage((request) => {
+            if(request.command && request.command == 'openGiftPackage') {
+                this.openGiftPackage();
+            }
+        });//.focus()
+        Live.getMessage((request) => {
+            if(request.command && request.command == 'sendGiftCallback') {
+                let result = request.result;
+                if(result.code === 0) {
+                    if(result.data.remain === 0) {
+                        this.currentGift.element.remove();
+                        this.sendPanel.hide();
+                    } else {
+                        this.sendPanelInfo.text(`您的包裹中还剩 ${result.data.remain} 个可用`);
+                        if(this.sendPanelCount.val() > result.data.remain) {
+                            this.sendPanelCount.val(result.data.remain);
+                        }
+                        this.currentGift.element.find('.gift-count').text('x' + result.data.remain);
+                        this.currentGift.count = result.data.remain;
+                    }
+                } else if(result.code == 200005) { //无法给自己赠送道具
+                } else {
+                    console.log(result);
+                }
+            }
+        });
     }
 
     static openGiftPackage() {
@@ -40,7 +72,6 @@ class FuncGiftPackage {
                     this.loadGiftPackage(this.sortGifts(result.data));
                     this.packagePanel.show();
                 } else if(result.code == -101) { //未登录
-
                 } else {
                     console.log(result);
                     Live.countdown(2, () => this.openGiftPackage());
@@ -59,7 +90,7 @@ class FuncGiftPackage {
             } else if(gift.expireat === 0) {
                 gift.expireat = 9999;
             } else {
-                gift.expireat = parseInt(gift.expireat);
+                gift.expireat = Number.parseInt(gift.expireat);
             }
             if(result[gift.gift_id] === undefined) {
                 result[gift.gift_id] = [];
@@ -75,15 +106,15 @@ class FuncGiftPackage {
         this.packagePanelContent.empty();
         for(let id in giftData) {
             let gifts = giftData[id];
-            let giftsDom = $('<li />').addClass('gift-item-group').attr('gift_id', id);
+            let giftsDom = $('<li>').addClass('gift-item-group').attr('gift_id', id);
             for(let i in gifts) {
                 let gift = gifts[i];
-                let giftDom = $('<span />').attr({
-                    'title': gift.gift_name,
+                let giftDom = $('<span>').attr({
+                    title: gift.gift_name,
                     'gift-id': id,
                     'bag-id': gift.id
                 });
-                let giftItemDom = $('<div />').addClass('gift-item gift-item-package gift-' + id);
+                let giftItemDom = $('<div>').addClass('gift-item gift-item-package gift-' + id);
                 if(gift.expireat == 9999) {
                     giftItemDom.html('<span class="expires">永久</span>');
                 } else if(gift.expireat === 0) {
@@ -91,7 +122,7 @@ class FuncGiftPackage {
                 } else {
                     giftItemDom.html(`<span class="expires">${gift.expireat}天</span>`);
                 }
-                let giftCounterDom = $('<div />').addClass('gift-count').text('x' + gift.gift_num);
+                let giftCounterDom = $('<div>').addClass('gift-count').text('x' + gift.gift_num);
                 giftItemDom.on('click', (event) => this.openSendPanel($(event.currentTarget).parent()));
                 giftDom.append(giftItemDom, giftCounterDom);
                 giftsDom.append(giftDom);
@@ -104,12 +135,12 @@ class FuncGiftPackage {
         this.currentGift = {
             giftID: target.attr('gift-id'),
             bagID: target.attr('bag-id'),
-            count: parseInt(target.find('.gift-count').text().substr(1)),
+            count: Number.parseInt(target.find('.gift-count').text().substr(1)),
             element: target
         };
-        this.sendPanel.find('.gift-img').attr('class', 'gift-img float-left gift-' + this.currentGift.giftID);
-        this.sendPanel.find('.gift-info>p').text(`您的包裹中还剩 ${this.currentGift.count} 个可用`);
-        this.sendPanel.find('.send-ctrl>input').val(this.currentGift.count);
+        this.sendPanelImage.attr('class', 'gift-img float-left gift-' + this.currentGift.giftID);
+        this.sendPanelInfo.text(`您的包裹中还剩 ${this.currentGift.count} 个可用`);
+        this.sendPanelCount.val(this.currentGift.count);
         this.sendPanel.show();
     }
     static setNumber(target) {
@@ -117,37 +148,16 @@ class FuncGiftPackage {
         if(number == 'MAX') {
             number = this.currentGift.count;
         } else if(number.endsWith('%')) {
-            number = Math.round(this.currentGift.count * parseInt(number) * 0.01);
+            number = Math.round(this.currentGift.count * Number.parseInt(number) * 0.01);
         }
         if(number > this.currentGift.count || isNaN(number)) {
             number = this.currentGift.count;
         } else if(number < 1) {
             number = 1;
         }
-        this.countInput.val(number);
+        this.sendPanelCount.val(number);
     }
     static sendGift() {
-        this.sendGiftCallback = Live.getMessage((request) => {
-            if(request.command && request.command == 'sendGiftCallback') {
-                let result = request.result;
-                if(result.code === 0) {
-                    if(result.data.remain === 0) {
-                        this.currentGift.element.remove();
-                        this.sendPanel.hide();
-                    } else {
-                        this.sendPanel.find('.gift-info>p').text(`您的包裹中还剩 ${result.data.remain} 个可用`);
-                        if(this.countInput.val() > result.data.remain) {
-                            this.countInput.val(result.data.remain);
-                        }
-                        this.currentGift.element.find('.gift-count').text('x' + result.data.remain);
-                        this.currentGift.count = result.data.remain;
-                    }
-                } else if(result.code == 200005) { //无法给自己赠送道具
-                } else {
-                    console.log(result);
-                }
-            }
-        });
-        Live.addScriptByText(`bh_sendGift(${this.currentGift.giftID}, ${this.countInput.val()}, ${this.currentGift.bagID});`);
+        Live.addScriptByText(`bh_sendGift(${this.currentGift.giftID}, ${this.sendPanelCount.val()}, ${this.currentGift.bagID});`);
     }
 }

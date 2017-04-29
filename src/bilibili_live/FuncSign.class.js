@@ -22,7 +22,7 @@ class FuncSign {
                     ModuleConsole.sign('exist');
                 } else {
                     console.log(result);
-                    this.do();
+                    Live.countdown(2, () => this.do());
                 }
             }).fail(() => {
                 Live.countdown(2, () => this.do());

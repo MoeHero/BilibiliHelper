@@ -76,6 +76,7 @@ class FuncTreasure {
                 if(result.code === 0) {
                     ModuleNotify.treasure('award', {award: result.data.awardSilver});
                     ModuleConsole.treasure('award', {award: result.data.awardSilver, silver: result.data.silver});
+                    //TODO 动态更新瓜子数量
                     this.checkNewTask();
                 } else if(result.code == -99) { //在其他地方领取
                     this.checkNewTask();

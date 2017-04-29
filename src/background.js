@@ -30,11 +30,27 @@ var SmallTV = {
         SmallTV.tabID = false;
     }
 };
+var Lighten = {
+    showID: false,
+    tabID: false,
+    getLighten: function() {
+        return Lighten;
+    },
+    setLighten: function(options) {
+        Lighten.showID = options.showID;
+        Lighten.tabID = options.tabID;
+    },
+    delLighten: function() {
+        Lighten.showID = false;
+        Lighten.tabID = false;
+    }
+};
 var Option = {
     live_autoSign: true,
     live_autoTreasure: true,
     live_autoSmallTV: true,
     live_giftPackage: true,
+    live_liveSetting: true,
     live: true,
     notify_autoSign: true,
     notify_autoTreasure: true,
@@ -67,13 +83,13 @@ function addScriptByText(text) {
 }
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
-    if (changeInfo.status == 'complete' &&
+    if(changeInfo.status == 'complete' &&
         tabInfo.status == 'complete' &&
         tabInfo.url.indexOf('live.bilibili.com') != -1) {
-        chrome.tabs.executeScript(tabId, {'file': './jquery-3.1.1.min.js'});
-        chrome.tabs.executeScript(tabId, {'file': './ocrad.min.js'});
-        chrome.tabs.executeScript(tabId, {'file': './store.min.js'});
-        chrome.tabs.executeScript(tabId, {'file': './bilibili_live.min.js'});
+        chrome.tabs.executeScript(tabId, {file: './jquery-3.1.1.min.js'});
+        chrome.tabs.executeScript(tabId, {file: './ocrad.min.js'});
+        chrome.tabs.executeScript(tabId, {file: './store.min.js'});
+        chrome.tabs.executeScript(tabId, {file: './bilibili_live.min.js'});
         console.log('Execute Script: ' + tabInfo.url);
     }
 });
@@ -92,6 +108,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case 'checkNewTask':
             chrome.tabs.sendMessage(Treasure.tabID, {command: 'checkNewTask'});
             break;
+
         case 'getSmallTV':
             sendResponse(SmallTV.getSmallTV());
             break;
@@ -101,6 +118,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case 'delSmallTV':
             sendResponse(SmallTV.delSmallTV());
             break;
+
+        case 'getLighten':
+            sendResponse(Lighten.getLighten());
+            break;
+        case 'setLighten':
+            Lighten.setLighten({tabID: sender.tab.id, showID: request.showID});
+            break;
+        case 'delLighten':
+            sendResponse(Lighten.delLighten());
+            break;
+
         case 'getInfo':
             sendResponse(Info);
             break;
@@ -121,9 +149,8 @@ Info.version = chrome.runtime.getManifest().version;
 Info.extensionID = chrome.i18n.getMessage('@@extension_id');
 
 if(window.localStorage.bh_option) {
-    Option = JSON.parse(window.localStorage.bh_option);
-} else {
-    saveOption();
+    $.extend(Option, JSON.parse(window.localStorage.bh_option));
 }
+saveOption();
 
 console.log('Loaded');
