@@ -17,5 +17,7 @@ Live.sendMessage({command: 'getInfo'}, (result) => {
 
         FuncGiftPackage.init();
         FuncLiveSetting.init();
+
+        FuncLighten.init();
     });
 });

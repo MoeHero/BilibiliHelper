@@ -30,6 +30,21 @@ var SmallTV = {
         SmallTV.tabID = false;
     }
 };
+var Lighten = {
+    showID: false,
+    tabID: false,
+    getLighten: function() {
+        return Lighten;
+    },
+    setLighten: function(options) {
+        Lighten.showID = options.showID;
+        Lighten.tabID = options.tabID;
+    },
+    delLighten: function() {
+        Lighten.showID = false;
+        Lighten.tabID = false;
+    }
+};
 var Option = {
     live_autoSign: true,
     live_autoTreasure: true,
@@ -93,6 +108,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case 'checkNewTask':
             chrome.tabs.sendMessage(Treasure.tabID, {command: 'checkNewTask'});
             break;
+
         case 'getSmallTV':
             sendResponse(SmallTV.getSmallTV());
             break;
@@ -102,6 +118,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case 'delSmallTV':
             sendResponse(SmallTV.delSmallTV());
             break;
+
+        case 'getLighten':
+            sendResponse(Lighten.getLighten());
+            break;
+        case 'setLighten':
+            Lighten.setLighten({tabID: sender.tab.id, showID: request.showID});
+            break;
+        case 'delLighten':
+            sendResponse(Lighten.delLighten());
+            break;
+
         case 'getInfo':
             sendResponse(Info);
             break;
