@@ -4,11 +4,18 @@ class FuncTreasure {
         if(!Live.option.live || !Live.option.live_autoTreasure) {
             return;
         }
+        this.initDOM();
+        this.addEvent();
+    }
+
+    static initDOM() {
         ModuleDom.treasure_init();
         this.canvas = document.createElement('canvas');
         this.canvas.width = 120;
         this.canvas.height = 40;
         this.canvas = this.canvas.getContext('2d');
+    }
+    static addEvent() {
         Live.sendMessage({command: 'getTreasure'}, (result) => {
             if(!result.showID) {
                 Live.sendMessage({command: 'setTreasure', showID: Live.showID});

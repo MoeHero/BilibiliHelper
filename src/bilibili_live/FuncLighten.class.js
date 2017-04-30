@@ -1,10 +1,15 @@
 /* globals ModuleStore,ModuleDom,ModuleNotify,ModuleConsole */
 class FuncLighten {
     static init() {
-        if(!Live.option.live || !Live.option.live) {
+        if(!Live.option.live || !Live.option.live_lighten) {
             return;
         }
         //ModuleDom.smallTV_init();
+
+        this.addEvent();
+    }
+
+    static addEvent() {
         Live.sendMessage({command: 'getLighten'}, (result) => {
             if(!result.showID) {
                 Live.sendMessage({command: 'setLighten', showID: Live.showID});
@@ -13,7 +18,6 @@ class FuncLighten {
                 });
                 Live.getMessage((request) => {
                     if(request.cmd && request.cmd == 'SYS_MSG' && request.msg && request.msg.includes('领取应援棒') && request.url) {
-                        console.log(request);
                         this.join(request.url.match(/com\/(.+)/)[1]);
                     }
                 });

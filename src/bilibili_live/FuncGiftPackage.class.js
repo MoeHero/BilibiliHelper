@@ -1,11 +1,15 @@
-/* globals ModuleConsole,ModuleDom,ModuleNotify,ModuleStore */
-class FuncGiftPackage {//TODO 重构
+class FuncGiftPackage {
     static init() {
         if(!Live.option.live || !Live.option.live_giftPackage) {
             return;
         }
         this.numberGroup = ['1', '5', '10', '50', '100', '5%', '10%', '50%', '80%', 'MAX'];
 
+        this.initDOM();
+        this.addEvent();
+    }
+
+    static initDOM() {
         this.package = $('.items-package').clone();
         this.packageButton = this.package.find('a');
         this.packagePanel = this.package.find('.gifts-package-panel');
@@ -27,7 +31,8 @@ class FuncGiftPackage {//TODO 重构
         this.packagePanel.find('.live-tips').remove();
         $('.items-package').after(this.package).remove();
         $('#gift-package-send-panel').after(this.sendPanel).remove();
-
+    }
+    static addEvent() {
         this.packagePanel.on('click', (event) => event.stopPropagation());
         this.sendPanel.on('click', (event) => event.stopPropagation());
         $(document).on('click', () => this.packagePanel.fadeOut(200));
@@ -41,7 +46,7 @@ class FuncGiftPackage {//TODO 重构
             if(request.command && request.command == 'openGiftPackage') {
                 this.openGiftPackage();
             }
-        });//.focus()
+        });
         Live.getMessage((request) => {
             if(request.command && request.command == 'sendGiftCallback') {
                 let result = request.result;
@@ -61,6 +66,7 @@ class FuncGiftPackage {//TODO 重构
                 } else {
                     console.log(result);
                 }
+                this.sendPanelCount.focus();
             }
         });
     }

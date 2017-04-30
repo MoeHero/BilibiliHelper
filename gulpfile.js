@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var lazypipe = require('lazypipe');
-var closureCompiler = require('google-closure-compiler').gulp();
 var fs = require('fs');
 var pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
@@ -36,11 +35,7 @@ gulp.task('live', function() {
         .pipe($.order(['Live*.js', 'Module*.class.js', 'Func*.class.js', '!Core.js', 'Core.js']))
         .pipe($.jshintChannel())
         .pipe($.concat('bilibili_live.js'))
-        .pipe($.if(path == 'release', closureCompiler({
-            js_output_file: 'bilibili_live.js',
-            formatting: 'SINGLE_QUOTES',
-            assume_function_wrapper: 'true'
-        })))
+        .pipe($.if(path == 'release', $.babel({presets: ['babili']})))
         .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
 });
@@ -48,7 +43,7 @@ gulp.task('live', function() {
 gulp.task('script', function() {
     return gulp.src(['./src/**/!(*.min).js', '!src/bilibili_live/*.js'])
         .pipe($.jshintChannel())
-        .pipe($.if(path == 'release', $.uglify()))
+        .pipe($.if(path == 'release', $.babel({presets: ['babili']})))
         .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
 });
