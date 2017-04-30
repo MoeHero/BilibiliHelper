@@ -4,9 +4,17 @@ class FuncSmallTV {
         if(!Live.option.live || !Live.option.live_autoSmallTV) {
             return;
         }
-        ModuleDom.smallTV_init();
         this.countdown = {};
         this.awardName = {1: '小电视抱枕', 2: '蓝白胖次', 3: 'B坷垃', 4: '喵娘', 5: '爱心便当', 6: '银瓜子', 7: '辣条'};
+
+        this.initDOM();
+        this.addEvent();
+    }
+
+    static initDOM() {
+        ModuleDom.smallTV_init();
+    }
+    static addEvent() {
         Live.sendMessage({command: 'getSmallTV'}, (result) => {
             if(!result.showID) {
                 Live.sendMessage({command: 'setSmallTV', showID: Live.showID});

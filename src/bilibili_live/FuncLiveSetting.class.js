@@ -8,7 +8,9 @@ class FuncLiveSetting {
             vip: {name: '老爷进场', click: this.vip_click, state: true},
             'super-gift': {name: '礼物连击', click: this.super_gift_click, state: true}
         };
+
         this.initDOM();
+        this.addEvent();
     }
 
     static initDOM() {
@@ -24,7 +26,8 @@ class FuncLiveSetting {
         }
         this.liveSettingPanel.append(ul);
         $('.profile-ctrl').append(this.liveSettingPanel).append(this.liveSettingButton);
-
+    }
+    static addEvnet() {
         this.liveSettingPanel.on('click', (event) => event.stopPropagation());
         $(document).on('click', () => this.liveSettingPanel.fadeOut(200));
 
