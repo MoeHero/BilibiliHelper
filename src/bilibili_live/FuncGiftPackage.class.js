@@ -80,7 +80,6 @@ class FuncGiftPackage {
                 } else if(result.code == -101) { //未登录
                 } else {
                     console.log(result);
-                    Live.countdown(2, () => this.openGiftPackage());
                 }
             }).fail(() => {
                 Live.countdown(2, () => this.openGiftPackage());
@@ -164,6 +163,6 @@ class FuncGiftPackage {
         this.sendPanelCount.val(number);
     }
     static sendGift() {
-        Live.addScriptByText(`bh_sendGift(${this.currentGift.giftID}, ${this.sendPanelCount.val()}, ${this.currentGift.bagID});`);
+        Live.addScriptByText(`bh_sendGift(${this.currentGift.giftID}, ${this.sendPanelCount.val()}, ${this.currentGift.bagID});`).remove();
     }
 }

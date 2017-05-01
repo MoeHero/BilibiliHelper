@@ -13,11 +13,9 @@ Live.sendMessage({command: 'getInfo'}, (result) => {
     Live.init(() => {
         FuncSign.init();
         FuncTreasure.init();
-        FuncSmallTV.init();
+        FuncAutoLottery.init();
 
         FuncGiftPackage.init();
         FuncLiveSetting.init();
-
-        FuncLighten.init();
     });
 });

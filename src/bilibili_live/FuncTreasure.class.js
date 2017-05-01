@@ -91,7 +91,6 @@ class FuncTreasure {
                     this.getAward();
                 } else {
                     console.log(result);
-                    this.checkNewTask();
                 }
             }).fail(() => {
                 Live.countdown(2, () => this.getAward());
@@ -112,7 +111,6 @@ class FuncTreasure {
                 ModuleDom.treasure_setTimes(times + '/' + maxTimes);
             } else {
                 console.log(result);
-                this.getTimes();
             }
         }).fail(() => {
             Live.countdown(2, () => this.getTimes());

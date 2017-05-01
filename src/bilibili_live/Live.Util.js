@@ -43,23 +43,27 @@ Live.countdown = function(time, callback, element) {
     if(!(this instanceof Live.countdown)) {
         return new Live.countdown(time, callback, element);
     }
-    if(!time || isNaN(time)) {
+    if(!time || (!(time instanceof Date) && isNaN(time))) {
         console.error('时间设置错误!');
         return;
     }
-
+    if(!isNaN(time)) {
+        let _time = new Date();
+        _time.setMilliseconds(_time.getMilliseconds() + time * 1000);
+        time = _time;
+    }
     let countdown = setInterval(() => {
-        time = (time - 0.1).toFixed(1);
+        let _time = Math.round((time.getTime() - new Date().getTime()) / 1000);
         if(element instanceof jQuery) {
-            let min = Math.floor(time / 60);
-            let sec = Math.floor(time % 60);
+            let min = Math.floor(_time / 60);
+            let sec = Math.floor(_time % 60);
             min = min < 10 ? '0' + min : min;
             sec = sec < 10 ? '0' + sec : sec;
             element.text(min + ':' + sec);
         }
-        if(time <= 0) {
-            typeof callback == 'function' && callback();
+        if(_time <= 0) {
             clearInterval(countdown);
+            typeof callback == 'function' && callback();
         }
     }, 100);
     this.countdown = countdown;
