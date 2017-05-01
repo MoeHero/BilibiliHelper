@@ -51,7 +51,7 @@ class ALPlugin_Lighten {
         $.post('//api.live.bilibili.com/activity/v1/NeedYou/getLiveAward', {roomid: roomID, lightenId: lightenID}).done((result) => {
             if(result.code === 0) {
                 ModuleNotify.create('lighten_award', '自动领取应援棒', '获得应援棒x1');
-                ModuleStore.addCount('lighten', 1);
+                ModuleStore.addTimes('lighten', 1);
             } else if(result.code == -400) {
             } else {
                 console.log(result);

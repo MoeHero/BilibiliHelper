@@ -59,7 +59,7 @@ class ALPlugin_SmallTV {
                 ModuleConsole.smallTV('exist', param);
                 break;
             case 'award':
-                ModuleStore.addCount('smallTV', 1);
+                ModuleStore.addTimes('smallTV', 1);
                 ModuleNotify.smallTV('award', param);
                 ModuleConsole.smallTV('award', param);
                 break;
