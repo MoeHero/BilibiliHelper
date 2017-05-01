@@ -4,26 +4,14 @@ i.bh-icon {
   width: 20px;
   background: url(chrome-extension://__MSG_@@extension_id__/resources.png) no-repeat;
 }
-/*TODO 重构 去除不必要样式*/
 i.bh-icon.treasure-init { background-position: 0 0; }
 i.bh-icon.treasure-exist { background-position: -20px 0; }
 i.bh-icon.treasure-processing { background-position: -40px 0; }
 i.bh-icon.treasure-error { background-position: -60px 0; }
 i.bh-icon.treasure-end { background-position: -80px 0; }
-
 i.bh-icon.tv-init { background-position: 0 -20px; }
 i.bh-icon.tv-exist { background-position: -20px -20px; }
 i.bh-icon.tv-enabled { background-position: -40px -20px; }
-
-.bh-func-info-row {
-  margin-top: 15px;
-}
-.bh-func-info-row .func-info {
-  padding: 2px 4px;
-  display: inline-block;
-  margin-right: 20px;
-  font-size: 13px;
-}
 
 .bh-title {
   display: inline-block;
@@ -32,7 +20,7 @@ i.bh-icon.tv-enabled { background-position: -40px -20px; }
   margin-bottom: 10px;
 }
 .hide { display: none !important; }
-hr {
+.live-hover-panel hr {
   margin-top: -5px;
   margin-bottom: 10px;
   border: 0;
@@ -40,15 +28,24 @@ hr {
   background-color: #CDDBE0;
 }
 
-#bh-tv-statinfo {
-  left: 0;
-  top: 118px;
+.bh-func-info-row { margin-top: 15px; }
+.bh-func-info-row .func-info {
+  padding: 2px 4px;
+  display: inline-block;
+  margin-right: 20px;
+  font-size: 13px;
+}
+
+.bh-statinfo {
+  left: 80px;
+  top: 98px;
   width: 300px;
 }
-#bh-tv-statinfo li {
+.bh-statinfo li {
   display: inline-block;
   margin-right: 15px;
 }
+.bh-statinfo ul { margin-bottom: 6px; }
 
 .gift-item-group { text-align: left; }
 .gift-item-group>span {
@@ -83,6 +80,6 @@ hr {
 }
 .bh-live-setting-panel {
   left: 0;
-  top: -130px;
+  top: -170px;
 }
 .bh-live-setting-panel:before { left: 90%; }

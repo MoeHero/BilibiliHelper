@@ -1,44 +1,31 @@
 /* globals ModuleStore,FuncSmallTV */
-class ModuleDom {//TODO 重构 分散到各个模块
+class ModuleDom {
     static init() {
         {
-            $('.control-panel').prepend(`
-            <div class="ctrl-item" id="bh-info">
-                <div class="ctrl-item">${Live.localize.helper} V${Live.info.version}　QQ群:<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">285795550</a></div>
-            </div>`.trim());
-        } //瓜子数量旁插件信息
+            this.info = $('<div>').addClass('seeds-buy-cntr');
+            let bhInfo = $('<div>').addClass('ctrl-item')
+                .html(`${Live.localize.helper} V${Live.info.version}　QQ群:<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">285795550</a>`);
+            this.info.append(bhInfo);
+            $('.control-panel').prepend(this.info);
+        } //瓜子数量 左
 
         if(Live.option.live && (Live.option.live_autoTreasure || Live.option.live_autoSmallTV)) {
-            $('.anchor-info-row').css('margin-top', 0).after('<div class="bh-func-info-row"></div>');
-            this.funcinfo_row = $('.bh-func-info-row').append(`
-            <div class="func-info v-top">
-                <span>分区: </span>${$('.room-info-row a')[0].outerHTML}
-            </div>`.trim());
+            this.funcInfoRow = $('<div>').addClass('bh-func-info-row');
+            this.funcInfoRow.append($('<div>').addClass('func-info v-top').html(`<span>分区: </span>${$('.room-info-row a')[0].outerHTML}`));
+            $('.anchor-info-row').css('margin-top', 0).after(this.funcInfoRow);
 
             $('.room-info-row').remove();
-        } //直播间名称下方信息
-    }
-
-    static sign_setSigned() {
-        let signBtn = $('.sign-up-btn');
-        signBtn.find('.dp-inline-block>span:first-child').hide();
-        signBtn.find('.dp-inline-block>.dp-none').show();
-        signBtn.find('.has-new').removeClass('has-new');
+        } //主播信息 下
     }
 
     static treasure_init() {
         $('.treasure-box-ctnr').remove();
-        this.funcinfo_row.prepend(`
-        <i class="bh-icon treasure-init" id="bh-treasure-state-icon"></i>
-        <a class="func-info v-top">
-            <span id="bh-treasure-state">${Live.localize.init}</span>
-            <span id="bh-treasure-times" style="display:none;">0/0</span>&nbsp;
-            <span id="bh-treasure-countdown" style="display:none;">00:00</span>
-        </a>`.trim());
-        this.treasure_state_icon = $('#bh-treasure-state-icon');
-        this.treasure_state = $('#bh-treasure-state');
-        this.treasure_times = $('#bh-treasure-times');
-        this.treasure_countdown = $('#bh-treasure-countdown');
+        this.treasureStateIcon = $('<i>').addClass('bh-icon treasure-init');
+        this.treasureStateText = $('<span>').text('初始化中...');
+        this.treasureTimes = $('<span>').text('0/0').hide();
+        this.treasureCountdown = $('<span>').text('00:00').hide();
+        let funcInfo = $('<a>').addClass('func-info v-top').append(this.treasureStateText).append(this.treasureTimes).append(this.treasureCountdown);
+        this.funcInfoRow.prepend(funcInfo).prepend(this.treasureStateIcon);
     }
     static treasure_setState(key, param) {
         let treasure = Live.localize.treasure;
@@ -63,71 +50,17 @@ class ModuleDom {//TODO 重构 分散到各个模块
                 text = Live.format(treasure.action.exist, param);
                 break;
         }
-        state && this.treasure_state_icon.attr('class', 'bh-icon treasure-' + state);
-        text && this.treasure_state.text(text).show();
-        this.treasure_times.hide();
-        this.treasure_countdown.hide();
+        state && this.treasureStateIcon.attr('class', 'bh-icon treasure-' + state);
+        text && this.treasureStateText.text(text).show();
+        this.treasureTimes.hide();
+        this.treasureCountdown.hide();
     }
     static treasure_setTimes(times) {
-        this.treasure_times.text(times).show();
-        this.treasure_state.hide();
+        this.treasureTimes.text(times).show();
+        this.treasureStateText.hide();
     }
     static treasure_showCountdown() {
-        this.treasure_countdown.show();
-        this.treasure_state.hide();
-    }
-
-    static smallTV_init() {
-        this.funcinfo_row.prepend(`
-        <i class="bh-icon tv-init" id="bh-tv-state-icon"></i>
-        <a class="func-info bili-link v-top" id="bh-tv-state">${Live.localize.init}</a>
-        <div class="live-hover-panel arrow-top" id="bh-tv-statinfo">
-            <h4 class="bh-title">${Live.localize.smallTV.statinfoTitle}</h4>
-            <span class="f-right" id="bh-tv-statinfo-count"></span>
-            <hr>
-            <ul></ul>
-        </div>`.trim());
-        this.smallTV_state_icon = $('#bh-tv-state-icon');
-        this.smallTV_statinfo = $('#bh-tv-statinfo').on('click', (event) => event.stopPropagation());
-        this.smallTV_statinfo_count = $('#bh-tv-statinfo-count');
-        this.smallTV_state = $('#bh-tv-state').on('click', (event) => {
-            this.smallTV_statinfo_count.text(ModuleStore.smallTV('getCount') + ' ' + Live.localize.times);
-            this.smallTV_statinfo.find('ul').html(
-                function() {
-                    let statinfoJson = ModuleStore.smallTV('getStatInfo');
-                    let statinfoStr = '';
-                    for(let i in statinfoJson) {
-                        statinfoStr += '<li>' + FuncSmallTV.awardName[i] + 'x' + statinfoJson[i] + '</li>';
-                    }
-                    return statinfoStr || '<li>' + Live.localize.smallTV.noStatinfo + '</li>';
-                }()
-            );
-            if(!this.smallTV_statinfo.hasClass('show')) {
-                this.smallTV_statinfo.addClass('show');
-                event.stopPropagation();
-            }
-        }); //显示&退出动画
-        $(document).on('click', () => {
-            if(this.smallTV_statinfo.hasClass('show')) {
-                this.smallTV_statinfo.addClass('out');
-                setTimeout(() => this.smallTV_statinfo.removeClass('out show'), 400);
-            }
-        });
-    }
-    static smallTV_setState(key, param) {
-        let smallTV = Live.localize.smallTV;
-        let text, state;
-        switch(key) {
-            case 'enabled':
-                state = 'enabled';
-                text = Live.localize.enabled;
-                break;
-            case 'exist':
-                state = 'exist';
-                text = Live.format(smallTV.action.exist, param);
-                break;
-        }
-        state && this.smallTV_state_icon.attr('class', 'bh-icon tv-' + state);
-        text && this.smallTV_state.text(text);
+        this.treasureCountdown.show();
+        this.treasureStateText.hide();
     }
 }

@@ -6,6 +6,8 @@ class FuncLiveSetting {
         this.funcList = {
             gift: {name: '礼物信息', click: this.gift_click, state: true},
             vip: {name: '老爷进场', click: this.vip_click, state: true},
+            sysmsg: {name: '系统公告', click: this.sysmsg_click, state: true},
+            tvmsg: {name: '小电视公告', click: this.tvmsg_click, state: true},
             'super-gift': {name: '礼物连击', click: this.super_gift_click, state: true}
         };
 
@@ -27,7 +29,7 @@ class FuncLiveSetting {
         this.liveSettingPanel.append(ul);
         $('.profile-ctrl').append(this.liveSettingPanel).append(this.liveSettingButton);
     }
-    static addEvnet() {
+    static addEvent() {
         this.liveSettingPanel.on('click', (event) => event.stopPropagation());
         $(document).on('click', () => this.liveSettingPanel.fadeOut(200));
 
@@ -56,6 +58,22 @@ class FuncLiveSetting {
             this.vip_css = Live.addStylesheetByText('.system-msg{display:none !important;}');
         } else {
             this.vip_css.remove();
+            this.chatListScrollToBottom();
+        }
+    }
+    static sysmsg_click() {
+        if(this.funcList['sysmsg'].state) {
+            this.sysmsg_css = Live.addStylesheetByText('.sys-msg{display:none !important;}');
+        } else {
+            this.sysmsg_css.remove();
+            this.chatListScrollToBottom();
+        }
+    }
+    static tvmsg_click() {
+        if(this.funcList['tvmsg'].state) {
+            this.tvmsg_css = Live.addStylesheetByText('.small-tv-msg{display:none !important;}');
+        } else {
+            this.tvmsg_css.remove();
             this.chatListScrollToBottom();
         }
     }
