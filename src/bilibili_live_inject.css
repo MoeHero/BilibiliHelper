@@ -78,8 +78,5 @@ i.bh-icon.tv-enabled { background-position: -40px -20px; }
   line-height: 21px;
   padding: 0;
 }
-.bh-live-setting-panel {
-  left: 0;
-  top: -170px;
-}
+.bh-live-setting-panel { left: 0; }
 .bh-live-setting-panel:before { left: 90%; }
