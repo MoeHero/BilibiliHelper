@@ -22,16 +22,10 @@ class FuncTreasure {
                 $(window).on('beforeunload', () => {
                     Live.sendMessage({command: 'getTreasure'}, (result) => result.showID == Live.showID && Live.sendMessage({command: 'delTreasure'}));
                 });
-                Live.getMessage((request) => {
-                    if(request.command == 'checkNewTask') {
-                        this.checkNewTask();
-                    }
-                });
                 ModuleNotify.treasure('enabled');
                 ModuleConsole.treasure('enabled');
                 Live.timer(60 * 60 * 1000, () => this.checkNewTask());
             } else {
-                Live.sendMessage({command: 'checkNewTask'});
                 ModuleDom.treasure_setState('exist', result);
                 ModuleConsole.treasure('exist', result);
             }
@@ -40,7 +34,7 @@ class FuncTreasure {
 
     static checkNewTask() {
         if(!ModuleStore.treasure('getEnd')) {
-            $.getJSON('/FreeSilver/getCurrentTask').done((result) => {
+            $.getJSON('/FreeSilver/getCurrentTask?bh').done((result) => {
                 if(result.code === 0) {
                     this.getTimes();
                     this.startTime = result.data.time_start;

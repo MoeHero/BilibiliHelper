@@ -58,7 +58,11 @@ var Option = {
     notify_autoSmallTV: true,
     notify: true,
 };
-var Info = {};
+var Info = {
+    version: chrome.runtime.getManifest().version,
+    extensionID: chrome.i18n.getMessage('@@extension_id')
+};
+var enabled = false;
 
 function saveOption() {
     window.localStorage.bh_option = JSON.stringify(Option);
@@ -77,14 +81,15 @@ function createNotifications(param) {
         }
     });
 }
-function addScriptByText(text) {
-    var script = document.createElement('script');
-    script.innerHTML = text;
-    document.head.appendChild(script);
+
+if(window.localStorage.bh_option) {
+    $.extend(Option, JSON.parse(window.localStorage.bh_option));
 }
+saveOption();
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
-    if(changeInfo.status == 'complete' &&
+    if(enabled &&
+        changeInfo.status == 'complete' &&
         tabInfo.status == 'complete' &&
         tabInfo.url.indexOf('live.bilibili.com') != -1) {
         chrome.tabs.executeScript(tabId, {file: './jquery-3.1.1.min.js'});
@@ -146,12 +151,26 @@ chrome.runtime.onMessageExternal.addListener(function(request, sender) {
     chrome.tabs.sendMessage(sender.tab.id, request);
 });
 
-Info.version = chrome.runtime.getManifest().version;
-Info.extensionID = chrome.i18n.getMessage('@@extension_id');
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    return {cancel: Option.live_autoTreasure && details.url.includes('getCurrentTask') && !details.url.endsWith('getCurrentTask?bh')};
+}, {urls: ['*://live.bilibili.com/*']}, ['blocking']);
 
-if(window.localStorage.bh_option) {
-    $.extend(Option, JSON.parse(window.localStorage.bh_option));
-}
-saveOption();
+var bilibilihelperID = 'egeedbhhbpmlglbpamnpfbjmnehahedp';
+chrome.management.get(bilibilihelperID, function(result) {
+    enabled = !(result && result.enabled);
+    !enabled && createNotifications({id: 'enabled', title: 'Bilibili助手', message: '检测到已启用【哔哩哔哩助手】, 本插件将自动禁用!'});
+});
+chrome.management.onEnabled.addListener(function(result) {
+    if(result.id == bilibilihelperID) {
+        enabled = false;
+        createNotifications({id: 'enabled', title: 'Bilibili助手', message: '检测到已启用【哔哩哔哩助手】, 本插件将自动禁用!'});
+    }
+});
+chrome.management.onDisabled.addListener(function(result) {
+    if(result.id == bilibilihelperID) {
+        enabled = true;
+        createNotifications({id: 'disabled' + result.enabled, title: 'Bilibili助手', message: '检测到已禁用【哔哩哔哩助手】, 本插件将自动启用!'});
+    }
+});
 
 console.log('Loaded');

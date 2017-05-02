@@ -38,7 +38,6 @@ class FuncAutoLottery {
             }
             for(let i in infoList) {
                 let info = infoList[i];
-                console.log(info);
                 let statinfosContent = $('<ul>');
                 for(let key in info.statinfo) {
                     statinfosContent.append($('<li>').text(key + 'x' + info.statinfo[key]));
