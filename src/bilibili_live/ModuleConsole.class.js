@@ -39,10 +39,10 @@ class ModuleConsole {
                 msg += Live.format(treasure.action.exist, param);
                 break;
             case 'noLogin':
-                msg += treasure.noLogin;
+                msg += treasure.action.noLogin;
                 break;
             case 'noPhone':
-                msg += treasure.noPhone;
+                msg += treasure.action.noPhone;
                 break;
             case 'end':
                 msg += treasure.action.end;
