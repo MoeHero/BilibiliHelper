@@ -5,7 +5,10 @@
     "permissions": [
         "*://*.bilibili.com/*",
         "tabs",
-        "notifications"
+        "notifications",
+        "management",
+        "webRequest",
+        "webRequestBlocking"
     ],
     "icons": {
         "16": "icon.png",

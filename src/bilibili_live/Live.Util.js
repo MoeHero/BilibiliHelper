@@ -6,8 +6,6 @@ Live.format = (template, data) => {
 Live.localize = {//TODO 重构 去除不必要文本
     helper: 'Bilibili助手',
     enabled: '已启用',
-    init: '初始化中...',
-    times: '次',
     sign: {
         title: '自动签到',
         action: {
@@ -20,21 +18,26 @@ Live.localize = {//TODO 重构 去除不必要文本
         action: {
             award: '已领取${award}瓜子',
             exist: '已在直播间${showID}启动',
-            awarding: '领取中...',
             totalSilver: '总瓜子:${silver}',
             noLogin: '未登录',
+            noPhone: '未绑定手机',
             end: '领取完毕'
         }
     },
     smallTV: {
         title: '自动小电视',
-        statinfoTitle: '小电视抽奖',
-        noStatinfo: '没有获奖记录',
         action: {
-            award: '获得${awardNumber}个${awardName}',
+            award: '获得${awardName}x${awardNumber}',
             exist: '已在直播间${showID}启动',
             joinSuccess: '参加成功',
             joinError: '参加失败, ${msg}'
+        }
+    },
+    lighten: {
+        title: '自动领取应援棒',
+        action: {
+            award: '获得应援棒x1',
+            exist: '已在直播间${showID}启动'
         }
     }
 };

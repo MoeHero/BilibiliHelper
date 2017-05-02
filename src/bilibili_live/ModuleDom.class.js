@@ -1,4 +1,3 @@
-/* globals ModuleStore,FuncSmallTV */
 class ModuleDom {
     static init() {
         {
@@ -16,51 +15,5 @@ class ModuleDom {
 
             $('.room-info-row').remove();
         } //主播信息 下
-    }
-
-    static treasure_init() {
-        $('.treasure-box-ctnr').remove();
-        this.treasureStateIcon = $('<i>').addClass('bh-icon treasure-init');
-        this.treasureStateText = $('<span>').text('初始化中...');
-        this.treasureTimes = $('<span>').text('0/0').hide();
-        this.treasureCountdown = $('<span>').text('00:00').hide();
-        let funcInfo = $('<a>').addClass('func-info v-top').append(this.treasureStateText).append(this.treasureTimes).append(this.treasureCountdown);
-        this.funcInfoRow.prepend(funcInfo).prepend(this.treasureStateIcon);
-    }
-    static treasure_setState(key, param) {
-        let treasure = Live.localize.treasure;
-        let text, state;
-        switch(key) {
-            case 'processing':
-                state = 'processing';
-                break;
-            case 'awarding':
-                text = treasure.action.awarding;
-                break;
-            case 'noLogin':
-                state = 'error';
-                text = treasure.action.noLogin;
-                break;
-            case 'end':
-                state = 'end';
-                text = treasure.action.end;
-                break;
-            case 'exist':
-                state = 'exist';
-                text = Live.format(treasure.action.exist, param);
-                break;
-        }
-        state && this.treasureStateIcon.attr('class', 'bh-icon treasure-' + state);
-        text && this.treasureStateText.text(text).show();
-        this.treasureTimes.hide();
-        this.treasureCountdown.hide();
-    }
-    static treasure_setTimes(times) {
-        this.treasureTimes.text(times).show();
-        this.treasureStateText.hide();
-    }
-    static treasure_showCountdown() {
-        this.treasureCountdown.show();
-        this.treasureStateText.hide();
     }
 }

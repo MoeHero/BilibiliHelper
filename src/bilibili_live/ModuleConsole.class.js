@@ -8,6 +8,7 @@ class ModuleConsole {
     static error(msg) {
         console.error('%c' + msg, 'color:#FFF;background-color:#EB3F2F;padding:5px;border-radius:7px;line-height:30px;');
     }
+
     static sign(key, param) {
         var sign = Live.localize.sign;
         var msg = sign.title + ': ';
@@ -29,7 +30,7 @@ class ModuleConsole {
                 msg += Live.localize.enabled;
                 break;
             case 'awarding':
-                msg += Live.localize.awarding;
+                msg += '领取中...';
                 break;
             case 'award':
                 msg += Live.format(treasure.action.award + ' ' + treasure.action.totalSilver, param);
@@ -38,7 +39,10 @@ class ModuleConsole {
                 msg += Live.format(treasure.action.exist, param);
                 break;
             case 'noLogin':
-                msg += treasure.noLogin;
+                msg += treasure.action.noLogin;
+                break;
+            case 'noPhone':
+                msg += treasure.action.noPhone;
                 break;
             case 'end':
                 msg += treasure.action.end;
@@ -64,6 +68,22 @@ class ModuleConsole {
                 break;
             case 'joinError':
                 msg += Live.format(smallTV.action.joinError, param);
+                break;
+        }
+        this.info(msg);
+    }
+    static lighten(key, param) {
+        var lighten = Live.localize.lighten;
+        var msg = lighten.title + ': ';
+        switch(key) {
+            case 'enabled':
+                msg += Live.localize.enabled;
+                break;
+            case 'award':
+                msg += lighten.action.award;
+                break;
+            case 'exist':
+                msg += Live.format(lighten.action.exist, param);
                 break;
         }
         this.info(msg);

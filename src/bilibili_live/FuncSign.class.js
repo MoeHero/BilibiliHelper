@@ -44,9 +44,7 @@ class FuncSign {
                 } else {
                     console.log(result);
                 }
-            }).fail(() => {
-                Live.countdown(2, () => this.do());
-            });
+            }).fail(() => Live.countdown(2, () => this.do()));
         }
     }
 }
