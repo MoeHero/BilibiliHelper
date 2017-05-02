@@ -76,9 +76,7 @@ class ALPlugin_SmallTV {
             } else {
                 console.log(result);
             }
-        }).fail(() => {
-            Live.countdown(2, () => this.join());
-        });
+        }).fail(() => Live.countdown(2, () => this.join()));
     }
     static getAward(TVID) {
         $.getJSON('/SmallTV/getReward', {id: TVID}).done((result) => {
@@ -91,8 +89,6 @@ class ALPlugin_SmallTV {
             } else {
                 console.log(result);
             }
-        }).fail(() => {
-            Live.countdown(2, () => this.getAward(TVID));
-        });
+        }).fail(() => Live.countdown(2, () => this.getAward(TVID)));
     }
 }

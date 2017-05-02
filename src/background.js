@@ -56,6 +56,7 @@ var Option = {
     notify_autoSign: true,
     notify_autoTreasure: true,
     notify_autoSmallTV: true,
+    notify_autoLighten: true,
     notify: true,
 };
 var Info = {

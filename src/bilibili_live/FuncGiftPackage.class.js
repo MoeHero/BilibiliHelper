@@ -81,9 +81,7 @@ class FuncGiftPackage {
                 } else {
                     console.log(result);
                 }
-            }).fail(() => {
-                Live.countdown(2, () => this.openGiftPackage());
-            });
+            }).fail(() => Live.countdown(2, () => this.openGiftPackage()));
         }
     }
     static sortGifts(giftData) {
