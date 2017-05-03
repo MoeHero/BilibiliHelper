@@ -29,7 +29,6 @@ class FuncLiveSetting {
             ul.append(li);
             top += -20;
         }
-        console.log(top);
         this.liveSettingPanel.append(ul).css('top', top + 'px');
         $('.profile-ctrl').append(this.liveSettingPanel).append(this.liveSettingButton);
     }

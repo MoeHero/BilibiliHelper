@@ -98,7 +98,7 @@ class FuncTreasure {
                     this.endTime = result.data.time_end;
                     this.countdown && this.countdown.clearCountdown();
                     this.countdown = new Live.countdown(result.data.minute * 60, () => {
-                        this.event('awarding', {award: result.data.awardSilver, silver: result.data.silver});
+                        this.event('awarding');
                         this.getAward();
                     }, this.countdownDom.show());
                     this.stateText.hide();
@@ -121,7 +121,7 @@ class FuncTreasure {
             this.answer = eval(this.correctQuestion(OCRAD(image))); //jshint ignore:line
             $.getJSON('/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done((result) => {
                 if(result.code === 0) {
-                    this.event('award');
+                    this.event('award', {award: result.data.awardSilver, silver: result.data.silver});
                     //TODO 动态更新瓜子数量
                     this.checkNewTask();
                 } else if(result.code == -99) { //在其他地方领取
