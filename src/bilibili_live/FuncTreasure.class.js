@@ -126,11 +126,11 @@ class FuncTreasure {
             $.getJSON('/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done((result) => {
                 if(result.code === 0) {
                     this.event('award', {award: result.data.awardSilver, silver: result.data.silver});
-                    //TODO 动态更新瓜子数量
+                    Live.addScriptByText(`bh_updateSilverSeed(${result.data.silver});`).remove();
                     this.checkNewTask();
                 } else if(result.code == -99) { //在其他地方领取
                     this.checkNewTask();
-                } else if(result.code == -400 && result.msg.includes('验证码')) { //验证码问题
+                } else if(result.code == -400 && result.msg.includes('验证码')) { //验证码出错
                     this.getAward();
                 } else if(result.code == -400 && result.msg == '未绑定手机') { //未绑定手机
                     this.event('noPhone');
