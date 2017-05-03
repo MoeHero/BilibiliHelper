@@ -10,8 +10,8 @@
         "tabs"
     ],
     "icons": {
-        "16": "icon.png",
-        "48": "icon.png"
+        "16": "resources/icon.png",
+        "48": "resources/icon.png"
     },
     "background": {
         "scripts": [
@@ -24,6 +24,6 @@
         "matches": ["*://*.bilibili.com/*"]
     },
     "web_accessible_resources": ["bilibili_live_inject.min.js", "bilibili_live_inject.min.css", "resources/*"],
-    "options_page": "/options/options.html",
+    "options_page": "options/options.html",
     "homepage_url": "http://www.moehero.com/"
 }
