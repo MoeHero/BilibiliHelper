@@ -63,7 +63,6 @@ var Info = {
     version: chrome.runtime.getManifest().version,
     extensionID: chrome.i18n.getMessage('@@extension_id')
 };
-var enabled = false;
 
 function saveOption() {
     window.localStorage.bh_option = JSON.stringify(Option);
@@ -71,15 +70,9 @@ function saveOption() {
 function createNotifications(param) {
     chrome.notifications.create('bh-' + param.id, {
         type: 'basic',
-        iconUrl: 'icon.png',
+        iconUrl: 'resources/' + (param.icon || 'icon.png'),
         title: param.title,
         message: param.message
-    }, function(id) {
-        if(param.timeout > 0) {
-            setTimeout(function() {
-                chrome.notifications.clear(id);
-            }, param.timeout);
-        }
     });
 }
 
@@ -89,10 +82,9 @@ if(window.localStorage.bh_option) {
 saveOption();
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
-    if(enabled &&
-        changeInfo.status == 'complete' &&
+    if(changeInfo.status == 'complete' &&
         tabInfo.status == 'complete' &&
-        tabInfo.url.indexOf('live.bilibili.com') != -1) {
+        tabInfo.url.includes('live.bilibili.com')) {
         chrome.tabs.executeScript(tabId, {file: './jquery-3.1.1.min.js'});
         chrome.tabs.executeScript(tabId, {file: './ocrad.min.js'});
         chrome.tabs.executeScript(tabId, {file: './store.min.js'});
@@ -147,7 +139,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             break;
     }
 });
-
 chrome.runtime.onMessageExternal.addListener(function(request, sender) {
     chrome.tabs.sendMessage(sender.tab.id, request);
 });
@@ -155,23 +146,5 @@ chrome.runtime.onMessageExternal.addListener(function(request, sender) {
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     return {cancel: Option.live_autoTreasure && details.url.includes('getCurrentTask') && !details.url.endsWith('getCurrentTask?bh')};
 }, {urls: ['*://live.bilibili.com/*']}, ['blocking']);
-
-var bilibilihelperID = 'egeedbhhbpmlglbpamnpfbjmnehahedp';
-chrome.management.get(bilibilihelperID, function(result) {
-    enabled = !(result && result.enabled);
-    !enabled && createNotifications({id: 'enabled', title: 'Bilibili助手', message: '检测到已启用【哔哩哔哩助手】, 本插件将自动禁用!'});
-});
-chrome.management.onEnabled.addListener(function(result) {
-    if(result.id == bilibilihelperID) {
-        enabled = false;
-        createNotifications({id: 'enabled', title: 'Bilibili助手', message: '检测到已启用【哔哩哔哩助手】, 本插件将自动禁用!'});
-    }
-});
-chrome.management.onDisabled.addListener(function(result) {
-    if(result.id == bilibilihelperID) {
-        enabled = true;
-        createNotifications({id: 'disabled' + result.enabled, title: 'Bilibili助手', message: '检测到已禁用【哔哩哔哩助手】, 本插件将自动启用!'});
-    }
-});
 
 console.log('Loaded');

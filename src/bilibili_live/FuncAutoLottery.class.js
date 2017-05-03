@@ -19,8 +19,7 @@ class FuncAutoLottery {
     static initDOM() {
         this.statinfoButton = $('<a>').addClass('link bili-link').text('抽奖统计信息');
         this.statinfoPanel = $('<div>').addClass('live-hover-panel arrow-top show bh-statinfo').hide();
-        ModuleDom.info.before($('<div>').addClass('ctrl-item').append(this.statinfoButton));
-        $('.control-panel').before(this.statinfoPanel);
+        Live.DOM.info.before($('<div>').addClass('ctrl-item').append(this.statinfoButton)).parent().before(this.statinfoPanel);
     }
     static addEvent() {
         this.statinfoButton.on('click', (e) => {this.openStatinfoPanel();e.stopPropagation();});

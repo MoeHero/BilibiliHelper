@@ -15,7 +15,7 @@ class FuncTreasure {
         this.timesDom = $('<span>').text('0/0').hide();
         this.countdownDom = $('<span>').text('00:00').hide();
         let funcInfo = $('<a>').addClass('func-info v-top').append(this.stateText).append(this.timesDom).append(' ').append(this.countdownDom);
-        ModuleDom.funcInfoRow.prepend(funcInfo).prepend(this.stateIcon);
+        Live.DOM.funcInfoRow.prepend(funcInfo).prepend(this.stateIcon);
     }
     static addEvent() {
         Live.sendMessage({command: 'getTreasure'}, (result) => {
@@ -98,7 +98,7 @@ class FuncTreasure {
                     this.endTime = result.data.time_end;
                     this.countdown && this.countdown.clearCountdown();
                     this.countdown = new Live.countdown(result.data.minute * 60, () => {
-                        this.event('awarding', {award: result.data.awardSilver, silver: result.data.silver});
+                        this.event('awarding');
                         this.getAward();
                     }, this.countdownDom.show());
                     this.stateText.hide();
@@ -112,7 +112,11 @@ class FuncTreasure {
                 }
             }).fail(() => Live.countdown(2, () => this.checkNewTask()));
         } else {
-            this.event('end');
+            ModuleStore.treasure('end');
+            this.stateIcon.attr('class', 'bh-icon treasure-end');
+            this.stateText.text(Live.localize.treasure.action.end).show();
+            this.timesDom.hide();
+            this.countdownDom.hide();
         }
     }
     static getAward() {
@@ -121,12 +125,12 @@ class FuncTreasure {
             this.answer = eval(this.correctQuestion(OCRAD(image))); //jshint ignore:line
             $.getJSON('/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done((result) => {
                 if(result.code === 0) {
-                    this.event('award');
-                    //TODO 动态更新瓜子数量
+                    this.event('award', {award: result.data.awardSilver, silver: result.data.silver});
+                    Live.addScriptByText(`bh_updateSilverSeed(${result.data.silver});`).remove();
                     this.checkNewTask();
                 } else if(result.code == -99) { //在其他地方领取
                     this.checkNewTask();
-                } else if(result.code == -400 && result.msg.includes('验证码')) { //验证码问题
+                } else if(result.code == -400 && result.msg.includes('验证码')) { //验证码出错
                     this.getAward();
                 } else if(result.code == -400 && result.msg == '未绑定手机') { //未绑定手机
                     this.event('noPhone');

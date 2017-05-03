@@ -4,11 +4,10 @@
 
     "permissions": [
         "*://*.bilibili.com/*",
-        "tabs",
+        "webRequestBlocking",
         "notifications",
-        "management",
         "webRequest",
-        "webRequestBlocking"
+        "tabs"
     ],
     "icons": {
         "16": "icon.png",
@@ -24,7 +23,7 @@
         "ids": ["*"],
         "matches": ["*://*.bilibili.com/*"]
     },
-    "web_accessible_resources": ["bilibili_live_inject.min.js", "bilibili_live_inject.min.css", "resources.png"],
+    "web_accessible_resources": ["bilibili_live_inject.min.js", "bilibili_live_inject.min.css", "resources/*"],
     "options_page": "/options/options.html",
     "homepage_url": "http://www.moehero.com/"
 }
