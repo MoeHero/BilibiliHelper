@@ -15,7 +15,7 @@ class FuncTreasure {
         this.timesDom = $('<span>').text('0/0').hide();
         this.countdownDom = $('<span>').text('00:00').hide();
         let funcInfo = $('<a>').addClass('func-info v-top').append(this.stateText).append(this.timesDom).append(' ').append(this.countdownDom);
-        ModuleDom.funcInfoRow.prepend(funcInfo).prepend(this.stateIcon);
+        Live.DOM.funcInfoRow.prepend(funcInfo).prepend(this.stateIcon);
     }
     static addEvent() {
         Live.sendMessage({command: 'getTreasure'}, (result) => {
@@ -112,7 +112,11 @@ class FuncTreasure {
                 }
             }).fail(() => Live.countdown(2, () => this.checkNewTask()));
         } else {
-            this.event('end');
+            ModuleStore.treasure('end');
+            this.stateIcon.attr('class', 'bh-icon treasure-end');
+            this.stateText.text(Live.localize.treasure.action.end).show();
+            this.timesDom.hide();
+            this.countdownDom.hide();
         }
     }
     static getAward() {
