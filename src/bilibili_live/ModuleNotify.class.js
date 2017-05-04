@@ -22,6 +22,9 @@ class ModuleNotify {
             case 'award':
                 msg = Live.format(sign.action.award, param);
                 break;
+            case 'signed':
+                msg += Live.format(sign.action.signed, param);
+                break;
         }
         Live.option.notify_autoSign && this.create('sign_' + key, 'sign.png', Live.localize.helper + ' - ' + sign.title, msg);
     }

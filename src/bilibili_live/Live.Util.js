@@ -12,7 +12,8 @@ Live.localize = {//TODO 重构 去除不必要文本
         title: '自动签到',
         action: {
             award: '签到成功, 获得${award}',
-            exist: '今日已签到'
+            exist: '已在直播间${showID}启动',
+            signed: '今日已签到'
         }
     },
     treasure: {
@@ -96,3 +97,7 @@ Live.timer.prototype.clearTimer = function() {
 
 Live.sendMessage = (msg, callback) => chrome.runtime.sendMessage(msg, (response) => typeof callback == 'function' && callback(response));
 Live.getMessage = (callback) => chrome.runtime.onMessage.addListener((request, sender, sendResponse) => typeof callback == 'function' && callback(request, sender, sendResponse));
+
+$.fn.stopPropagation = function() {
+    return this.on('click', (e) => e.stopPropagation());
+};

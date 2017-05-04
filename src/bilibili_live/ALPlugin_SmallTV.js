@@ -26,7 +26,7 @@ class ALPlugin_SmallTV {
         $('.treasure-box-ctnr').remove();
         this.stateIcon = $('<i>').addClass('bh-icon tv-init');
         this.stateText = $('<a>').addClass('func-info v-top').text('初始化中...');
-        Live.DOM.funcInfoRow.prepend(this.stateText).prepend(this.stateIcon);
+        Live.DOM.funcInfoRow.prepend(this.stateIcon, this.stateText);
     }
     static addEvent() {
         Live.sendMessage({command: 'getSmallTV'}, (result) => {

@@ -1,4 +1,4 @@
-/* globals ModuleStore,ModuleDom,ModuleNotify,ModuleConsole */
+/* globals ModuleStore,ModuleNotify,ModuleConsole */
 class FuncTreasure {
     static init() {
         if(!Live.option.live || !Live.option.live_autoTreasure) {
@@ -14,8 +14,8 @@ class FuncTreasure {
         this.stateText = $('<span>').text('初始化中...');
         this.timesDom = $('<span>').text('0/0').hide();
         this.countdownDom = $('<span>').text('00:00').hide();
-        let funcInfo = $('<a>').addClass('func-info v-top').append(this.stateText).append(this.timesDom).append(' ').append(this.countdownDom);
-        Live.DOM.funcInfoRow.prepend(funcInfo).prepend(this.stateIcon);
+        let funcInfo = $('<a>').addClass('func-info v-top').append(this.stateText, this.timesDom, ' ', this.countdownDom);
+        Live.DOM.funcInfoRow.prepend(this.stateIcon, funcInfo);
     }
     static addEvent() {
         Live.sendMessage({command: 'getTreasure'}, (result) => {
@@ -24,69 +24,28 @@ class FuncTreasure {
                 $(window).on('beforeunload', () => {
                     Live.sendMessage({command: 'getTreasure'}, (result) => result.showID == Live.showID && Live.sendMessage({command: 'delTreasure'}));
                 });
-                this.event('enabled');
+                ModuleNotify.treasure('enabled');
+                ModuleConsole.treasure('enabled');
                 Live.timer(60 * 60 * 1000, () => this.checkNewTask());
             } else {
-                this.event('exist', result);
+                this.setStateIcon('exist');
+                this.setStateText(Live.format(Live.localize.treasure.action.exist, result));
+                ModuleConsole.treasure('exist', result);
             }
         });
     }
 
-    static event(key, param) {
-        switch(key) {
-            case 'enabled':
-                ModuleNotify.treasure('enabled');
-                ModuleConsole.treasure('enabled');
-                break;
-            case 'processing':
-                this.stateIcon.attr('class', 'bh-icon treasure-processing');
-                break;
-            case 'awarding':
-                this.stateText.text('领取中...').show();
-                this.timesDom.hide();
-                this.countdownDom.hide();
-                break;
-            case 'noLogin':
-                this.stateIcon.attr('class', 'bh-icon treasure-error');
-                this.stateText.text(Live.localize.treasure.action.noLogin).show();
-                this.timesDom.hide();
-                this.countdownDom.hide();
-                ModuleNotify.treasure('noLogin');
-                ModuleConsole.treasure('noLogin');
-                break;
-            case 'noPhone':
-                this.stateIcon.attr('class', 'bh-icon treasure-error');
-                this.stateText.text(Live.localize.treasure.action.noPhone).show();
-                this.timesDom.hide();
-                this.countdownDom.hide();
-                ModuleNotify.treasure('noPhone');
-                ModuleConsole.treasure('noPhone');
-                break;
-            case 'end':
-                ModuleStore.treasure('end');
-                this.stateIcon.attr('class', 'bh-icon treasure-end');
-                this.stateText.text(Live.localize.treasure.action.end).show();
-                this.timesDom.hide();
-                this.countdownDom.hide();
-                ModuleNotify.treasure('end');
-                ModuleConsole.treasure('end');
-                break;
-            case 'exist':
-                this.stateIcon.attr('class', 'bh-icon treasure-exist');
-                this.stateText.text(Live.format(Live.localize.treasure.action.exist, param)).show();
-                this.timesDom.hide();
-                this.countdownDom.hide();
-                ModuleConsole.treasure('exist', param);
-                break;
-            case 'award':
-                ModuleNotify.treasure('award', param);
-                ModuleConsole.treasure('award', param);
-                break;
-        }
-    }
     static setTimes(times) {
         this.timesDom.text(times).show();
         this.stateText.hide();
+    }
+    static setStateText(text) {
+        this.stateText.text(text).show();
+        this.timesDom.hide();
+        this.countdownDom.hide();
+    }
+    static setStateIcon(key) {
+        this.stateIcon.attr('class', 'bh-icon treasure-' + key);
     }
 
     static checkNewTask() {
@@ -98,25 +57,30 @@ class FuncTreasure {
                     this.endTime = result.data.time_end;
                     this.countdown && this.countdown.clearCountdown();
                     this.countdown = new Live.countdown(result.data.minute * 60, () => {
-                        this.event('awarding');
+                        this.setStateText('领取中...');
                         this.getAward();
                     }, this.countdownDom.show());
                     this.stateText.hide();
-                    this.event('processing');
+                    this.setStateIcon('processing');
                 } else if(result.code == -101) { //未登录
-                    this.event('noLogin');
+                    this.setStateIcon('error');
+                    this.setStateText(Live.localize.treasure.action.noLogin);
+                    ModuleNotify.treasure('noLogin');
+                    ModuleConsole.treasure('noLogin');
                 } else if(result.code == -10017) { //领取完毕
-                    this.event('end');
+                    ModuleStore.treasure('end');
+                    this.setStateIcon('end');
+                    this.setStateText(Live.localize.treasure.action.end);
+                    ModuleNotify.treasure('end');
+                    ModuleConsole.treasure('end');
                 } else {
                     console.log(result);
                 }
             }).fail(() => Live.countdown(2, () => this.checkNewTask()));
         } else {
             ModuleStore.treasure('end');
-            this.stateIcon.attr('class', 'bh-icon treasure-end');
-            this.stateText.text(Live.localize.treasure.action.end).show();
-            this.timesDom.hide();
-            this.countdownDom.hide();
+            this.setStateIcon('end');
+            this.setStateText(Live.localize.treasure.action.end);
         }
     }
     static getAward() {
@@ -125,7 +89,9 @@ class FuncTreasure {
             this.answer = eval(this.correctQuestion(OCRAD(image))); //jshint ignore:line
             $.getJSON('/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done((result) => {
                 if(result.code === 0) {
-                    this.event('award', {award: result.data.awardSilver, silver: result.data.silver});
+                    let award = {award: result.data.awardSilver, silver: result.data.silver};
+                    ModuleNotify.treasure('award', award);
+                    ModuleConsole.treasure('award', award);
                     Live.addScriptByText(`bh_updateSilverSeed(${result.data.silver});`).remove();
                     this.checkNewTask();
                 } else if(result.code == -99) { //在其他地方领取
@@ -133,7 +99,10 @@ class FuncTreasure {
                 } else if(result.code == -400 && result.msg.includes('验证码')) { //验证码出错
                     this.getAward();
                 } else if(result.code == -400 && result.msg == '未绑定手机') { //未绑定手机
-                    this.event('noPhone');
+                    this.setStateIcon('error');
+                    this.setStateText(Live.localize.treasure.action.noPhone);
+                    ModuleNotify.treasure('noPhone');
+                    ModuleConsole.treasure('noPhone');
                 } else {
                     console.log(result);
                 }

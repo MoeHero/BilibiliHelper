@@ -1,11 +1,22 @@
 console.log('Start Loading...');
 
+var Sign = {
+    showID: false,
+    tabID: false,
+    getSign: () => Sign,
+    setSign: function(options) {
+        Sign.showID = options.showID;
+        Sign.tabID = options.tabID;
+    },
+    delSign: function() {
+        Sign.showID = false;
+        Sign.tabID = false;
+    }
+};
 var Treasure = {
     showID: false,
     tabID: false,
-    getTreasure: function() {
-        return Treasure;
-    },
+    getTreasure: () => Treasure,
     setTreasure: function(options) {
         Treasure.showID = options.showID;
         Treasure.tabID = options.tabID;
@@ -18,9 +29,7 @@ var Treasure = {
 var SmallTV = {
     showID: false,
     tabID: false,
-    getSmallTV: function() {
-        return SmallTV;
-    },
+    getSmallTV: () => SmallTV,
     setSmallTV: function(options) {
         SmallTV.showID = options.showID;
         SmallTV.tabID = options.tabID;
@@ -33,9 +42,7 @@ var SmallTV = {
 var Lighten = {
     showID: false,
     tabID: false,
-    getLighten: function() {
-        return Lighten;
-    },
+    getLighten: () => Lighten,
     setLighten: function(options) {
         Lighten.showID = options.showID;
         Lighten.tabID = options.tabID;
@@ -45,6 +52,7 @@ var Lighten = {
         Lighten.tabID = false;
     }
 };
+
 var Option = {
     live_autoSign: true,
     live_autoTreasure: true,

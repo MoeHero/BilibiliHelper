@@ -1,32 +1,26 @@
-/* globals ModuleStore,ModuleDom,ModuleNotify,ModuleConsole */
+/* globals ModuleStore,ModuleNotify,ModuleConsole */
 class FuncSign {
     static init() {
         if(!Live.option.live || !Live.option.live_autoSign) {
             return;
         }
-        this.event('enabled');
-        Live.timer(60 * 60 * 1000, () => this.do());
+        this.addEvent();
     }
 
-    static event(key, param = {}) {
-        switch(key) {
-            case 'enabled':
+    static addEvent() {
+        Live.sendMessage({command: 'getSign'}, (result) => {
+            if(!result.showID) {
+                Live.sendMessage({command: 'setSign', showID: Live.showID});
+                $(window).on('beforeunload', () => Live.sendMessage({command: 'getSign'}, (result) => result.showID == Live.showID && Live.sendMessage({command: 'delSign'})));
                 ModuleNotify.sign('enabled');
                 ModuleConsole.sign('enabled');
-                break;
-            case 'award':
-                ModuleStore.sign('set');
-                this.setSigned();
-                ModuleNotify.sign('award', param);
-                ModuleConsole.sign('award', param);
-                break;
-            case 'exist':
-                ModuleStore.sign('set');
-                ModuleConsole.sign('exist');
-                break;
-
-        }
+                Live.timer(60 * 60 * 1000, () => this.doSign());
+            } else {
+                ModuleConsole.sign('exist', result);
+            }
+        });
     }
+
     static setSigned() {
         let signBtn = $('.sign-up-btn');
         signBtn.find('.dp-inline-block>span:first-child').hide();
@@ -34,17 +28,23 @@ class FuncSign {
         signBtn.find('.has-new').removeClass('has-new');
     }
 
-    static do() {
+    static doSign() {
         if(!ModuleStore.sign('get')) {
             $.getJSON('/sign/doSign').done((result) => {
                 if(result.code === 0) {
-                    this.event('award', {award: result.data.text});
+                    let award = {award: result.data.text};
+                    ModuleStore.sign('set');
+                    this.setSigned();
+                    ModuleNotify.sign('award', award);
+                    ModuleConsole.sign('award', award);
                 } else if(result.code == -500) { //已签到
-                    this.event('exist');
+                    ModuleStore.sign('set');
+                    ModuleNotify.sign('signed');
+                    ModuleConsole.sign('signed');
                 } else {
                     console.log(result);
                 }
-            }).fail(() => Live.countdown(2, () => this.do()));
+            }).fail(() => Live.countdown(2, () => this.doSign()));
         }
     }
 }

@@ -33,13 +33,10 @@ class FuncLiveSetting {
         $('.profile-ctrl').append(this.liveSettingPanel).append(this.liveSettingButton);
     }
     static addEvent() {
-        this.liveSettingPanel.on('click', (event) => event.stopPropagation());
+        this.liveSettingPanel.stopPropagation();
         $(document).on('click', () => this.liveSettingPanel.fadeOut(200));
 
-        this.liveSettingButton.on('click', (event) => {
-            this.liveSettingPanel.fadeToggle(200);
-            event.stopPropagation();
-        });
+        this.liveSettingButton.on('click', () => this.liveSettingPanel.fadeToggle(200)).stopPropagation();
         $('.bh-live-setting-btns').on('click', (event) => {
             let button = $(event.currentTarget);
             this.funcList[button.attr('key')].click.call(this);

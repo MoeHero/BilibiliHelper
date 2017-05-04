@@ -33,8 +33,8 @@ class FuncGiftPackage {
         $('#gift-package-send-panel').after(this.sendPanel).remove();
     }
     static addEvent() {
-        this.packagePanel.on('click', (event) => event.stopPropagation());
-        this.sendPanel.on('click', (event) => event.stopPropagation());
+        this.packagePanel.stopPropagation();
+        this.sendPanel.stopPropagation();
         $(document).on('click', () => this.packagePanel.fadeOut(200));
 
         this.packageButton.on('click', () => this.openGiftPackage());

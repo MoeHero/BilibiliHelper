@@ -17,6 +17,7 @@
 - [ ] 切换默认排行榜页面
 - [ ] 赠送礼物增强
 - [ ] 主站功能
+- [ ] 自动更新
 
 ### 后续版本功能
 - [ ] 直播设置支持保存
@@ -31,10 +32,11 @@
 - [x] 抽奖统计
 
 ## Develop Progress
-- 重构自动领瓜子代码 0%
 - 重构礼物包裹代码 0%
 - 重构直播设置代码 0%
-- 优化程序结构 10%
+- 优化程序结构 20%
+- 重构设置页面 0%
+- 自动更新 0%
 
 ## License
 ※ 本项目使用 [Mozilla Public License 2.0](https://github.com/MoeHero/BilibiliHelper/blob/master/LICENSE) 许可协议  

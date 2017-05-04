@@ -22,8 +22,8 @@ class FuncAutoLottery {
         Live.DOM.info.before($('<div>').addClass('ctrl-item').append(this.statinfoButton)).parent().before(this.statinfoPanel);
     }
     static addEvent() {
-        this.statinfoButton.on('click', (e) => {this.openStatinfoPanel();e.stopPropagation();});
-        this.statinfoPanel.on('click', (e) => e.stopPropagation());
+        this.statinfoButton.on('click', () => this.openStatinfoPanel()).stopPropagation();
+        this.statinfoPanel.stopPropagation();
         $(document).on('click', () => this.statinfoPanel.fadeOut(200));
     }
 
@@ -41,8 +41,7 @@ class FuncAutoLottery {
                 for(let key in info.statinfo) {
                     statinfosContent.append($('<li>').text(key + 'x' + info.statinfo[key]));
                 }
-                this.statinfoPanel.append($('<h4>').addClass('bh-title').text(info.name))
-                    .append($('<span>').addClass('f-right').text(info.times + ' 次')).append($('<hr>')).append(statinfosContent);
+                this.statinfoPanel.append($('<h4>').addClass('bh-title').text(info.name), $('<span>').addClass('f-right').text(info.times + ' 次'), $('<hr>'), statinfosContent);
             }
             this.statinfoPanel.fadeIn(200);
         }
