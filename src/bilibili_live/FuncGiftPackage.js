@@ -65,13 +65,13 @@ class FuncGiftPackage {
                         }
                         break;
                     case -400: //应援棒提示
-                        Live.liveToast('只有在入围偶像活动的主播房间才能赠送该道具！', this.sendPanelButton, 'caution');
+                        Live.liveToast('只有在入围偶像活动的主播房间才能赠送该道具!', this.sendPanelButton, 'caution');
                         break;
                     case 200005: //无法给自己赠送道具
-                        Live.liveToast('无法给自己赠送道具！', this.sendPanelButton, 'caution');
+                        Live.liveToast('无法给自己赠送道具!', this.sendPanelButton, 'caution');
                         break;
                     case 1024: //超时
-                        Live.liveToast('赠送礼物超时, 请稍后再试！', this.sendPanelButton, 'error');
+                        Live.liveToast('赠送礼物超时,请稍后再试!', this.sendPanelButton, 'error');
                         break;
                     default:
                         console.log(result);
@@ -85,12 +85,17 @@ class FuncGiftPackage {
     static openGiftPackage() {
         if(this.packagePanel.css('display') == 'none') {
             $.getJSON('/gift/playerBag').done((result) => {
-                if(result.code === 0) {
-                    this.loadGiftPackage(this.sortGifts(result.data));
-                    this.packagePanel.show();
-                } else if(result.code == -101) { //未登录
-                } else {
-                    console.log(result);
+                switch(result.code) {
+                    case 0:
+                        this.loadGiftPackage(this.sortGifts(result.data));
+                        this.packagePanel.show();
+                        break;
+                    case -101: //未登录
+                        Live.liveToast('请先登录!', this.packageButton, 'caution');
+                        break;
+                    default:
+                        console.log(result);
+                        break;
                 }
             }).fail(() => Live.countdown(2, () => this.openGiftPackage()));
         }

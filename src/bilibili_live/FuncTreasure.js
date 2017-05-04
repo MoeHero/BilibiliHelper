@@ -51,30 +51,35 @@ class FuncTreasure {
     static checkNewTask() {
         if(!ModuleStore.treasure('getEnd')) {
             $.getJSON('/FreeSilver/getCurrentTask?bh').done((result) => {
-                if(result.code === 0) {
-                    this.getTimes();
-                    this.startTime = result.data.time_start;
-                    this.endTime = result.data.time_end;
-                    this.countdown && this.countdown.clearCountdown();
-                    this.countdown = new Live.countdown(result.data.minute * 60, () => {
-                        this.setStateText('领取中...');
-                        this.getAward();
-                    }, this.countdownDom.show());
-                    this.stateText.hide();
-                    this.setStateIcon('processing');
-                } else if(result.code == -101) { //未登录
-                    this.setStateIcon('error');
-                    this.setStateText(Live.localize.treasure.action.noLogin);
-                    ModuleNotify.treasure('noLogin');
-                    ModuleConsole.treasure('noLogin');
-                } else if(result.code == -10017) { //领取完毕
-                    ModuleStore.treasure('end');
-                    this.setStateIcon('end');
-                    this.setStateText(Live.localize.treasure.action.end);
-                    ModuleNotify.treasure('end');
-                    ModuleConsole.treasure('end');
-                } else {
-                    console.log(result);
+                switch(result.code) {
+                    case 0:
+                        this.getTimes();
+                        this.startTime = result.data.time_start;
+                        this.endTime = result.data.time_end;
+                        this.countdown && this.countdown.clearCountdown();
+                        this.countdown = new Live.countdown(result.data.minute * 60, () => {
+                            this.setStateText('领取中...');
+                            this.getAward();
+                        }, this.countdownDom.show());
+                        this.stateText.hide();
+                        this.setStateIcon('processing');
+                        break;
+                    case -101: //未登录
+                        this.setStateIcon('error');
+                        this.setStateText(Live.localize.treasure.action.noLogin);
+                        ModuleNotify.treasure('noLogin');
+                        ModuleConsole.treasure('noLogin');
+                        break;
+                    case -10017: //领取完毕
+                        ModuleStore.treasure('end');
+                        this.setStateIcon('end');
+                        this.setStateText(Live.localize.treasure.action.end);
+                        ModuleNotify.treasure('end');
+                        ModuleConsole.treasure('end');
+                        break;
+                    default:
+                        console.log(result);
+                        break;
                 }
             }).fail(() => Live.countdown(2, () => this.checkNewTask()));
         } else {
@@ -88,28 +93,37 @@ class FuncTreasure {
         image.onload = () => {
             this.answer = eval(this.correctQuestion(OCRAD(image))); //jshint ignore:line
             $.getJSON('/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done((result) => {
-                if(result.code === 0) {
-                    let award = {award: result.data.awardSilver, silver: result.data.silver};
-                    ModuleNotify.treasure('award', award);
-                    ModuleConsole.treasure('award', award);
-                    Live.addScriptByText(`bh_updateSilverSeed(${result.data.silver});`).remove();
-                    this.checkNewTask();
-                } else if(result.code == -99) { //在其他地方领取
-                    this.checkNewTask();
-                } else if(result.code == -400 && result.msg.includes('验证码')) { //验证码出错
-                    this.getAward();
-                } else if(result.code == -400 && result.msg == '未绑定手机') { //未绑定手机
-                    this.setStateIcon('error');
-                    this.setStateText(Live.localize.treasure.action.noPhone);
-                    ModuleNotify.treasure('noPhone');
-                    ModuleConsole.treasure('noPhone');
-                } else {
-                    console.log(result);
+                switch(result.code) {
+                    case 0:
+                        let award = {award: result.data.awardSilver, silver: result.data.silver};
+                        ModuleNotify.treasure('award', award);
+                        ModuleConsole.treasure('award', award);
+                        Live.addScriptByText(`bh_updateSilverSeed(${result.data.silver});`).remove();
+                        this.checkNewTask();
+                        break;
+                    case -99: //在其他地方领取
+                        this.checkNewTask();
+                        break;
+                    case -400: //错误
+                        if(result.msg.includes('验证码')) {
+                            this.getAward();
+                        } else if(result.msg.includes('未绑定手机')) {
+                            this.setStateIcon('error');
+                            this.setStateText(Live.localize.treasure.action.noPhone);
+                            ModuleNotify.treasure('noPhone');
+                            ModuleConsole.treasure('noPhone');
+                        } else {
+                            console.log(result);
+                        }
+                        break;
+                    default:
+                        console.log(result);
+                        break;
                 }
             }).fail(() => Live.countdown(2, () => this.getAward()));
         };
         image.onerror = () => Live.countdown(2, () => this.getAward());
-        image.src = '/freeSilver/getCaptcha?ts=' + Date.now();
+        image.src = '/freeSilver/getCaptcha';
     }
     static getTimes() {
         $.getJSON('/i/api/taskInfo').done((result) => {

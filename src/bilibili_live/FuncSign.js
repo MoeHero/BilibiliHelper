@@ -31,18 +31,22 @@ class FuncSign {
     static doSign() {
         if(!ModuleStore.sign('get')) {
             $.getJSON('/sign/doSign').done((result) => {
-                if(result.code === 0) {
-                    let award = {award: result.data.text};
-                    ModuleStore.sign('set');
-                    this.setSigned();
-                    ModuleNotify.sign('award', award);
-                    ModuleConsole.sign('award', award);
-                } else if(result.code == -500) { //已签到
-                    ModuleStore.sign('set');
-                    ModuleNotify.sign('signed');
-                    ModuleConsole.sign('signed');
-                } else {
-                    console.log(result);
+                switch(result.code) {
+                    case 0:
+                        let award = {award: result.data.text};
+                        ModuleStore.sign('set');
+                        this.setSigned();
+                        ModuleNotify.sign('award', award);
+                        ModuleConsole.sign('award', award);
+                        break;
+                    case -500: //已签到
+                        ModuleStore.sign('set');
+                        ModuleNotify.sign('signed');
+                        ModuleConsole.sign('signed');
+                        break;
+                    default:
+                        console.log(result);
+                        break;
                 }
             }).fail(() => Live.countdown(2, () => this.doSign()));
         }

@@ -73,16 +73,20 @@ class ALPlugin_SmallTV {
     static getAward(TVID) {
         $.getJSON('/SmallTV/getReward', {id: TVID}).done((result) => {
             result = result.data;
-            if(result.status === 0) {
-                let award = {awardNumber: result.reward.num, awardName: this.awardName[result.reward.id]};
-                ModuleStore.addStatinfo('smallTV', result.reward.id, result.reward.num);
-                ModuleStore.addTimes('smallTV', 1);
-                ModuleNotify.smallTV('award', award);
-                ModuleConsole.smallTV('award', award);
-            } else if(result.status == 2) { //正在开奖
-                Live.countdown(10, () => this.getAward(TVID));
-            } else {
-                console.log(result);
+            switch(result.status) {
+                case 0:
+                    let award = {awardNumber: result.reward.num, awardName: this.awardName[result.reward.id]};
+                    ModuleStore.addStatinfo('smallTV', result.reward.id, result.reward.num);
+                    ModuleStore.addTimes('smallTV', 1);
+                    ModuleNotify.smallTV('award', award);
+                    ModuleConsole.smallTV('award', award);
+                    break;
+                case 2: //正在开奖
+                    Live.countdown(10, () => this.getAward(TVID));
+                    break;
+                default:
+                    console.log(result);
+                    break;
             }
         }).fail(() => Live.countdown(2, () => this.getAward(TVID)));
     }
