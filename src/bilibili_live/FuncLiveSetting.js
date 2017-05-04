@@ -8,6 +8,7 @@ class FuncLiveSetting {
             vip: {name: '老爷进场', click: this.vip_click, state: true},
             sysmsg: {name: '系统公告', click: this.sysmsg_click, state: true},
             tvmsg: {name: '小电视公告', click: this.tvmsg_click, state: true},
+            link: {name: '应援团相关内容', click: this.link_click, state: true},
             'show-admin': {name: '显示房管列表', click: this.show_admin_click, state: false},
             'super-gift': {name: '礼物连击', click: this.super_gift_click, state: true}
         };
@@ -87,9 +88,15 @@ class FuncLiveSetting {
     static super_gift_click() {
         $('#super-gift-ctnr-haruna').toggleClass('hide');
     }
+    static link_click() {
+        if(this.funcList['link'].state) {
+            this.link_css = Live.addStylesheetByText('.bilibili-link{display:none!important;}');
+        } else {
+            this.link_css.remove();
+        }
+    }
 
     static chatListScrollToBottom() {
         $('#chat-msg-list').scrollTop($('#chat-msg-list')[0].scrollHeight);
     }
 }
-/**/

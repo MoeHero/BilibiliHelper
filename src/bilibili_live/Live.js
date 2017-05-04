@@ -28,6 +28,16 @@ Live.addStylesheetByText = function(text) {
     return style;
 };
 
+Live.liveToast = (message, element, type = 'info') => {
+    //success caution error info
+    let newToast = $('<div>').addClass('live-toast ' + type)
+        .append($('<i>').addClass('toast-icon ' + type), $('<span>').addClass('toast-text').text(message))
+        .css({'left': $.getLeft(element[0]) + element.width()})
+        .css({'top': $.getTop(element[0]) + element.height()});
+    $('body').append(newToast);
+    Live.countdown(2, () => newToast.fadeOut(200));
+};
+
 Live.getRoomID = function(showID, callback) {
     let rid = ModuleStore.roomID_get(showID);
     if(!rid) {
@@ -171,6 +181,16 @@ Live.getMessage = (callback) => chrome.runtime.onMessage.addListener((request, s
 
 $.fn.stopPropagation = function() {
     return this.on('click', (e) => e.stopPropagation());
+};
+$.getTop = function(element) {
+    var offset = element.offsetTop;
+    element.offsetParent !== null ? offset += $.getTop(element.offsetParent) : 0;
+    return offset;
+};
+$.getLeft = function(element) {
+    var offset = element.offsetLeft;
+    element.offsetParent !== null ? offset += $.getLeft(element.offsetParent) : 0;
+    return offset;
 };
 
 Live.init = function(callback) {
