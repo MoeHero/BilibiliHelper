@@ -1,4 +1,4 @@
-/* globals ModuleStore,ModuleDom,ModuleNotify,ModuleConsole */
+/* globals ModuleStore,ModuleNotify,ModuleConsole */
 class ALPlugin_SmallTV {
     static init() {
         this.countdown = {};
@@ -11,10 +11,11 @@ class ALPlugin_SmallTV {
         this.addEvent();
     }
     static getInfo() {
-        let info = {};
-        info.name = '小电视抽奖';
-        info.times = ModuleStore.getTimes('smallTV');
-        info.statinfo = [];
+        let info = {
+            name: '小电视抽奖',
+            times: ModuleStore.getTimes('smallTV'),
+            statinfo: []
+        };
         let statinfos = ModuleStore.getStatinfo('smallTV');
         for(let key in statinfos) {
             info.statinfo[this.awardName[key]] = statinfos[key];
@@ -38,32 +39,23 @@ class ALPlugin_SmallTV {
                         this.join(request.real_roomid, request.tv_id);
                     }
                 });
-                this.event('enabled');
+                this.setStateIcon('enabled');
+                this.setStateText(Live.localize.enabled);
+                ModuleNotify.smallTV('enabled');
+                ModuleConsole.smallTV('enabled');
             } else {
-                this.event('exist', result);
+                this.setStateIcon('exist');
+                this.setStateText(Live.format(Live.localize.smallTV.action.exist, result));
+                ModuleConsole.smallTV('exist', result);
             }
         });
     }
 
-    static event(key, param) {
-        switch(key) {
-            case 'enabled':
-                this.stateIcon.attr('class', 'bh-icon tv-enabled');
-                this.stateText.text(Live.localize.enabled);
-                ModuleNotify.smallTV('enabled');
-                ModuleConsole.smallTV('enabled');
-                break;
-            case 'exist':
-                this.stateIcon.attr('class', 'bh-icon tv-exist');
-                this.stateText.text(Live.format(Live.localize.smallTV.action.exist, param));
-                ModuleConsole.smallTV('exist', param);
-                break;
-            case 'award':
-                ModuleStore.addTimes('smallTV', 1);
-                ModuleNotify.smallTV('award', param);
-                ModuleConsole.smallTV('award', param);
-                break;
-        }
+    static setStateText(text) {
+        this.stateText.text(text);
+    }
+    static setStateIcon(key) {
+        this.stateIcon.attr('class', 'bh-icon tv-' + key);
     }
 
     static join(roomID, TVID) {
@@ -82,8 +74,11 @@ class ALPlugin_SmallTV {
         $.getJSON('/SmallTV/getReward', {id: TVID}).done((result) => {
             result = result.data;
             if(result.status === 0) {
+                let award = {awardNumber: result.reward.num, awardName: this.awardName[result.reward.id]};
                 ModuleStore.addStatinfo('smallTV', result.reward.id, result.reward.num);
-                this.event('award', {awardNumber: result.reward.num, awardName: this.awardName[result.reward.id]});
+                ModuleStore.addTimes('smallTV', 1);
+                ModuleNotify.smallTV('award', award);
+                ModuleConsole.smallTV('award', award);
             } else if(result.status == 2) { //正在开奖
                 Live.countdown(10, () => this.getAward(TVID));
             } else {

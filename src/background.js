@@ -103,6 +103,16 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     switch(request.command) {
+        case 'getSign':
+            sendResponse(Sign.getSign());
+            break;
+        case 'setSign':
+            Sign.setSign({tabID: sender.tab.id, showID: request.showID});
+            break;
+        case 'delSign':
+            sendResponse(Sign.delSign());
+            break;
+
         case 'getTreasure':
             sendResponse(Treasure.getTreasure());
             break;
@@ -111,9 +121,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             break;
         case 'delTreasure':
             sendResponse(Treasure.delTreasure());
-            break;
-        case 'checkNewTask':
-            chrome.tabs.sendMessage(Treasure.tabID, {command: 'checkNewTask'});
             break;
 
         case 'getSmallTV':

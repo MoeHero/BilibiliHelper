@@ -4,6 +4,9 @@ window._server_callback = window.server_callback;
 window.server_callback = function(json) {
     window._server_callback(json);
     chrome.runtime.sendMessage(extensionID, json);
+    if(json.cmd && json.cmd == 'SPECIAL_GIFT') {
+        console.log(json);
+    }
 };
 //打开礼物包裹
 window.flash_giftPackageOpen = () => chrome.runtime.sendMessage(extensionID, {command: 'openGiftPackage'});

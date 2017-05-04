@@ -72,9 +72,6 @@ class ModuleConsole {
             case 'joinSuccess':
                 msg += smallTV.action.joinSuccess + Live.format(' RoomID:${roomID} TVID:${TVID}', param);
                 break;
-            case 'joinError':
-                msg += Live.format(smallTV.action.joinError, param);
-                break;
         }
         this.info(msg);
     }

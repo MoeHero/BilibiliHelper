@@ -8,9 +8,10 @@ class ALPlugin_Lighten {
         this.addEvent();
     }
     static getInfo() {
-        let info = {};
-        info.name = '应援棒';
-        info.times = ModuleStore.getTimes('lighten');
+        let info = {
+            name: '应援棒',
+            times: ModuleStore.getTimes('lighten')
+        };
         info.statinfo = {'应援棒': info.times};
         return info;
     }
@@ -25,28 +26,12 @@ class ALPlugin_Lighten {
                         this.getLightenID(request.url.match(/com\/(.+)/)[1]);
                     }
                 });
-                this.event('enabled');
-            } else {
-                this.event('exist', result);
-            }
-        });
-    }
-
-    static event(key, param) {
-        switch(key) {
-            case 'enabled':
                 ModuleNotify.lighten('enabled');
                 ModuleConsole.lighten('enabled');
-                break;
-            case 'exist':
-                ModuleConsole.lighten('exist', param);
-                break;
-            case 'award':
-                ModuleStore.addTimes('lighten', 1);
-                ModuleNotify.lighten('award');
-                ModuleConsole.lighten('award');
-                break;
-        }
+            } else {
+                ModuleConsole.lighten('exist', result);
+            }
+        });
     }
 
     static getLightenID(showID) {
@@ -66,8 +51,10 @@ class ALPlugin_Lighten {
     static getAward(roomID, lightenID) {
         $.post('//api.live.bilibili.com/activity/v1/NeedYou/getLiveAward', {roomid: roomID, lightenId: lightenID}).done((result) => {
             if(result.code === 0) {
-                this.event('award');
-            } else if(result.code == -400) {
+                ModuleStore.addTimes('lighten', 1);
+                ModuleNotify.lighten('award');
+                ModuleConsole.lighten('award');
+            } else if(result.code == -400) { //错误
             } else {
                 console.log(result);
             }
