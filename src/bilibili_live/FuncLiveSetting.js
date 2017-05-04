@@ -8,6 +8,7 @@ class FuncLiveSetting {
             vip: {name: '老爷进场', click: this.vip_click, state: true},
             sysmsg: {name: '系统公告', click: this.sysmsg_click, state: true},
             tvmsg: {name: '小电视公告', click: this.tvmsg_click, state: true},
+            link: {name: '应援团相关内容', click: this.link_click, state: true},
             'show-admin': {name: '显示房管列表', click: this.show_admin_click, state: false},
             'super-gift': {name: '礼物连击', click: this.super_gift_click, state: true}
         };
@@ -33,13 +34,10 @@ class FuncLiveSetting {
         $('.profile-ctrl').append(this.liveSettingPanel).append(this.liveSettingButton);
     }
     static addEvent() {
-        this.liveSettingPanel.on('click', (event) => event.stopPropagation());
+        this.liveSettingPanel.stopPropagation();
         $(document).on('click', () => this.liveSettingPanel.fadeOut(200));
 
-        this.liveSettingButton.on('click', (event) => {
-            this.liveSettingPanel.fadeToggle(200);
-            event.stopPropagation();
-        });
+        this.liveSettingButton.on('click', () => this.liveSettingPanel.fadeToggle(200)).stopPropagation();
         $('.bh-live-setting-btns').on('click', (event) => {
             let button = $(event.currentTarget);
             this.funcList[button.attr('key')].click.call(this);
@@ -90,9 +88,15 @@ class FuncLiveSetting {
     static super_gift_click() {
         $('#super-gift-ctnr-haruna').toggleClass('hide');
     }
+    static link_click() {
+        if(this.funcList['link'].state) {
+            this.link_css = Live.addStylesheetByText('.bilibili-link{display:none!important;}');
+        } else {
+            this.link_css.remove();
+        }
+    }
 
     static chatListScrollToBottom() {
         $('#chat-msg-list').scrollTop($('#chat-msg-list')[0].scrollHeight);
     }
 }
-/**/

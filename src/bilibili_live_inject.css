@@ -13,13 +13,14 @@ i.bh-icon.tv-init { background-position: 0 -20px; }
 i.bh-icon.tv-exist { background-position: -20px -20px; }
 i.bh-icon.tv-enabled { background-position: -40px -20px; }
 
+.row-item { margin-right: 10px !important; }
+.hide { display: none !important; }
 .bh-title {
   display: inline-block;
   font-size: 15px;
   margin: 0;
   margin-bottom: 10px;
 }
-.hide { display: none !important; }
 .live-hover-panel hr {
   margin-top: -5px;
   margin-bottom: 10px;

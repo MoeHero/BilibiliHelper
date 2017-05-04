@@ -19,6 +19,12 @@ class ModuleConsole {
             case 'award':
                 msg += Live.format(sign.action.award, param);
                 break;
+            case 'exist':
+                msg += Live.format(sign.action.exist, param);
+                break;
+            case 'signed':
+                msg += Live.format(sign.action.signed, param);
+                break;
         }
         this.info(msg);
     }
@@ -65,9 +71,6 @@ class ModuleConsole {
                 break;
             case 'joinSuccess':
                 msg += smallTV.action.joinSuccess + Live.format(' RoomID:${roomID} TVID:${TVID}', param);
-                break;
-            case 'joinError':
-                msg += Live.format(smallTV.action.joinError, param);
                 break;
         }
         this.info(msg);

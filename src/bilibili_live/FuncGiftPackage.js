@@ -33,8 +33,8 @@ class FuncGiftPackage {
         $('#gift-package-send-panel').after(this.sendPanel).remove();
     }
     static addEvent() {
-        this.packagePanel.on('click', (event) => event.stopPropagation());
-        this.sendPanel.on('click', (event) => event.stopPropagation());
+        this.packagePanel.stopPropagation();
+        this.sendPanel.stopPropagation();
         $(document).on('click', () => this.packagePanel.fadeOut(200));
 
         this.packageButton.on('click', () => this.openGiftPackage());
@@ -50,21 +50,32 @@ class FuncGiftPackage {
         Live.getMessage((request) => {
             if(request.command && request.command == 'sendGiftCallback') {
                 let result = request.result;
-                if(result.code === 0) {
-                    if(result.data.remain === 0) {
-                        this.currentGift.element.remove();
-                        this.sendPanel.hide();
-                    } else {
-                        this.sendPanelInfo.text(`您的包裹中还剩 ${result.data.remain} 个可用`);
-                        if(this.sendPanelCount.val() > result.data.remain) {
-                            this.sendPanelCount.val(result.data.remain);
+                switch(result.code) {
+                    case 0:
+                        if(result.data.remain === 0) {
+                            this.currentGift.element.remove();
+                            this.sendPanel.hide();
+                        } else {
+                            this.sendPanelInfo.text(`您的包裹中还剩 ${result.data.remain} 个可用`);
+                            if(this.sendPanelCount.val() > result.data.remain) {
+                                this.sendPanelCount.val(result.data.remain);
+                            }
+                            this.currentGift.element.find('.gift-count').text('x' + result.data.remain);
+                            this.currentGift.count = result.data.remain;
                         }
-                        this.currentGift.element.find('.gift-count').text('x' + result.data.remain);
-                        this.currentGift.count = result.data.remain;
-                    }
-                } else if(result.code == 200005) { //无法给自己赠送道具
-                } else {
-                    console.log(result);
+                        break;
+                    case -400: //应援棒提示
+                        Live.liveToast('只有在入围偶像活动的主播房间才能赠送该道具！', this.sendPanelButton, 'caution');
+                        break;
+                    case 200005: //无法给自己赠送道具
+                        Live.liveToast('无法给自己赠送道具！', this.sendPanelButton, 'caution');
+                        break;
+                    case 1024: //超时
+                        Live.liveToast('赠送礼物超时, 请稍后再试！', this.sendPanelButton, 'error');
+                        break;
+                    default:
+                        console.log(result);
+                        break;
                 }
                 this.sendPanelCount.focus();
             }
