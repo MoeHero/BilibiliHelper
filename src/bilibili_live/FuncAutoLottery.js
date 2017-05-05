@@ -1,7 +1,7 @@
 /* globals ModuleDom,ALPlugin_SmallTV,ALPlugin_Lighten */
 class FuncAutoLottery {
     static init() {
-        if(!Live.option.live || !Live.option.live) {
+        if(!Helper.option.live || !Helper.option.live) {
             return;
         }
         this.pluginList = [
@@ -16,10 +16,10 @@ class FuncAutoLottery {
         }
     }
 
-    static initDOM() {
+    static initDOM() { //TODO 上方小电视状态改为全部抽奖插件状态
         this.statinfoButton = $('<a>').addClass('link bili-link').text('抽奖统计信息');
         this.statinfoPanel = $('<div>').addClass('live-hover-panel arrow-top show bh-statinfo').hide();
-        Live.DOM.info.before($('<div>').addClass('ctrl-item').append(this.statinfoButton)).parent().before(this.statinfoPanel);
+        Helper.DOM.info.before($('<div>').addClass('ctrl-item').append(this.statinfoButton)).parent().before(this.statinfoPanel);
     }
     static addEvent() {
         this.statinfoButton.on('click', () => this.openStatinfoPanel()).stopPropagation();

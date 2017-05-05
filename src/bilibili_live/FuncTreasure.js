@@ -1,7 +1,7 @@
 /* globals ModuleStore,ModuleNotify,ModuleConsole */
 class FuncTreasure {
     static init() {
-        if(!Live.option.live || !Live.option.live_autoTreasure) {
+        if(!Helper.option.live || !Helper.option.live_autoTreasure) {
             return;
         }
         this.initDOM();
@@ -15,21 +15,21 @@ class FuncTreasure {
         this.timesDom = $('<span>').text('0/0').hide();
         this.countdownDom = $('<span>').text('00:00').hide();
         let funcInfo = $('<a>').addClass('func-info v-top').append(this.stateText, this.timesDom, ' ', this.countdownDom);
-        Live.DOM.funcInfoRow.prepend(this.stateIcon, funcInfo);
+        Helper.DOM.funcInfoRow.prepend(this.stateIcon, funcInfo);
     }
     static addEvent() {
-        Live.sendMessage({command: 'getTreasure'}, (result) => {
+        Helper.sendMessage({command: 'getTreasure'}, (result) => {
             if(!result.showID) {
-                Live.sendMessage({command: 'setTreasure', showID: Live.showID});
+                Helper.sendMessage({command: 'setTreasure', showID: Helper.showID});
                 $(window).on('beforeunload', () => {
-                    Live.sendMessage({command: 'getTreasure'}, (result) => result.showID == Live.showID && Live.sendMessage({command: 'delTreasure'}));
+                    Helper.sendMessage({command: 'getTreasure'}, (result) => result.showID == Helper.showID && Helper.sendMessage({command: 'delTreasure'}));
                 });
                 ModuleNotify.treasure('enabled');
                 ModuleConsole.treasure('enabled');
-                Live.timer(60 * 60 * 1000, () => this.checkNewTask());
+                Helper.timer(60 * 60 * 1000, () => this.checkNewTask());
             } else {
                 this.setStateIcon('exist');
-                this.setStateText(Live.format(Live.localize.treasure.action.exist, result));
+                this.setStateText(Helper.format(Helper.localize.treasure.action.exist, result));
                 ModuleConsole.treasure('exist', result);
             }
         });
@@ -57,7 +57,7 @@ class FuncTreasure {
                         this.startTime = result.data.time_start;
                         this.endTime = result.data.time_end;
                         this.countdown && this.countdown.clearCountdown();
-                        this.countdown = new Live.countdown(result.data.minute * 60, () => {
+                        this.countdown = new Helper.countdown(result.data.minute * 60, () => {
                             this.setStateText('领取中...');
                             this.getAward();
                         }, this.countdownDom.show());
@@ -66,14 +66,14 @@ class FuncTreasure {
                         break;
                     case -101: //未登录
                         this.setStateIcon('error');
-                        this.setStateText(Live.localize.treasure.action.noLogin);
+                        this.setStateText(Helper.localize.treasure.action.noLogin);
                         ModuleNotify.treasure('noLogin');
                         ModuleConsole.treasure('noLogin');
                         break;
                     case -10017: //领取完毕
                         ModuleStore.treasure('end');
                         this.setStateIcon('end');
-                        this.setStateText(Live.localize.treasure.action.end);
+                        this.setStateText(Helper.localize.treasure.action.end);
                         ModuleNotify.treasure('end');
                         ModuleConsole.treasure('end');
                         break;
@@ -81,11 +81,11 @@ class FuncTreasure {
                         console.log(result);
                         break;
                 }
-            }).fail(() => Live.countdown(2, () => this.checkNewTask()));
+            }).fail(() => Helper.countdown(2, () => this.checkNewTask()));
         } else {
             ModuleStore.treasure('end');
             this.setStateIcon('end');
-            this.setStateText(Live.localize.treasure.action.end);
+            this.setStateText(Helper.localize.treasure.action.end);
         }
     }
     static getAward() {
@@ -98,7 +98,7 @@ class FuncTreasure {
                         let award = {award: result.data.awardSilver, silver: result.data.silver};
                         ModuleNotify.treasure('award', award);
                         ModuleConsole.treasure('award', award);
-                        Live.addScriptByText(`bh_updateSilverSeed(${result.data.silver});`).remove();
+                        Helper.addScriptByText(`bh_updateSilverSeed(${result.data.silver});`).remove();
                         this.checkNewTask();
                         break;
                     case -99: //在其他地方领取
@@ -109,7 +109,7 @@ class FuncTreasure {
                             this.getAward();
                         } else if(result.msg.includes('未绑定手机')) {
                             this.setStateIcon('error');
-                            this.setStateText(Live.localize.treasure.action.noPhone);
+                            this.setStateText(Helper.localize.treasure.action.noPhone);
                             ModuleNotify.treasure('noPhone');
                             ModuleConsole.treasure('noPhone');
                         } else {
@@ -120,9 +120,9 @@ class FuncTreasure {
                         console.log(result);
                         break;
                 }
-            }).fail(() => Live.countdown(2, () => this.getAward()));
+            }).fail(() => Helper.countdown(2, () => this.getAward()));
         };
-        image.onerror = () => Live.countdown(2, () => this.getAward());
+        image.onerror = () => Helper.countdown(2, () => this.getAward());
         image.src = '/freeSilver/getCaptcha';
     }
     static getTimes() {
@@ -135,7 +135,7 @@ class FuncTreasure {
             } else {
                 console.log(result);
             }
-        }).fail(() => Live.countdown(2, () => this.getTimes()));
+        }).fail(() => Helper.countdown(2, () => this.getTimes()));
     }
     static correctQuestion(question) {
         let q = '';

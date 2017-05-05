@@ -1,20 +1,20 @@
 /* globals ModuleStore,ModuleNotify,ModuleConsole */
 class FuncSign {
     static init() {
-        if(!Live.option.live || !Live.option.live_autoSign) {
+        if(!Helper.option.live || !Helper.option.live_autoSign) {
             return;
         }
         this.addEvent();
     }
 
     static addEvent() {
-        Live.sendMessage({command: 'getSign'}, (result) => {
+        Helper.sendMessage({command: 'getSign'}, (result) => {
             if(!result.showID) {
-                Live.sendMessage({command: 'setSign', showID: Live.showID});
-                $(window).on('beforeunload', () => Live.sendMessage({command: 'getSign'}, (result) => result.showID == Live.showID && Live.sendMessage({command: 'delSign'})));
+                Helper.sendMessage({command: 'setSign', showID: Helper.showID});
+                $(window).on('beforeunload', () => Helper.sendMessage({command: 'getSign'}, (result) => result.showID == Helper.showID && Helper.sendMessage({command: 'delSign'})));
                 ModuleNotify.sign('enabled');
                 ModuleConsole.sign('enabled');
-                Live.timer(60 * 60 * 1000, () => this.doSign());
+                Helper.timer(60 * 60 * 1000, () => this.doSign());
             } else {
                 ModuleConsole.sign('exist', result);
             }
@@ -48,7 +48,7 @@ class FuncSign {
                         console.log(result);
                         break;
                 }
-            }).fail(() => Live.countdown(2, () => this.doSign()));
+            }).fail(() => Helper.countdown(2, () => this.doSign()));
         }
     }
 }

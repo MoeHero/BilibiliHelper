@@ -23,6 +23,6 @@
   "quotmark": "single",
   "globals": {
     "chrome": true,
-    "Live": true
+    "Helper": true
   }
 }

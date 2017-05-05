@@ -1,6 +1,6 @@
 class FuncGiftPackage {
     static init() {
-        if(!Live.option.live || !Live.option.live_giftPackage) {
+        if(!Helper.option.live || !Helper.option.live_giftPackage) {
             return;
         }
         this.numberGroup = ['1', '5', '10', '50', '100', '5%', '10%', '50%', '80%', 'MAX'];
@@ -42,12 +42,12 @@ class FuncGiftPackage {
         this.sendPanelCloseButton.on('click', () => this.sendPanel.hide());
         $('.number-btn').on('click', (event) => this.setNumber($(event.currentTarget)));
 
-        Live.getMessage((request) => {
+        Helper.getMessage((request) => {
             if(request.command && request.command == 'openGiftPackage') {
                 this.openGiftPackage();
             }
         });
-        Live.getMessage((request) => {
+        Helper.getMessage((request) => {
             if(request.command && request.command == 'sendGiftCallback') {
                 let result = request.result;
                 switch(result.code) {
@@ -65,13 +65,13 @@ class FuncGiftPackage {
                         }
                         break;
                     case -400: //应援棒提示
-                        Live.liveToast('只有在入围偶像活动的主播房间才能赠送该道具!', this.sendPanelButton, 'caution');
+                        Helper.liveToast('只有在入围偶像活动的主播房间才能赠送该道具!', this.sendPanelButton, 'caution');
                         break;
                     case 200005: //无法给自己赠送道具
-                        Live.liveToast('无法给自己赠送道具!', this.sendPanelButton, 'caution');
+                        Helper.liveToast('无法给自己赠送道具!', this.sendPanelButton, 'caution');
                         break;
                     case 1024: //超时
-                        Live.liveToast('赠送礼物超时,请稍后再试!', this.sendPanelButton, 'error');
+                        Helper.liveToast('赠送礼物超时,请稍后再试!', this.sendPanelButton, 'error');
                         break;
                     default:
                         console.log(result);
@@ -91,13 +91,13 @@ class FuncGiftPackage {
                         this.packagePanel.show();
                         break;
                     case -101: //未登录
-                        Live.liveToast('请先登录!', this.packageButton, 'caution');
+                        Helper.liveToast('请先登录!', this.packageButton, 'caution');
                         break;
                     default:
                         console.log(result);
                         break;
                 }
-            }).fail(() => Live.countdown(2, () => this.openGiftPackage()));
+            }).fail(() => Helper.countdown(2, () => this.openGiftPackage()));
         }
     }
     static sortGifts(giftData) {
@@ -177,6 +177,6 @@ class FuncGiftPackage {
         this.sendPanelCount.val(number);
     }
     static sendGift() {
-        Live.addScriptByText(`bh_sendGift(${this.currentGift.giftID}, ${this.sendPanelCount.val()}, ${this.currentGift.bagID});`).remove();
+        Helper.addScriptByText(`bh_sendGift(${this.currentGift.giftID}, ${this.sendPanelCount.val()}, ${this.currentGift.bagID});`).remove();
     }
 }

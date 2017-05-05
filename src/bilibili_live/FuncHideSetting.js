@@ -1,7 +1,7 @@
 /* globals store */
 class FuncHideSetting {
     static init() {
-        if(!Live.option.live || !Live.option.live_hideSetting) {
+        if(!Helper.option.live || !Helper.option.live_hideSetting) {
             return;
         }
         this.funcList = {
@@ -54,7 +54,7 @@ class FuncHideSetting {
             let button = $('<a>').addClass('f-right live-btn').attr('key', key).on('click', (e) => this.buttonClickEvent($(e.currentTarget)));
             this.funcList[key].showButton = button.clone(true).addClass(this.funcList[key].state ? 'default' : 'ghost').text('显示');
             this.funcList[key].hideButton = button.clone(true).addClass(this.funcList[key].state ? 'ghost' : 'default').text('隐藏');
-            !this.funcList[key].state && (this.funcList[key].cssDOM = Live.addStylesheetByText(this.funcList[key].css));
+            !this.funcList[key].state && (this.funcList[key].cssDOM = Helper.addStylesheetByText(this.funcList[key].css));
             li.append(this.funcList[key].showButton, this.funcList[key].hideButton);
             ul.append(li);
             top += -27;
@@ -70,16 +70,16 @@ class FuncHideSetting {
     }
 
     static getSetting()　{
-        let setting = store.get('BH_HideSetting')[Live.roomID] || {};
+        let setting = store.get('BH_HideSetting')[Helper.roomID] || {};
         for(let key in this.funcList) {
             setting[key] !== undefined && (this.funcList[key].state = setting[key]);
         }
     }
     static saveSetting() {
         let setting = store.get('BH_HideSetting') || {};
-        !setting[Live.roomID] && (setting[Live.roomID] = {});
+        !setting[Helper.roomID] && (setting[Helper.roomID] = {});
         for(let key in this.funcList) {
-            setting[Live.roomID][key] = this.funcList[key].state;
+            setting[Helper.roomID][key] = this.funcList[key].state;
         }
         store.set('BH_HideSetting', setting);
     }
@@ -88,7 +88,7 @@ class FuncHideSetting {
         let func = this.funcList[button.attr('key')];
         if(button.text() == '隐藏' && func.state) {
             func.showButton.removeClass('default').addClass('ghost');
-            func.cssDOM = Live.addStylesheetByText(func.css);
+            func.cssDOM = Helper.addStylesheetByText(func.css);
         } else if(button.text() == '显示' && !func.state) {
             func.hideButton.removeClass('default').addClass('ghost');
             func.cssDOM.remove();

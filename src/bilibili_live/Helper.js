@@ -1,44 +1,44 @@
 /* globals ModuleStore */
-var Live = {
+var Helper = {
     options: {},
     userInfo: {},
     DOM: {},
     showID: location.pathname.substr(1)
 };
 
-Live.addScriptByFile = function(fileName) {
+Helper.addScriptByFile = function(fileName) {
     let script = $('<script>').attr('src', chrome.extension.getURL(fileName));
     $('head').append(script);
     return script;
 };
-Live.addScriptByText = function(text) {
+Helper.addScriptByText = function(text) {
     let script = $('<script>').text(text);
     $('head').append(script);
     return script;
 };
 
-Live.addStylesheetByFile = function(fileName) {
+Helper.addStylesheetByFile = function(fileName) {
     let link = $('<link>').attr('rel', 'stylesheet').attr('href', chrome.extension.getURL(fileName));
     $('head').append(link);
     return link;
 };
-Live.addStylesheetByText = function(text) {
+Helper.addStylesheetByText = function(text) {
     let style = $('<style>').attr('type', 'text/css').text(text);
     $('head').append(style);
     return style;
 };
 
-Live.liveToast = (message, element, type = 'info') => {
+Helper.liveToast = (message, element, type = 'info') => {
     //success caution error info
     let newToast = $('<div>').addClass('live-toast ' + type)
         .append($('<i>').addClass('toast-icon ' + type), $('<span>').addClass('toast-text').text(message))
         .css({'left': $.getLeft(element[0]) + element.width()})
         .css({'top': $.getTop(element[0]) + element.height()});
     $('body').append(newToast);
-    Live.countdown(2, () => newToast.fadeOut(200));
+    Helper.countdown(2, () => newToast.fadeOut(200));
 };
 
-Live.getRoomID = function(showID, callback) {
+Helper.getRoomID = function(showID, callback) {
     let rid = ModuleStore.roomID_get(showID);
     if(!rid) {
         $.get('/' + showID).done((result) => {
@@ -51,7 +51,7 @@ Live.getRoomID = function(showID, callback) {
         typeof callback == 'function' && callback(rid);
     }
 };
-/*Live.getRoomInfo = function(roomID, callback) {
+/*Helper.getRoomInfo = function(roomID, callback) {
     let roomInfo = {};
     $.getJSON('/live/getInfo?roomid=' + roomID).done((result) => {
         if(result.code === 0) {
@@ -63,16 +63,16 @@ Live.getRoomID = function(showID, callback) {
         typeof callback == 'function' && callback(roomInfo);
     });
 };*/
-/*Live.getUserInfo = function(callback) {
+/*Helper.getUserInfo = function(callback) {
     $.getJSON('/user/getuserinfo').done((result) => {
         if(result.code == 'REPONSE_OK') {
-            Live.userInfo.vip = result.data.vip || result.data.svip;
+            Helper.userInfo.vip = result.data.vip || result.data.svip;
         } else {
             console.log(result);
         }
     }).then(() => $.getJSON('//space.bilibili.com/ajax/member/MyInfo').done((result) => {
         if(result.status === true) {
-            Live.userInfo.mobileVerified = result.data.mobile_verified;
+            Helper.userInfo.mobileVerified = result.data.mobile_verified;
         } else {
             console.log(result);
         }
@@ -80,7 +80,7 @@ Live.getRoomID = function(showID, callback) {
     }));
 };*/
 
-Live.format = (template, data) => {
+Helper.format = (template, data) => {
     if(data) {
         let keys = Object.keys(data);
         let dataList = keys.map((key) => data[key]);
@@ -88,7 +88,7 @@ Live.format = (template, data) => {
     }
     return template;
 };
-Live.localize = {//TODO 重构 去除不必要文本
+Helper.localize = {//TODO 重构 去除不必要文本
     helper: 'Bilibili助手',
     enabled: '已启用',
     sign: {
@@ -127,9 +127,9 @@ Live.localize = {//TODO 重构 去除不必要文本
     }
 };
 
-Live.countdown = function(time, callback, element) {
-    if(!(this instanceof Live.countdown)) {
-        return new Live.countdown(time, callback, element);
+Helper.countdown = function(time, callback, element) {
+    if(!(this instanceof Helper.countdown)) {
+        return new Helper.countdown(time, callback, element);
     }
     if(!time || (!(time instanceof Date) && isNaN(time))) {
         console.error('时间设置错误!');
@@ -156,29 +156,29 @@ Live.countdown = function(time, callback, element) {
     }, 100);
     this.countdown = countdown;
 };
-Live.countdown.prototype.clearCountdown = function() {
+Helper.countdown.prototype.clearCountdown = function() {
     clearInterval(this.countdown);
 };
 
-Live.timer = function(ms, callback) {
+Helper.timer = function(ms, callback) {
     if(!ms || isNaN(ms)) {
         console.error('时间设置错误!');
         return;
     }
-    if(!(this instanceof Live.timer)) {
-        return new Live.timer(ms, callback);
+    if(!(this instanceof Helper.timer)) {
+        return new Helper.timer(ms, callback);
     }
     this.timer = setInterval(() => {
         typeof callback == 'function' && callback();
     }, ms);
     typeof callback == 'function' && callback();
 };
-Live.timer.prototype.clearTimer = function() {
+Helper.timer.prototype.clearTimer = function() {
     clearInterval(this.timer);
 };
 
-Live.sendMessage = (msg, callback) => chrome.runtime.sendMessage(msg, (response) => typeof callback == 'function' && callback(response));
-Live.getMessage = (callback) => chrome.runtime.onMessage.addListener((request, sender, sendResponse) => typeof callback == 'function' && callback(request, sender, sendResponse));
+Helper.sendMessage = (msg, callback) => chrome.runtime.sendMessage(msg, (response) => typeof callback == 'function' && callback(response));
+Helper.getMessage = (callback) => chrome.runtime.onMessage.addListener((request, sender, sendResponse) => typeof callback == 'function' && callback(request, sender, sendResponse));
 
 $.fn.stopPropagation = function() {
     return this.on('click', (e) => e.stopPropagation());
@@ -194,25 +194,25 @@ $.getLeft = function(element) {
     return offset;
 };
 
-Live.init = function(callback) {
+Helper.init = function(callback) {
     ModuleStore.init();
-    Live.getRoomID(Live.showID, (roomID) => {
-        Live.roomID = roomID;
+    Helper.getRoomID(Helper.showID, (roomID) => {
+        Helper.roomID = roomID;
 
-        /*Live.getRoomInfo(Live.roomID, (roomInfo) => {
-            Live.roomInfo = roomInfo;
+        /*Helper.getRoomInfo(Helper.roomID, (roomInfo) => {
+            Helper.roomInfo = roomInfo;
             init++;
         });*/
-        Live.sendMessage({command: 'getOption'}, (result) => {
-            Live.option = result;
+        Helper.sendMessage({command: 'getOption'}, (result) => {
+            Helper.option = result;
 
             {
-                Live.DOM.info = $('<div>').addClass('seeds-buy-cntr').append($('<div>').addClass('ctrl-item').html(`${Live.localize.helper} V${Live.info.version}　QQ群:<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">285795550</a>`));
-                $('.control-panel').prepend(Live.DOM.info);
+                Helper.DOM.info = $('<div>').addClass('seeds-buy-cntr').append($('<div>').addClass('ctrl-item').html(`${Helper.localize.helper} V${Helper.info.version}　QQ群:<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">285795550</a>`));
+                $('.control-panel').prepend(Helper.DOM.info);
             } //瓜子数量 左
-            if(Live.option.live && (Live.option.live_autoTreasure || Live.option.live_autoSmallTV)) {
-                Live.DOM.funcInfoRow = $('<div>').addClass('bh-func-info-row').append($('<div>').addClass('func-info v-top').html('<span>分区: </span>' + $('.room-info-row a')[0].outerHTML));
-                $('.anchor-info-row').css('margin-top', 0).after(Live.DOM.funcInfoRow);
+            if(Helper.option.live && (Helper.option.live_autoTreasure || Helper.option.live_autoSmallTV)) {
+                Helper.DOM.funcInfoRow = $('<div>').addClass('bh-func-info-row').append($('<div>').addClass('func-info v-top').html('<span>分区: </span>' + $('.room-info-row a')[0].outerHTML));
+                $('.anchor-info-row').css('margin-top', 0).after(Helper.DOM.funcInfoRow);
 
                 $('.room-info-row').remove();
             } //主播信息 下
@@ -220,5 +220,5 @@ Live.init = function(callback) {
             typeof callback == 'function' && callback();
         });
     });
-    //Live.getUserInfo(() => init++);
+    //Helper.getUserInfo(() => init++);
 };

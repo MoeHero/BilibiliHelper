@@ -1,7 +1,7 @@
 /* globals ModuleStore,ModuleNotify,ModuleConsole */
 class ALPlugin_Lighten {
     static init() {
-        if(!Live.option.live || !Live.option.live_lighten) {
+        if(!Helper.option.live || !Helper.option.live_lighten) {
             return;
         }
 
@@ -17,11 +17,11 @@ class ALPlugin_Lighten {
     }
 
     static addEvent() {
-        Live.sendMessage({command: 'getLighten'}, (result) => {
+        Helper.sendMessage({command: 'getLighten'}, (result) => {
             if(!result.showID) {
-                Live.sendMessage({command: 'setLighten', showID: Live.showID});
-                $(window).on('beforeunload', () => Live.sendMessage({command: 'getLighten'}, (result) => result.showID == Live.showID && Live.sendMessage({command: 'delLighten'})));
-                Live.getMessage((request) => {
+                Helper.sendMessage({command: 'setLighten', showID: Helper.showID});
+                $(window).on('beforeunload', () => Helper.sendMessage({command: 'getLighten'}, (result) => result.showID == Helper.showID && Helper.sendMessage({command: 'delLighten'})));
+                Helper.getMessage((request) => {
                     if(request.cmd && request.cmd == 'SYS_MSG' && request.msg && request.msg.includes('领取应援棒') && request.url) {
                         this.getLightenID(request.url.match(/com\/(.+)/)[1]);
                     }
@@ -35,7 +35,7 @@ class ALPlugin_Lighten {
     }
 
     static getLightenID(showID) {
-        Live.getRoomID(showID, (roomID) => {
+        Helper.getRoomID(showID, (roomID) => {
             $.getJSON('//api.live.bilibili.com/activity/v1/NeedYou/getLiveInfo', {roomid: roomID}).done((result) => {
                 if(result.data.length > 0) {
                     result = result.data[0];
@@ -45,7 +45,7 @@ class ALPlugin_Lighten {
                         console.log(result);
                     }
                 }
-            }).fail(() => Live.countdown(2, () => this.join(showID)));
+            }).fail(() => Helper.countdown(2, () => this.join(showID)));
         });
     }
     static getAward(roomID, lightenID) {
@@ -58,6 +58,6 @@ class ALPlugin_Lighten {
             } else {
                 console.log(result);
             }
-        }).fail(() => Live.countdown(2, () => this.getAward(roomID, lightenID)));
+        }).fail(() => Helper.countdown(2, () => this.getAward(roomID, lightenID)));
     }
 }
