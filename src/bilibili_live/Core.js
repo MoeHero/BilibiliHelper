@@ -16,6 +16,6 @@ Live.sendMessage({command: 'getInfo'}, (result) => {
         FuncAutoLottery.init();
 
         FuncGiftPackage.init();
-        FuncLiveSetting.init();
+        FuncHideSetting.init();
     });
 });

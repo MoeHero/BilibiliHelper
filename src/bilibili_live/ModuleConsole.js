@@ -23,7 +23,7 @@ class ModuleConsole {
                 msg += Live.format(sign.action.exist, param);
                 break;
             case 'signed':
-                msg += Live.format(sign.action.signed, param);
+                msg += sign.action.signed;
                 break;
         }
         this.info(msg);

@@ -86,6 +86,7 @@ Live.format = (template, data) => {
         let dataList = keys.map((key) => data[key]);
         return new Function(keys.join(','), 'return `' + template + '`;').apply(null, dataList); //jshint ignore:line
     }
+    return template;
 };
 Live.localize = {//TODO 重构 去除不必要文本
     helper: 'Bilibili助手',
