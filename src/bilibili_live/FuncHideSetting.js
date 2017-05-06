@@ -7,7 +7,7 @@ class FuncHideSetting {
         this.funcList = {
             gift: {
                 name: '礼物信息',
-                css: '.gift-msg{display:none!important;}'
+                css: '.gift-msg{display:none!important;}.gift-msg-1000{display:none!important;}.chat-msg-list{height:100%!important;}'
             },
             vip: {
                 name: '舰长&老爷进场',
@@ -43,15 +43,15 @@ class FuncHideSetting {
             },
             chat: {
                 name: '聊天信息',
-                css: '.msg-item-ctnr{display:none!important;}'
+                css: '.chat-msg{display:none!important;}'
             },
             vipicon: {
                 name: '老爷图标',
-                css: '.msg-item-ctnr .vip-icon{display:none!important;}'
+                css: '.chat-msg .vip-icon{display:none!important;}'
             },
             guardicon: {
                 name: '舰长图标',
-                css: '.msg-item-ctnr .guard-icon-small{display:none!important;}'
+                css: '.chat-msg .guard-icon-small{display:none!important;}'
             },
             adminicon: {
                 name: '房管图标',
@@ -68,7 +68,7 @@ class FuncHideSetting {
     static initDOM() {
         this.hideSettingButton = $('<a>').addClass('bh-hide-setting-btn f-right live-btn ghost').text('屏蔽设置');
         this.hideSettingPanel = $('<div>').addClass('bh-hide-setting-panel live-hover-panel arrow-bottom show').hide()
-            .append($('<h4>').addClass('bh-title').text('屏蔽设置')).append($('<hr>'));
+            .append($('<h4>').addClass('bh-title').text('屏蔽设置'), $('<hr>'));
         let ul = $('<ul>');
         let top = -65;
         for(let key in this.funcList) {
@@ -77,12 +77,12 @@ class FuncHideSetting {
             this.funcList[key].showButton = button.clone(true).addClass(this.funcList[key].state ? 'default' : 'ghost').text('显示');
             this.funcList[key].hideButton = button.clone(true).addClass(this.funcList[key].state ? 'ghost' : 'default').text('隐藏');
             !this.funcList[key].state && (this.funcList[key].cssDOM = Helper.addStylesheetByText(this.funcList[key].css));
-            li.append(this.funcList[key].showButton, this.funcList[key].hideButton);
+            li.append(this.funcList[key].hideButton, this.funcList[key].showButton);
             ul.append(li);
             top += -28;
         }
         this.hideSettingPanel.append(ul).css('top', top + 'px');
-        $('.profile-ctrl').append(this.hideSettingPanel).append(this.hideSettingButton);
+        $('.profile-ctrl').append(this.hideSettingPanel, this.hideSettingButton);
     }
     static addEvent() {
         this.hideSettingPanel.stopPropagation();

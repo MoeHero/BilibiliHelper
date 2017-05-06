@@ -6,10 +6,11 @@
 [![license](https://img.shields.io/badge/license-MPL--2.0-blue.svg)](https://github.com/MoeHero/BilibiliHelper/blob/master/LICENSE)
 
 ## Update Log
-`新增` 直播设置支持更多选项  
-`优化` 自动签到仅在一个直播间开启  
-`优化` 无法赠送礼物包裹内物品时显示提示  
-`修复` B站改版导致部分直播页面错位的问题
+`新增` 屏蔽设置支持更多选项  
+`优化` 屏蔽设置界面优化  
+`优化` 直播设置改名为屏蔽设置  
+`优化` 屏蔽设置支持按房间保存  
+`修复` 自动签到提示信息为undefined的问题
 
 ## TODO List
 ### 计划功能
