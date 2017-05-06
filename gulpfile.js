@@ -32,7 +32,7 @@ gulp.task('set:d', function() {
 
 gulp.task('live', function() {
     return gulp.src('./src/bilibili_live/*.js')
-        .pipe($.order(['Live.js', 'Module*.js', 'Func*.js', '!Core.js', 'Core.js']))
+        .pipe($.order(['Helper.js', 'Module*.js', 'Func*.js', '!Core.js', 'Core.js']))
         .pipe($.jshintChannel())
         .pipe($.concat('bilibili_live.js'))
         .pipe($.if(path == 'release', $.babel({presets: ['babili']})))

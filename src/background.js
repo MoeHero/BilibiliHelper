@@ -58,14 +58,29 @@ var Option = {
     live_autoTreasure: true,
     live_autoSmallTV: true,
     live_giftPackage: true,
-    live_liveSetting: true,
+    live_hideSetting: true,
     live_lighten: true,
+    live_hideSettingState: {
+        gift: true,
+        vip: true,
+        sysmsg: true,
+        tvmsg: true,
+        link: true,
+        combo: true,
+        title: true,
+        medal: true,
+        level: true,
+        chat: true,
+        vipicon: true,
+        guardicon: true,
+        adminicon: true
+    },
     live: true,
     notify_autoSign: true,
     notify_autoTreasure: true,
     notify_autoSmallTV: true,
     notify_autoLighten: true,
-    notify: true,
+    notify: true
 };
 var Info = {
     version: chrome.runtime.getManifest().version,
@@ -85,7 +100,11 @@ function createNotifications(param) {
 }
 
 if(window.localStorage.bh_option) {
+    let hideSettingState = Option.live_hideSettingState;
     $.extend(Option, JSON.parse(window.localStorage.bh_option));
+    Option.live_hideSettingState = $.extend({}, hideSettingState, JSON.parse(window.localStorage.bh_option).live_hideSettingState);
+
+    Option.live_liveSetting && (Option.live_hideSetting = Option.live_liveSetting) && delete Option.live_liveSetting;
 }
 saveOption();
 

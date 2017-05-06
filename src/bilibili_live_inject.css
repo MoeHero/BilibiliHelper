@@ -13,7 +13,6 @@ i.bh-icon.tv-init { background-position: 0 -20px; }
 i.bh-icon.tv-exist { background-position: -20px -20px; }
 i.bh-icon.tv-enabled { background-position: -40px -20px; }
 
-.row-item { margin-right: 10px !important; }
 .hide { display: none !important; }
 .bh-title {
   display: inline-block;
@@ -21,9 +20,11 @@ i.bh-icon.tv-enabled { background-position: -40px -20px; }
   margin: 0;
   margin-bottom: 10px;
 }
+
+.row-item { margin-right: 10px !important; }
 .live-hover-panel hr {
   margin-top: -5px;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   border: 0;
   height: 1px;
   background-color: #CDDBE0;
@@ -73,11 +74,22 @@ i.bh-icon.tv-enabled { background-position: -40px -20px; }
   background-color: #4FC1E9;
 }
 
-.bh-live-setting-btn {
+.bh-hide-setting-btn {
   height: 22px;
   width: 70px;
   line-height: 21px;
   padding: 0;
 }
-.bh-live-setting-panel { left: 0; }
-.bh-live-setting-panel:before { left: 90%; }
+.bh-hide-setting-panel {
+  width: 200px;
+  left: 45px;
+}
+.bh-hide-setting-panel:before { left: 90%; }
+.bh-hide-setting-panel span { line-height: 26px; }
+.bh-hide-setting-panel a {
+  height: 22px;
+  width: 40px;
+  line-height: 21px;
+  padding: 0;
+  margin: 3px;
+}

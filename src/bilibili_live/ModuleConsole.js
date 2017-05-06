@@ -10,39 +10,39 @@ class ModuleConsole {
     }
 
     static sign(key, param) {
-        var sign = Live.localize.sign;
+        var sign = Helper.localize.sign;
         var msg = sign.title + ': ';
         switch(key) {
             case 'enabled':
-                msg += Live.localize.enabled;
+                msg += Helper.localize.enabled;
                 break;
             case 'award':
-                msg += Live.format(sign.action.award, param);
+                msg += Helper.format(sign.action.award, param);
                 break;
             case 'exist':
-                msg += Live.format(sign.action.exist, param);
+                msg += Helper.format(sign.action.exist, param);
                 break;
             case 'signed':
-                msg += Live.format(sign.action.signed, param);
+                msg += sign.action.signed;
                 break;
         }
         this.info(msg);
     }
     static treasure(key, param) {
-        var treasure = Live.localize.treasure;
+        var treasure = Helper.localize.treasure;
         var msg = treasure.title + ': ';
         switch(key) {
             case 'enabled':
-                msg += Live.localize.enabled;
+                msg += Helper.localize.enabled;
                 break;
             case 'awarding':
                 msg += '领取中...';
                 break;
             case 'award':
-                msg += Live.format(treasure.action.award + ' ' + treasure.action.totalSilver, param);
+                msg += Helper.format(treasure.action.award + ' ' + treasure.action.totalSilver, param);
                 break;
             case 'exist':
-                msg += Live.format(treasure.action.exist, param);
+                msg += Helper.format(treasure.action.exist, param);
                 break;
             case 'noLogin':
                 msg += treasure.action.noLogin;
@@ -57,36 +57,36 @@ class ModuleConsole {
         this.info(msg);
     }
     static smallTV(key, param) {
-        var smallTV = Live.localize.smallTV;
+        var smallTV = Helper.localize.smallTV;
         var msg = smallTV.title + ': ';
         switch(key) {
             case 'enabled':
-                msg += Live.localize.enabled;
+                msg += Helper.localize.enabled;
                 break;
             case 'award':
-                msg += Live.format(smallTV.action.award, param);
+                msg += Helper.format(smallTV.action.award, param);
                 break;
             case 'exist':
-                msg += Live.format(smallTV.action.exist, param);
+                msg += Helper.format(smallTV.action.exist, param);
                 break;
             case 'joinSuccess':
-                msg += smallTV.action.joinSuccess + Live.format(' RoomID:${roomID} TVID:${TVID}', param);
+                msg += smallTV.action.joinSuccess + Helper.format(' RoomID:${roomID} TVID:${TVID}', param);
                 break;
         }
         this.info(msg);
     }
     static lighten(key, param) {
-        var lighten = Live.localize.lighten;
+        var lighten = Helper.localize.lighten;
         var msg = lighten.title + ': ';
         switch(key) {
             case 'enabled':
-                msg += Live.localize.enabled;
+                msg += Helper.localize.enabled;
                 break;
             case 'award':
                 msg += lighten.action.award;
                 break;
             case 'exist':
-                msg += Live.format(lighten.action.exist, param);
+                msg += Helper.format(lighten.action.exist, param);
                 break;
         }
         this.info(msg);
