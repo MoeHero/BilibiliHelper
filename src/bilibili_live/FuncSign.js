@@ -22,10 +22,8 @@ class FuncSign {
     }
 
     static setSigned() {
-        let signBtn = $('.sign-up-btn');
-        signBtn.find('.dp-inline-block>span:first-child').hide();
-        signBtn.find('.dp-inline-block>.dp-none').show();
-        signBtn.find('.has-new').removeClass('has-new');
+        $('.sign-in .has-new').remove();
+        Helper.addScriptByText('bh_setSigned();').remove();
     }
 
     static doSign() {

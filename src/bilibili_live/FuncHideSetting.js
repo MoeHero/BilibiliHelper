@@ -7,33 +7,55 @@ class FuncHideSetting {
         this.funcList = {
             gift: {
                 name: '礼物信息',
-                css: '.gift-msg{display:none!important;}',
-                state: true
+                css: '.gift-msg{display:none!important;}'
             },
             vip: {
-                name: '老爷进场',
-                css: '.system-msg{display:none!important;}',
-                state: true
+                name: '舰长&老爷进场',
+                css: '.system-msg{display:none!important;}'
             },
             sysmsg: {
                 name: '系统公告',
-                css: '.sys-msg{display:none!important;}',
-                state: true
+                css: '.sys-msg{display:none!important;}'
             },
             tvmsg: {
                 name: '小电视公告',
-                css: '.small-tv-msg{display:none!important;}',
-                state: true
+                css: '.small-tv-msg{display:none!important;}'
             },
             link: {
                 name: '应援团相关',
-                css: '.bilibili-link{display:none!important;}',
-                state: true
+                css: '.bilibili-link{display:none!important;}'
             },
-            'super-gift': {
+            combo: {
                 name: '礼物连击',
-                css: '#super-gift-ctnr-haruna{display:none!important;}',
-                state: true
+                css: '#super-gift-ctnr-haruna{display:none!important;}'
+            },
+            title: {
+                name: '用户头衔',
+                css: '.check-my-title{display:none!important;}'
+            },
+            medal: {
+                name: '粉丝勋章',
+                css: '.fans-medal-item{display:none!important;}'
+            },
+            level: {
+                name: '用户等级',
+                css: '.user-level-icon{display:none!important;}'
+            },
+            chat: {
+                name: '聊天信息',
+                css: '.msg-item-ctnr{display:none!important;}'
+            },
+            vipicon: {
+                name: '老爷图标',
+                css: '.msg-item-ctnr .vip-icon{display:none!important;}'
+            },
+            guardicon: {
+                name: '舰长图标',
+                css: '.msg-item-ctnr .guard-icon-small{display:none!important;}'
+            },
+            adminicon: {
+                name: '房管图标',
+                css: '.admin{display:none!important;}'
             }
         };
 
@@ -44,11 +66,11 @@ class FuncHideSetting {
     }
 
     static initDOM() {
-        this.liveSettingButton = $('<a>').addClass('bh-hide-setting-btn f-right live-btn ghost').text('屏蔽设置');
-        this.liveSettingPanel = $('<div>').addClass('bh-hide-setting-panel live-hover-panel arrow-bottom show').hide();
-        this.liveSettingPanel.append($('<h4>').addClass('bh-title').text('屏蔽设置')).append($('<hr>'));
+        this.hideSettingButton = $('<a>').addClass('bh-hide-setting-btn f-right live-btn ghost').text('屏蔽设置');
+        this.hideSettingPanel = $('<div>').addClass('bh-hide-setting-panel live-hover-panel arrow-bottom show').hide()
+            .append($('<h4>').addClass('bh-title').text('屏蔽设置')).append($('<hr>'));
         let ul = $('<ul>');
-        let top = -70;
+        let top = -65;
         for(let key in this.funcList) {
             let li = $('<li>').addClass('clear-float').append($('<span>').text(this.funcList[key].name));
             let button = $('<a>').addClass('f-right live-btn').attr('key', key).on('click', (e) => this.buttonClickEvent($(e.currentTarget)));
@@ -57,22 +79,22 @@ class FuncHideSetting {
             !this.funcList[key].state && (this.funcList[key].cssDOM = Helper.addStylesheetByText(this.funcList[key].css));
             li.append(this.funcList[key].showButton, this.funcList[key].hideButton);
             ul.append(li);
-            top += -27;
+            top += -28;
         }
-        this.liveSettingPanel.append(ul).css('top', top + 'px');
-        $('.profile-ctrl').append(this.liveSettingPanel).append(this.liveSettingButton);
+        this.hideSettingPanel.append(ul).css('top', top + 'px');
+        $('.profile-ctrl').append(this.hideSettingPanel).append(this.hideSettingButton);
     }
     static addEvent() {
-        this.liveSettingPanel.stopPropagation();
-        $(document).on('click', () => this.liveSettingPanel.fadeOut(200));
+        this.hideSettingPanel.stopPropagation();
+        $(document).on('click', () => this.hideSettingPanel.fadeOut(200));
 
-        this.liveSettingButton.on('click', () => this.liveSettingPanel.fadeToggle(200)).stopPropagation();
+        this.hideSettingButton.on('click', () => this.hideSettingPanel.fadeToggle(200)).stopPropagation();
     }
 
     static getSetting()　{
         let setting = store.get('BH_HideSetting')[Helper.roomID] || {};
         for(let key in this.funcList) {
-            setting[key] !== undefined && (this.funcList[key].state = setting[key]);
+            this.funcList[key].state = setting[key] !== undefined ? setting[key] : Helper.option.live_hideSettingState[key];
         }
     }
     static saveSetting() {

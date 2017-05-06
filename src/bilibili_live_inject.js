@@ -28,3 +28,6 @@ function bh_sendGift(giftID, number, bagID) {
 function bh_updateSilverSeed(number) {
     window.avalon.vmodels.giftCtrl.$fire('all!updateCurrency', {silver: number});
 }
+function bh_setSigned() {
+    window.avalon.vmodels.signUpCtrl.$fire('all!roomDoSign');
+}
