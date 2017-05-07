@@ -177,6 +177,6 @@ class FuncGiftPackage {
         this.sendPanelCount.val(number);
     }
     static sendGift() {
-        Helper.addScriptByText(`bh_sendGift(${this.currentGift.giftID}, ${this.sendPanelCount.val()}, ${this.currentGift.bagID});`).remove();
+        Helper.addScriptByText(`bh_sendGift_package(${this.currentGift.giftID}, ${this.sendPanelCount.val()}, ${this.currentGift.bagID});`).remove();
     }
 }

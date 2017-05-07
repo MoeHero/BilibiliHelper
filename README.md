@@ -6,11 +6,8 @@
 [![license](https://img.shields.io/badge/license-MPL--2.0-blue.svg)](https://github.com/MoeHero/BilibiliHelper/blob/master/LICENSE)
 
 ## Update Log
-`新增` 屏蔽设置支持更多选项  
-`优化` 屏蔽设置界面优化  
-`优化` 直播设置改名为屏蔽设置  
-`优化` 屏蔽设置支持按房间保存  
-`修复` 自动签到提示信息为undefined的问题
+`新增` 我的关注列表随窗口大小改变  
+`修复` 自动领瓜子一直显示领取中的问题
 
 ## TODO List
 ### 计划功能

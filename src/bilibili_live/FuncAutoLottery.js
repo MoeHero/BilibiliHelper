@@ -41,6 +41,7 @@ class FuncAutoLottery {
                 for(let key in info.statinfo) {
                     statinfosContent.append($('<li>').text(key + 'x' + info.statinfo[key]));
                 }
+                statinfosContent.html() === '' && statinfosContent.text('暂无记录');
                 this.statinfoPanel.append($('<h4>').addClass('bh-title').text(info.name), $('<span>').addClass('f-right').text(info.times + ' 次'), $('<hr>'), statinfosContent);
             }
             this.statinfoPanel.fadeIn(200);

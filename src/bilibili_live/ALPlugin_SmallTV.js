@@ -14,7 +14,7 @@ class ALPlugin_SmallTV {
         let info = {
             name: '小电视抽奖',
             times: ModuleStore.getTimes('smallTV'),
-            statinfo: []
+            statinfo: {}
         };
         let statinfos = ModuleStore.getStatinfo('smallTV');
         for(let key in statinfos) {
