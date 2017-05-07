@@ -216,6 +216,9 @@ Helper.init = function(callback) {
 
                 $('.room-info-row').remove();
             } //主播信息 下
+            //自动扩大关注列表
+            $('.my-attention-body').height($(window).height() - 550);
+            $(window).resize(() => $('.my-attention-body').height($(window).height() - 550));
 
             typeof callback == 'function' && callback();
         });

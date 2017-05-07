@@ -10,9 +10,10 @@ class ALPlugin_Lighten {
     static getInfo() {
         let info = {
             name: '应援棒',
-            times: ModuleStore.getTimes('lighten')
+            times: ModuleStore.getTimes('lighten'),
+            statinfo: {}
         };
-        info.statinfo = {'应援棒': info.times};
+        info.times > 0 && (info.statinfo = {'应援棒': info.times});
         return info;
     }
 

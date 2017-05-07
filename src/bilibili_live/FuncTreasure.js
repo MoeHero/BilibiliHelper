@@ -123,7 +123,7 @@ class FuncTreasure {
             }).fail(() => Helper.countdown(2, () => this.getAward()));
         };
         image.onerror = () => Helper.countdown(2, () => this.getAward());
-        image.src = '/freeSilver/getCaptcha';
+        image.src = '/freeSilver/getCaptcha?ts=' + Date.now();
     }
     static getTimes() {
         $.getJSON('/i/api/taskInfo').done((result) => {
