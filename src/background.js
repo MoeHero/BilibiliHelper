@@ -93,7 +93,7 @@ function saveOption() {
 function createNotifications(param) {
     chrome.notifications.create('bh-' + param.id, {
         type: 'basic',
-        iconUrl: 'resources/' + (param.icon || 'icon.png'),
+        iconUrl: 'resources/images/' + (param.icon || 'icon.png'),
         title: param.title,
         message: param.message
     });

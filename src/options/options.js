@@ -1,4 +1,15 @@
 $(function() {
+    $('a[href=\\#]').on('click', (e) => e.preventDefault());
+    $('input[type=checkbox]').bootstrapSwitch({
+        size: 'small',
+        onColor: 'info',
+        onText: '启用',
+        offText: '禁用',
+        handleWidth: 40
+    });
+
+
+    /*
     var background = chrome.extension.getBackgroundPage();
 
     function setOption(key, value) {
@@ -6,12 +17,6 @@ $(function() {
         background.saveOption();
     }
 
-    var switchDefault = $.fn.bootstrapSwitch.defaults;
-    switchDefault.state = false;
-    switchDefault.size = 'sm';
-    switchDefault.onText = '开启';
-    switchDefault.offText = '关闭';
-    switchDefault.handleWidth = 80;
     $('input[type="checkbox"]').bootstrapSwitch().on('switchChange.bootstrapSwitch', function(event, state) {
         $('.' + this.id).bootstrapSwitch('disabled', !state);
         setOption(this.id, state);
@@ -26,5 +31,5 @@ $(function() {
 
     $.get('updatelog.html').done(function(result) {
         $('#updatelog').html(result);
-    });
+    });*/
 });
