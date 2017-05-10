@@ -7,31 +7,24 @@
   <link rel="icon" type="image/png" href="../resources/images/icon.png">
   <link rel="stylesheet" href="./bootstrap.min.css">
   <link rel="stylesheet" href="./bootstrap-switch.min.css">
-  <link rel="stylesheet" href="./options.css">
+  <link rel="stylesheet" href="./options.min.css">
 </head>
 <body>
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">Bilibili助手</a>
-    </div>
-    <p class="navbar-text">V0.0.1</p>
-  </div>
-</nav>
+<div class="navbar navbar-default"><a class="navbar-brand" href="#">Bilibili助手</a></div>
 <div class="container-fluid">
   <div class="row">
-    <div class="col-lg-3">
-      <section class="panel panel-primary">
+    <div class="col-lg-7 col-md-11">
+      <div class="panel panel-primary">
         <div class="panel-heading">
-          <div class="panel-title">主站功能<span class="pull-right"><input type="checkbox" id="live"></span></div>
+          <div class="panel-title">主站功能</div>
         </div>
         <ul class="list-group">
           <li class="list-group-item"><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> 敬请期待</a></li>
         </ul>
-      </section>
+      </div>
     </div>
-    <div class="col-lg-3">
-      <section class="panel panel-primary">
+    <div class="col-lg-7 col-md-11">
+      <div class="panel panel-primary">
         <div class="panel-heading">
           <div class="panel-title">直播功能<span class="pull-right"><input type="checkbox" id="live"></span></div>
         </div>
@@ -39,7 +32,7 @@
           <li class="list-group-item"><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> 自动签到</a><span class="pull-right"><input class="live" type="checkbox" id="live_autoSign"></span></li>
           <li class="list-group-item"><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> 自动领瓜子</a><span class="pull-right"><input class="live" type="checkbox" id="live_autoTreasure"></span></li>
           <li class="list-group-item"><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> 自动小电视抽奖</a><span class="pull-right"><input class="live" type="checkbox" id="live_autoSmallTV"></span></li>
-          <li class="list-group-item"><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> 自动领取应援棒</a><span class="pull-right"><input class="live" type="checkbox" id="live_lighten"></span></li>
+          <li class="list-group-item"><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> 自动领取应援棒</a><span class="pull-right"><input class="live" type="checkbox" id="live_autoLighten"></span></li>
           <li class="list-group-item"><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> 礼物包裹增强</a><span class="pull-right"><input class="live" type="checkbox" id="live_giftPackage"></span></li>
           <li class="list-group-item">
             <div class="panel">
@@ -48,27 +41,27 @@
                 <span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting"></span>
               </div>
               <ul class="list-group collapse" id="live_hideSetting_group">
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 礼物信息<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_gift"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 舰长&老爷进场<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_vip"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 系统公告<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_sysmsg"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 小电视公告<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_tvmsg"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 应援团相关<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_link"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 礼物连击<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_combo"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 用户头衔<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_title"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 粉丝勋章<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_medal"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 用户等级<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_level"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 聊天信息<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_chat"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 老爷图标<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_vipicon"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 舰长图标<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_guardicon"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 房管图标<span class="pull-right"><input class="live" type="checkbox" id="live_hideSetting_adminicon"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 礼物信息<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_gift"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 舰长&老爷进场<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_vip"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 系统公告<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_sysmsg"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 小电视公告<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_tvmsg"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 应援团相关<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_link"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 礼物连击<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_combo"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 用户头衔<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_title"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 粉丝勋章<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_medal"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 用户等级<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_level"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 聊天信息<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_chat"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 老爷图标<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_vipicon"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 舰长图标<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_guardicon"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 房管图标<span class="pull-right"><input class="live_hideSetting" type="checkbox" id="live_hideSetting_adminicon"></span></li>
               </ul>
             </div>
           </li>
         </ul>
-      </section>
+      </div>
     </div>
-    <div class="col-lg-3">
-      <section class="panel panel-primary">
+    <div class="col-lg-7 col-md-11">
+      <div class="panel panel-primary">
         <div class="panel-heading">
           <div class="panel-title">通知功能<span class="pull-right"><input type="checkbox" id="notify"></span></div>
         </div>
@@ -77,11 +70,11 @@
             <div class="panel">
               <div class="panel-heading">
                 <a href="#" data-toggle="collapse" data-target="#notify_autoSign_group"><i class="glyphicon glyphicon-plus"></i> 自动签到</a>
-                <span class="pull-right"><input class="live" type="checkbox" id="notify_autoSign"></span>
+                <span class="pull-right"><input class="notify" type="checkbox" id="notify_autoSign"></span>
               </div>
               <ul class="list-group collapse" id="notify_autoSign_group">
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 启用时<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 签到完毕<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 启用时<span class="pull-right"><input class="notify_autoSign" type="checkbox" id="notify_autoSign_enabled"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 签到完毕<span class="pull-right"><input class="notify_autoSign" type="checkbox" id="notify_autoSign_award"></span></li>
               </ul>
             </div>
           </li>
@@ -89,11 +82,12 @@
             <div class="panel">
               <div class="panel-heading">
                 <a href="#" data-toggle="collapse" data-target="#notify_autoTreasure_group"><i class="glyphicon glyphicon-plus"></i> 自动领瓜子</a>
-                <span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span>
+                <span class="pull-right"><input class="notify" type="checkbox" id="notify_autoTreasure"></span>
               </div>
               <ul class="list-group collapse" id="notify_autoTreasure_group">
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 启用时<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 领取成功<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 启用时<span class="pull-right"><input class="notify_autoTreasure" type="checkbox" id="notify_autoTreasure_enabled"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 领取成功<span class="pull-right"><input class="notify_autoTreasure" type="checkbox" id="notify_autoTreasure_award"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 领取完毕<span class="pull-right"><input class="notify_autoTreasure" type="checkbox" id="notify_autoTreasure_end"></span></li>
               </ul>
             </div>
           </li>
@@ -101,24 +95,24 @@
             <div class="panel">
               <div class="panel-heading">
                 <a href="#" data-toggle="collapse" data-target="#notify_autoSmallTV_group"><i class="glyphicon glyphicon-plus"></i> 自动小电视抽奖</a>
-                <span class="pull-right"><input class="live" type="checkbox" id="notify_autoSmallTV"></span>
+                <span class="pull-right"><input class="notify" type="checkbox" id="notify_autoSmallTV"></span>
               </div>
               <ul class="list-group collapse" id="notify_autoSmallTV_group">
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 启用时<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 启用时<span class="pull-right"><input class="notify_autoSmallTV" type="checkbox" id="notify_autoSmallTV_enabled"></span></li>
                 <li class="list-group-item">
                   <div class="panel">
                     <div class="panel-heading">
                       <a href="#" data-toggle="collapse" data-target="#notify_autoSmallTV_getAward_group"><i class="glyphicon glyphicon-plus"></i> 获得奖励</a>
-                      <span class="pull-right"><input class="live" type="checkbox" id="notify_autoSmallTV_getAward"></span>
+                      <span class="pull-right"><input class="notify_autoSmallTV" type="checkbox" id="notify_autoSmallTV_award"></span>
                     </div>
                     <ul class="list-group collapse" id="notify_autoSmallTV_getAward_group">
-                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 小电视抱枕<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
-                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 蓝白胖次<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
-                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> B坷垃<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
-                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 喵娘<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
-                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 爱心便当<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
-                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 银瓜子<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
-                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 辣条<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
+                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 小电视抱枕<span class="pull-right"><input class="notify_autoSmallTV_getAward" type="checkbox" id="notify_autoSmallTV_award_1"></span></li>
+                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 蓝白胖次<span class="pull-right"><input class="notify_autoSmallTV_getAward" type="checkbox" id="notify_autoSmallTV_award_2"></span></li>
+                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> B坷垃<span class="pull-right"><input class="notify_autoSmallTV_getAward" type="checkbox" id="notify_autoSmallTV_award_3"></span></li>
+                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 喵娘<span class="pull-right"><input class="notify_autoSmallTV_getAward" type="checkbox" id="notify_autoSmallTV_award_4"></span></li>
+                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 爱心便当<span class="pull-right"><input class="notify_autoSmallTV_getAward" type="checkbox" id="notify_autoSmallTV_award_5"></span></li>
+                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 银瓜子<span class="pull-right"><input class="notify_autoSmallTV_getAward" type="checkbox" id="notify_autoSmallTV_award_6"></span></li>
+                      <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 辣条<span class="pull-right"><input class="notify_autoSmallTV_getAward" type="checkbox" id="notify_autoSmallTV_award_7"></span></li>
                     </ul>
                   </div>
                 </li>
@@ -129,28 +123,28 @@
             <div class="panel">
               <div class="panel-heading">
                 <a href="#" data-toggle="collapse" data-target="#notify_autoLighten_group"><i class="glyphicon glyphicon-plus"></i> 自动领取应援棒</a>
-                <span class="pull-right"><input class="live" type="checkbox" id="notify_autoLighten"></span>
+                <span class="pull-right"><input class="notify" type="checkbox" id="notify_autoLighten"></span>
               </div>
               <ul class="list-group collapse" id="notify_autoLighten_group">
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 启用时<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
-                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 领取成功<span class="pull-right"><input class="live" type="checkbox" id="notify_autoTreasure"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 启用时<span class="pull-right"><input class="notify_autoLighten" type="checkbox" id="notify_autoLighten_enabled"></span></li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-minus"></i> 领取成功<span class="pull-right"><input class="notify_autoLighten" type="checkbox" id="notify_autoLighten_award"></span></li>
               </ul>
             </div>
           </li>
         </ul>
-      </section>
+      </div>
     </div>
-    <div class="col-lg-3">
-      <section class="panel panel-primary">
+    <div class="col-lg-12 col-md-33">
+      <div class="panel panel-primary">
         <div class="panel-heading">
-          <div class="panel-title">插件简介</div>
+          <div class="panel-title">插件简介<span class="pull-right bh-version">Init...</span></div>
         </div>
         <div class="panel-body">
-          <p id="updatelog"></p>
+          <p class="bh-updatelog"></p>
           <p>※ GitHub页 <a href="https://github.com/MoeHero/BilibiliHelper" target="_blank">BilibiliHelper</a> , 可以在这边反馈问题或提供建议</p>
           <p>※ 本项目使用 <a href="https://github.com/MoeHero/BilibiliHelper/blob/master/LICENSE">Mozilla Public License 2.0</a> 许可协议</p>
         </div>
-      </section>
+      </div>
     </div>
   </div>
 </div>
@@ -158,6 +152,6 @@
 <script src="../jquery-3.1.1.min.js"></script>
 <script src="./bootstrap.min.js"></script>
 <script src="./bootstrap-switch.min.js"></script>
-<script src="./options.js"></script>
+<script src="./options.min.js"></script>
 </body>
 </html>

@@ -57,28 +57,43 @@ var Option = {
     live_autoSign: true,
     live_autoTreasure: true,
     live_autoSmallTV: true,
+    live_autoLighten: true,
     live_giftPackage: true,
+    live_hideSetting_gift: true,
+    live_hideSetting_vip: true,
+    live_hideSetting_sysmsg: true,
+    live_hideSetting_tvmsg: true,
+    live_hideSetting_link: true,
+    live_hideSetting_combo: true,
+    live_hideSetting_title: true,
+    live_hideSetting_medal: true,
+    live_hideSetting_level: true,
+    live_hideSetting_chat: true,
+    live_hideSetting_vipicon: true,
+    live_hideSetting_guardicon: true,
+    live_hideSetting_adminicon: true,
     live_hideSetting: true,
-    live_lighten: true,
-    live_hideSettingState: {
-        gift: true,
-        vip: true,
-        sysmsg: true,
-        tvmsg: true,
-        link: true,
-        combo: true,
-        title: true,
-        medal: true,
-        level: true,
-        chat: true,
-        vipicon: true,
-        guardicon: true,
-        adminicon: true
-    },
     live: true,
+
+    notify_autoSign_enabled: true,
+    notify_autoSign_end: true,
     notify_autoSign: true,
+    notify_autoTreasure_enabled: true,
+    notify_autoTreasure_award: true,
+    notify_autoTreasure_end: true,
     notify_autoTreasure: true,
+    notify_autoSmallTV_enabled: true,
+    notify_autoSmallTV_award_1: true,
+    notify_autoSmallTV_award_2: true,
+    notify_autoSmallTV_award_3: true,
+    notify_autoSmallTV_award_4: true,
+    notify_autoSmallTV_award_5: true,
+    notify_autoSmallTV_award_6: true,
+    notify_autoSmallTV_award_7: true,
+    notify_autoSmallTV_award: true,
     notify_autoSmallTV: true,
+    notify_autoLighten_award: true,
+    notify_autoLighten_enabled: true,
     notify_autoLighten: true,
     notify: true
 };
@@ -100,11 +115,8 @@ function createNotifications(param) {
 }
 
 if(window.localStorage.bh_option) {
-    let hideSettingState = Option.live_hideSettingState;
+    JSON.parse(window.localStorage.bh_option).live_lighten !== undefined && (window.localStorage.bh_option = '{}');
     $.extend(Option, JSON.parse(window.localStorage.bh_option));
-    Option.live_hideSettingState = $.extend({}, hideSettingState, JSON.parse(window.localStorage.bh_option).live_hideSettingState);
-
-    Option.live_liveSetting && (Option.live_hideSetting = Option.live_liveSetting) && delete Option.live_liveSetting;
 }
 saveOption();
 

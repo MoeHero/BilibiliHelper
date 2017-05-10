@@ -91,10 +91,10 @@ class FuncHideSetting {
         this.hideSettingButton.on('click', () => this.hideSettingPanel.fadeToggle(200)).stopPropagation();
     }
 
-    static getSetting()　{
+    static getSetting() {
         let setting = store.get('BH_HideSetting')[Helper.roomID] || {};
         for(let key in this.funcList) {
-            this.funcList[key].state = setting[key] !== undefined ? setting[key] : Helper.option.live_hideSettingState[key];
+            this.funcList[key].state = setting[key] !== undefined ? setting[key] : Helper.option['live_hideSetting_' + key];
         }
     }
     static saveSetting() {
