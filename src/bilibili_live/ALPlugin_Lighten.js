@@ -1,7 +1,7 @@
 /* globals ModuleStore,ModuleNotify,ModuleConsole */
 class ALPlugin_Lighten {
     static init() {
-        if(!Helper.option.live || !Helper.option.live_lighten) {
+        if(!Helper.option.live || !Helper.option.live_autoLighten) {
             return;
         }
 

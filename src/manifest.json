@@ -10,8 +10,8 @@
         "tabs"
     ],
     "icons": {
-        "16": "resources/icon.png",
-        "48": "resources/icon.png"
+        "16": "resources/images/icon.png",
+        "48": "resources/images/icon.png"
     },
     "background": {
         "scripts": [

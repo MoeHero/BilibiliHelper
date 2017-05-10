@@ -1,20 +1,19 @@
 $(function() {
-    var background = chrome.extension.getBackgroundPage();
+    let background = chrome.extension.getBackgroundPage();
 
-    function setOption(key, value) {
-        background.Option[key] = value;
-        background.saveOption();
-    }
+    $('a[href=\\#]').on('click', (e) => e.preventDefault());
+    $('input[type=checkbox]').bootstrapSwitch({
+        size: 'small',
+        onColor: 'info',
+        onText: '启用',
+        offText: '禁用',
+        handleWidth: 30
+    });
 
-    var switchDefault = $.fn.bootstrapSwitch.defaults;
-    switchDefault.state = false;
-    switchDefault.size = 'sm';
-    switchDefault.onText = '开启';
-    switchDefault.offText = '关闭';
-    switchDefault.handleWidth = 80;
     $('input[type="checkbox"]').bootstrapSwitch().on('switchChange.bootstrapSwitch', function(event, state) {
         $('.' + this.id).bootstrapSwitch('disabled', !state);
-        setOption(this.id, state);
+        background.Option[this.id] = state;
+        background.saveOption();
     });
 
     for(var i in background.Option) {
@@ -22,9 +21,6 @@ $(function() {
         $('#' + i).bootstrapSwitch('state', background.Option[i]);
     }
 
-    $('.version').text('V' + background.Info.version);
-
-    $.get('updatelog.html').done(function(result) {
-        $('#updatelog').html(result);
-    });
+    $('.bh-version').text('V' + background.Info.version);
+    $('.bh-updatelog').load('updatelog.html');
 });

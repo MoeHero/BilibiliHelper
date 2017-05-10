@@ -78,7 +78,7 @@ class ALPlugin_SmallTV {
                     let award = {awardNumber: result.reward.num, awardName: this.awardName[result.reward.id]};
                     ModuleStore.addStatinfo('smallTV', result.reward.id, result.reward.num);
                     ModuleStore.addTimes('smallTV', 1);
-                    ModuleNotify.smallTV('award', award);
+                    Helper.option['notify_autoSmallTV_award_' + result.reward.id] && ModuleNotify.smallTV('award', award);
                     ModuleConsole.smallTV('award', award);
                     break;
                 case 2: //正在开奖
