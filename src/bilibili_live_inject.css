@@ -2,7 +2,7 @@ i.bh-icon {
   display: inline-block;
   height: 20px;
   width: 20px;
-  background: url(chrome-extension://__MSG_@@extension_id__/resources/resources.png) no-repeat;
+  background: url(chrome-extension://__MSG_@@extension_id__/resources/images/resources.png) no-repeat;
 }
 i.bh-icon.treasure-init { background-position: 0 0; }
 i.bh-icon.treasure-exist { background-position: -20px 0; }

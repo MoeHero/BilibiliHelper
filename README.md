@@ -30,7 +30,7 @@
 - [x] 屏蔽设置
 - [x] 抽奖统计
 
-## Develop Progress
+## 开发进度
 - 重构屏蔽设置代码 90%
 - 重构礼物包裹代码 0%
 - 自动参加节奏风暴 0%
@@ -39,4 +39,4 @@
 - 自动更新 0%
 
 ## License
-※ 本项目使用 [Mozilla Public License 2.0](https://github.com/MoeHero/BilibiliHelper/blob/master/LICENSE) 许可协议  
+※ 本项目使用 [Mozilla Public License 2.0](https://github.com/MoeHero/BilibiliHelper/blob/master/LICENSE) 许可协议
