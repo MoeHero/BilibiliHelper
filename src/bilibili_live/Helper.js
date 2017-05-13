@@ -28,22 +28,21 @@ Helper.addStylesheetByText = function(text) {
     return style;
 };
 
-Helper.liveToast = (message, element, type = 'info') => {
-    //success caution error info
+Helper.liveToast = (message, element, type = 'info') => { //success caution error info
     let newToast = $('<div>').addClass('live-toast ' + type)
         .append($('<i>').addClass('toast-icon ' + type), $('<span>').addClass('toast-text').text(message))
         .css({'left': $.getLeft(element[0]) + element.width()})
         .css({'top': $.getTop(element[0]) + element.height()});
     $('body').append(newToast);
-    Helper.countdown(2, () => newToast.fadeOut(200));
+    Helper.countdown(2, () => newToast.fadeOut(200).remove());
 };
 
 Helper.getRoomID = function(showID, callback) {
     let rid = ModuleStore.roomID_get(showID);
     if(!rid) {
         $.get('/' + showID).done((result) => {
-            let reg = new RegExp('var ROOMID = ([\\d]+)');
-            rid = reg.exec(result)[1] || 0;
+            let reg = result.match(/var ROOMID = (\d+)/);
+            rid = (reg && reg[1]) || 0;
             ModuleStore.roomID_add(showID, rid);
             typeof callback == 'function' && callback(rid);
         });

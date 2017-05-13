@@ -89,9 +89,8 @@ class FuncTreasure {
         }
     }
     static getAward() {
-        let image = new Image();
-        image.onload = () => {
-            this.answer = eval(this.correctQuestion(OCRAD(image))); //jshint ignore:line
+        let image = $('<img>').attr('src', '/freeSilver/getCaptcha?ts=' + Date.now()).on('load', () => {
+            this.answer = eval(this.correctQuestion(OCRAD(image[0]))); //jshint ignore:line
             $.getJSON('/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done((result) => {
                 switch(result.code) {
                     case 0:
@@ -121,9 +120,7 @@ class FuncTreasure {
                         break;
                 }
             }).fail(() => Helper.countdown(2, () => this.getAward()));
-        };
-        image.onerror = () => Helper.countdown(2, () => this.getAward());
-        image.src = '/freeSilver/getCaptcha?ts=' + Date.now();
+        }).on('error', () => Helper.countdown(2, () => this.getAward()));
     }
     static getTimes() {
         $.getJSON('/i/api/taskInfo').done((result) => {
