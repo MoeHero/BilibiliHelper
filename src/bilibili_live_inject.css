@@ -13,7 +13,6 @@ i.bh-icon.tv-init { background-position: 0 -20px; }
 i.bh-icon.tv-exist { background-position: -20px -20px; }
 i.bh-icon.tv-enabled { background-position: -40px -20px; }
 
-.hide { display: none !important; }
 .bh-title {
   display: inline-block;
   font-size: 15px;
@@ -49,15 +48,21 @@ i.bh-icon.tv-enabled { background-position: -40px -20px; }
 }
 .bh-statinfo ul { margin-bottom: 6px; }
 
+.gifts-package-panel>.live-btn {
+  line-height: 26px;
+  font-size: 13px;
+  height: 26px;
+  width: 70px;
+  padding: 0;
+}
 .gift-item-group { text-align: left; }
 .gift-item-group>span {
   display: inline-block;
   margin: 6px;
 }
-
-#gift-package-send-panel .number-group { margin-top: 10px; }
-#gift-package-send-panel .number-btn {
-  width: 37.5px;
+.number-group { margin-top: 10px; }
+.number-group>span {
+  width: 40px;
   display: inline-block;
   text-align: center;
   border: 1px solid #4FC1E9;
@@ -69,7 +74,7 @@ i.bh-icon.tv-enabled { background-position: -40px -20px; }
   transition: all cubic-bezier(.22, .58, .12, .98) .4s;
   font-size: 12px;
 }
-#gift-package-send-panel .number-btn:hover {
+.number-group>span:hover {
   color: #FFF;
   background-color: #4FC1E9;
 }
