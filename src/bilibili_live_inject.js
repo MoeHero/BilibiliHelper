@@ -11,7 +11,7 @@ window.server_callback = function(json) {
 //打开礼物包裹
 window.flash_giftPackageOpen = () => chrome.runtime.sendMessage(extensionID, {command: 'openGiftPackage'});
 
-function bh_sendGift_package(giftID, number, bagID) {
+function bh_sendGift_package(giftID, number, bagID, key) {
     window.avalon.vmodels.giftPackageCtrl.$fire('all!sendGift', {
         type: 'package',
         data: {
@@ -21,6 +21,7 @@ function bh_sendGift_package(giftID, number, bagID) {
             bagId: bagID
         },
         callback: function(result) {
+            result.gift = {giftID: giftID, key: key};
             chrome.runtime.sendMessage(extensionID, {command: 'sendGiftCallback', result: result});
         }
     });
