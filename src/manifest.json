@@ -10,20 +10,21 @@
         "tabs"
     ],
     "icons": {
-        "16": "resources/images/icon.png",
-        "48": "resources/images/icon.png"
+        "48": "resources/images/icon.png",
+        "128": "resources/images/icon.png"
+    },
+    "browser_action": {
+        "default_icon": "resources/images/icon.png",
+        "default_popup": "popup.html"
     },
     "background": {
-        "scripts": [
-            "jquery-3.1.1.min.js",
-            "background.min.js"
-        ]
+        "scripts": ["jquery-3.1.1.min.js", "background.min.js"]
     },
     "externally_connectable": {
         "ids": ["*"],
         "matches": ["*://*.bilibili.com/*"]
     },
-    "web_accessible_resources": ["bilibili_live_inject.min.js", "bilibili_live_inject.min.css", "resources/*"],
+    "web_accessible_resources": ["*_inject.min.*", "resources/*"],
     "options_page": "options/options.html",
-    "homepage_url": "http://www.moehero.com/"
+    "homepage_url": "http://bh.moehero.com/"
 }

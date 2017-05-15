@@ -37,7 +37,7 @@ class FuncGiftPackage {
     static addEvent() {
         this.packagePanel.stopPropagation();
         this.sendPanel.stopPropagation();
-        $(document).on('click', () => this.packagePanel.fadeOut(200));
+        $(document).on('click', () => this.packagePanel.fadeOut(200) && this.packageButton.find('i').removeClass('open'));
 
         this.packageButton.on('click', () => this.openGiftPackage());
         this.packageSendAll.on('click', () => this.sendAllGift());
@@ -96,6 +96,7 @@ class FuncGiftPackage {
                         this.gifts = this.sortGift(result.data);
                         this.updateGiftPackage();
                         this.packagePanel.show();
+                        this.packageButton.find('i').addClass('open');
                         break;
                     case -101: //未登录
                         Helper.liveToast('请先登录!', this.packageButton, 'caution');

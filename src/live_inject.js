@@ -32,3 +32,4 @@ function bh_updateSilverSeed(number) {
 function bh_setSigned() {
     window.avalon.vmodels.signUpCtrl.$fire('all!roomDoSign');
 }
+console.log('%c直播间脚本注入成功~', 'color:#FFF;background-color:#57D2F7;padding:5px;border-radius:7px;line-height:30px;');
