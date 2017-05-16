@@ -1,6 +1,7 @@
+'use strict';
 console.log('Start Loading...');
-
-var Sign = {
+//TODO 重构
+let Sign = {
     showID: false,
     tabID: false,
     getSign: () => Sign,
@@ -13,7 +14,7 @@ var Sign = {
         Sign.tabID = false;
     }
 };
-var Treasure = {
+let Treasure = {
     showID: false,
     tabID: false,
     getTreasure: () => Treasure,
@@ -26,7 +27,7 @@ var Treasure = {
         Treasure.tabID = false;
     }
 };
-var SmallTV = {
+let SmallTV = {
     showID: false,
     tabID: false,
     getSmallTV: () => SmallTV,
@@ -39,7 +40,7 @@ var SmallTV = {
         SmallTV.tabID = false;
     }
 };
-var Lighten = {
+let Lighten = {
     showID: false,
     tabID: false,
     getLighten: () => Lighten,
@@ -53,7 +54,7 @@ var Lighten = {
     }
 };
 
-var Option = {
+var Options = {
     live_autoSign: true,
     live_autoTreasure: true,
     live_autoSmallTV: true,
@@ -102,8 +103,8 @@ var Info = {
     extensionID: chrome.i18n.getMessage('@@extension_id')
 };
 
-function saveOption() {
-    window.localStorage.bh_option = JSON.stringify(Option);
+function saveOptions() {
+    window.localStorage.bh_option = JSON.stringify(Options);
 }
 function createNotifications(param) {
     chrome.notifications.create('bh-' + param.id, {
@@ -116,11 +117,11 @@ function createNotifications(param) {
 
 if(window.localStorage.bh_option) {
     JSON.parse(window.localStorage.bh_option).live_lighten !== undefined && (window.localStorage.bh_option = '{}');
-    $.extend(Option, JSON.parse(window.localStorage.bh_option));
+    $.extend(Options, JSON.parse(window.localStorage.bh_option));
 }
-saveOption();
+saveOptions();
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
     if(changeInfo.status == 'complete' &&
         tabInfo.status == 'complete' &&
         tabInfo.url.includes('live.bilibili.com')) {
@@ -132,7 +133,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
     }
 });
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     switch(request.command) {
         case 'getSign':
             sendResponse(Sign.getSign());
@@ -177,20 +178,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case 'getInfo':
             sendResponse(Info);
             break;
-        case 'getOption':
-            sendResponse(Option);
+        case 'getOptions':
+            sendResponse(Options);
             break;
         case 'createNotifications':
             createNotifications(request.param);
             break;
     }
 });
-chrome.runtime.onMessageExternal.addListener(function(request, sender) {
-    chrome.tabs.sendMessage(sender.tab.id, request);
-});
+chrome.runtime.onMessageExternal.addListener((request, sender) => chrome.tabs.sendMessage(sender.tab.id, request));
 
-chrome.webRequest.onBeforeRequest.addListener(function(details) {
-    return {cancel: Option.live_autoTreasure && details.url.includes('getCurrentTask') && !details.url.endsWith('getCurrentTask?bh')};
+chrome.webRequest.onBeforeRequest.addListener((details) => {
+    return {cancel: Options.live_autoTreasure && details.url.includes('getCurrentTask') && !details.url.endsWith('getCurrentTask?bh')};
 }, {urls: ['*://live.bilibili.com/*']}, ['blocking']);
 
 console.log('Loaded');

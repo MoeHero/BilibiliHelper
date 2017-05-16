@@ -1,5 +1,6 @@
 class ModuleConsole {
-    static info(msg, color = '57D2F7') {
+    static info(msg, color) {
+        color = color || '57D2F7';
         console.log('%c' + msg, 'color:#FFF;background-color:#' + color + ';padding:5px;border-radius:7px;line-height:30px;');
     }
     static warn(msg) {

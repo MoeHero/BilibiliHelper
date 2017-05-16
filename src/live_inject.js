@@ -1,7 +1,8 @@
 /* globals extensionID */
+'use strict';
 //消息拦截
 window._server_callback = window.server_callback;
-window.server_callback = function(json) {
+window.server_callback = (json) => {
     window._server_callback(json);
     chrome.runtime.sendMessage(extensionID, json);
     if(json.cmd && json.cmd == 'SPECIAL_GIFT') {

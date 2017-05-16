@@ -1,4 +1,5 @@
 /* globals ModuleStore */
+'use strict';
 var Helper = {
     options: {},
     userInfo: {},
@@ -70,7 +71,7 @@ Helper.getRoomID = function(showID, callback) {
     }));
 };*/
 
-Helper.liveToast = (message, element, type = 'info') => { //success caution error info
+Helper.liveToast = (message, element, type) => { //success caution error info
     let newToast = $('<div>').addClass('live-toast ' + type)
         .append($('<i>').addClass('toast-icon ' + type), $('<span>').addClass('toast-text').text(message))
         .css({'left': $.getLeft(element[0]) + element.width()})
@@ -201,7 +202,7 @@ Helper.init = function(callback) {
             Helper.roomInfo = roomInfo;
             init++;
         });*/
-        Helper.sendMessage({command: 'getOption'}, (result) => {
+        Helper.sendMessage({command: 'getOptions'}, (result) => {
             Helper.option = result;
 
             {
