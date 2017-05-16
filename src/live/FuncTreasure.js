@@ -1,4 +1,4 @@
-/* globals ModuleStore,ModuleNotify,ModuleConsole */
+/* globals OCRAD,ModuleStore,ModuleNotify,ModuleConsole */
 class FuncTreasure {
     static init() {
         if(!Helper.option.live || !Helper.option.live_autoTreasure) {
@@ -90,7 +90,7 @@ class FuncTreasure {
     }
     static getAward() {
         let image = $('<img>').attr('src', '/freeSilver/getCaptcha?ts=' + Date.now()).on('load', () => {
-            this.answer = eval(this.correctQuestion(OCRAD(image[0]))); //jshint ignore:line
+            this.answer = this.calculateCaptcha(OCRAD(image[0]));
             $.getJSON('/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done((result) => {
                 switch(result.code) {
                     case 0:
@@ -134,13 +134,16 @@ class FuncTreasure {
             }
         }).fail(() => Helper.countdown(2, () => this.getTimes()));
     }
-    static correctQuestion(question) {
-        let q = '';
-        let correctStr = {g: 9, z: 2, _: 4, Z: 2, o: 0, l: 1, B: 8, O: 0, S: 6, s: 6, i: 1, I: 1};
-        question = question.trim();
-        for(let i in question) {
-            q += correctStr[question[i]] || question[i];
+    static calculateCaptcha(string) {
+        let str = '';
+        let correctStrings = {g: 9, z: 2, _: 4, Z: 2, o: 0, l: 1, B: 8, O: 0, S: 6, s: 6, i: 1, I: 1};
+        for(let s of string) {
+            if(s == '+' || s == '-' || s.match(/[0-9]/) !== null) {
+                str += s;
+            } else {
+                str += correctStrings[s] || '';
+            }
         }
-        return q;
+        return eval(str); //jshint ignore:line
     }
 }

@@ -37,7 +37,7 @@ class FuncGiftPackage {
     static addEvent() {
         this.packagePanel.stopPropagation();
         this.sendPanel.stopPropagation();
-        $(document).on('click', () => this.packagePanel.fadeOut(200));
+        $(document).on('click', () => this.packagePanel.fadeOut(200) && this.packageButton.find('i').removeClass('open'));
 
         this.packageButton.on('click', () => this.openGiftPackage());
         this.packageSendAll.on('click', () => this.sendAllGift());
@@ -56,22 +56,22 @@ class FuncGiftPackage {
                 switch(result.code) {
                     case 0:
                         if(result.data.remain === 0) {
-                            delete this.gifts[this.currentGiftID][this.currentKey];
-                            this.updateGiftPackage();
+                            delete this.gifts[result.gift.giftID][result.gift.key];
                             this.sendPanel.hide();
                         } else {
-                            this.gifts[this.currentGiftID][this.currentKey].number = result.data.remain;
-                            this.gift = this.gifts[this.currentGiftID][this.currentKey];
-
-                            this.sendPanelInfo.text(`您的包裹中还剩 ${this.gift.number} 个可用`);
-                            if(this.sendPanelCount.val() > this.gift.number) {
-                                this.sendPanelCount.val(this.gift.number);
-                            }
-                            this.updateGiftPackage();
+                            this.gifts[result.gift.giftID][result.gift.key].number = result.data.remain;
+                            this.sendPanelInfo.text(`您的包裹中还剩 ${result.data.remain} 个可用`);
+                            this.sendPanelCount.val() > result.data.remain && this.sendPanelCount.val(result.data.remain);
                         }
+                        this.updateGiftPackage();
                         break;
-                    case -400: //应援棒提示
-                        Helper.liveToast('只有在入围偶像活动的主播房间才能赠送该道具!', liveToastElement, 'caution');
+                    case -400: //错误
+                        if(result.msg.includes('偶像活动')) { //应援棒提示
+                            Helper.liveToast('只有在入围偶像活动的主播房间才能赠送该道具!', liveToastElement, 'caution');
+                        } else { //参数错误
+                            console.log(result);
+                            Helper.liveToast('参数错误!', liveToastElement, 'error');
+                        }
                         break;
                     case 200005: //无法给自己赠送道具
                         Helper.liveToast('无法给自己赠送道具!', liveToastElement, 'caution');
@@ -96,6 +96,7 @@ class FuncGiftPackage {
                         this.gifts = this.sortGift(result.data);
                         this.updateGiftPackage();
                         this.packagePanel.show();
+                        this.packageButton.find('i').addClass('open');
                         break;
                     case -101: //未登录
                         Helper.liveToast('请先登录!', this.packageButton, 'caution');
@@ -181,13 +182,14 @@ class FuncGiftPackage {
         this.sendPanelCount.val(number);
     }
     static sendGift() {
-        Helper.addScriptByText(`bh_sendGift_package(${this.currentGiftID}, ${this.sendPanelCount.val()}, ${this.currentGift.bagID});`).remove();
+        Helper.addScriptByText(`bh_sendGift_package(${this.currentGiftID}, ${this.sendPanelCount.val()}, ${this.currentGift.bagID}, ${this.currentKey});`).remove();
     }
     static sendAllGift() {
         for(let id in this.gifts) {
-            for(let gift of this.gifts[id]) {
+            for(let key in this.gifts[id]) {
+                let gift = this.gifts[id][key];
                 if(id != 69 && gift.expire != Infinity) {
-                    Helper.addScriptByText(`bh_sendGift_package(${id}, ${gift.number}, ${gift.bagID});`).remove();
+                    Helper.addScriptByText(`bh_sendGift_package(${id}, ${gift.number}, ${gift.bagID}, ${key});`).remove();
                 }
             }
         }

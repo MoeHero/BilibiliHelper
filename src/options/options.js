@@ -1,3 +1,4 @@
+'use strict';
 $(function() {
     let background = chrome.extension.getBackgroundPage();
 
@@ -8,17 +9,15 @@ $(function() {
         onText: '启用',
         offText: '禁用',
         handleWidth: 30
-    });
-
-    $('input[type="checkbox"]').bootstrapSwitch().on('switchChange.bootstrapSwitch', function(event, state) {
+    }).on('switchChange.bootstrapSwitch', function(event, state) {
         $('.' + this.id).bootstrapSwitch('disabled', !state);
-        background.Option[this.id] = state;
-        background.saveOption();
+        background.Options[this.id] = state;
+        background.saveOptions();
     });
 
-    for(var i in background.Option) {
-        $('.' + i).bootstrapSwitch('disabled', !background.Option[i]);
-        $('#' + i).bootstrapSwitch('state', background.Option[i]);
+    for(let i in background.Options) {
+        $('.' + i).bootstrapSwitch('disabled', !background.Options[i]);
+        $('#' + i).bootstrapSwitch('state', background.Options[i]);
     }
 
     $('.bh-version').text('V' + background.Info.version);

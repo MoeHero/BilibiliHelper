@@ -1,4 +1,5 @@
 /* globals ModuleStore */
+'use strict';
 var Helper = {
     options: {},
     userInfo: {},
@@ -26,15 +27,6 @@ Helper.addStylesheetByText = function(text) {
     let style = $('<style>').attr('type', 'text/css').text(text);
     $('head').append(style);
     return style;
-};
-
-Helper.liveToast = (message, element, type = 'info') => { //success caution error info
-    let newToast = $('<div>').addClass('live-toast ' + type)
-        .append($('<i>').addClass('toast-icon ' + type), $('<span>').addClass('toast-text').text(message))
-        .css({'left': $.getLeft(element[0]) + element.width()})
-        .css({'top': $.getTop(element[0]) + element.height()});
-    $('body').append(newToast);
-    Helper.countdown(2, () => newToast.fadeOut(200).remove());
 };
 
 Helper.getRoomID = function(showID, callback) {
@@ -79,6 +71,14 @@ Helper.getRoomID = function(showID, callback) {
     }));
 };*/
 
+Helper.liveToast = (message, element, type) => { //success caution error info
+    let newToast = $('<div>').addClass('live-toast ' + type)
+        .append($('<i>').addClass('toast-icon ' + type), $('<span>').addClass('toast-text').text(message))
+        .css({'left': $.getLeft(element[0]) + element.width()})
+        .css({'top': $.getTop(element[0]) + element.height()});
+    $('body').append(newToast);
+    Helper.countdown(2, () => newToast.fadeOut(200).remove());
+};
 Helper.format = (template, data) => {
     if(data) {
         let keys = Object.keys(data);
@@ -202,7 +202,7 @@ Helper.init = function(callback) {
             Helper.roomInfo = roomInfo;
             init++;
         });*/
-        Helper.sendMessage({command: 'getOption'}, (result) => {
+        Helper.sendMessage({command: 'getOptions'}, (result) => {
             Helper.option = result;
 
             {
@@ -216,8 +216,9 @@ Helper.init = function(callback) {
                 $('.room-info-row').remove();
             } //主播信息 下
             //自动扩大关注列表
-            $('.my-attention-body').height($(window).height() - 550);
-            $(window).resize(() => $('.my-attention-body').height($(window).height() - 550));
+            Helper.sidebarHeight = $('.colorful').css('display') == 'none' ? 499 : 550;
+            $('.my-attention-body').height($(window).height() - Helper.sidebarHeight);
+            $(window).resize(() => $('.my-attention-body').height($(window).height() - Helper.sidebarHeight));
 
             typeof callback == 'function' && callback();
         });

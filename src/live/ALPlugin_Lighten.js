@@ -51,13 +51,20 @@ class ALPlugin_Lighten {
     }
     static getAward(roomID, lightenID) {
         $.post('//api.live.bilibili.com/activity/v1/NeedYou/getLiveAward', {roomid: roomID, lightenId: lightenID}).done((result) => {
-            if(result.code === 0) {
-                ModuleStore.addTimes('lighten', 1);
-                ModuleNotify.lighten('award');
-                ModuleConsole.lighten('award');
-            } else if(result.code == -400) { //错误
-            } else {
-                console.log(result);
+            switch(result.code) {
+                case 0:
+                    ModuleStore.addTimes('lighten', 1);
+                    ModuleNotify.lighten('award');
+                    ModuleConsole.lighten('award');
+                    break;
+                case -400: //错误
+                    break;
+                case 1024: //超时
+                    this.getAward(roomID, lightenID);
+                    break;
+                default:
+                    console.log(result);
+                    break;
             }
         }).fail(() => Helper.countdown(2, () => this.getAward(roomID, lightenID)));
     }

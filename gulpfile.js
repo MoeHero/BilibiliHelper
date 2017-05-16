@@ -6,16 +6,15 @@ var pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
 var filename = 'BilibiliHelper-V' + pkg.version + '.' + (process.env.TRAVIS_BUILD_NUMBER || 0);
 var path = 'release';
-var task = ['html', 'css',  'copy', 'manifest'];
+var mainTask = ['html', 'css',  'copy', 'manifest'];
 
 $.jshintChannel = lazypipe()
     .pipe($.jshint)
     .pipe($.jshint.reporter, 'jshint-stylish')
     .pipe($.jshint.reporter, 'fail');
 
-
-gulp.task('debug', $.sequence('set:d', ['script', 'live'], task));
-gulp.task('release', $.sequence('set:r', ['script', 'live'], task, ['crx', 'zip']));
+gulp.task('debug', $.sequence('set:d', ['script', 'live'], mainTask));
+gulp.task('release', $.sequence('set:r', ['script', 'live'], mainTask, ['crx', 'zip']));
 gulp.task('default', function() {
     console.log('Please use `release` or `debug` task!');
 });
@@ -29,25 +28,22 @@ gulp.task('set:d', function() {
     return;
 });
 
-
 gulp.task('live', function() {
-    return gulp.src('./src/bilibili_live/*.js')
+    return gulp.src('./src/live/*.js')
         .pipe($.order(['Helper.js', 'Module*.js', 'Func*.js', '!Core.js', 'Core.js']))
         .pipe($.jshintChannel())
-        .pipe($.concat('bilibili_live.js'))
+        .pipe($.concat('live.js'))
         .pipe($.if(path == 'release', $.babel({presets: ['babili']})))
         .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
 });
-
 gulp.task('script', function() {
-    return gulp.src(['./src/**/!(*.min).js', '!src/bilibili_live/*.js'])
+    return gulp.src(['./src/**/!(*.min).js', '!src/live/*.js'])
         .pipe($.jshintChannel())
         .pipe($.if(path == 'release', $.babel({presets: ['babili']})))
         .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
 });
-
 gulp.task('html', function() {
     return gulp.src('./src/**/*.html')
         .pipe($.if(path == 'release', $.htmlmin({
@@ -59,19 +55,16 @@ gulp.task('html', function() {
         })))
         .pipe(gulp.dest(path + '/src/'));
 });
-
 gulp.task('css', function() {
     return gulp.src('./src/**/!(*.min).css')
         .pipe($.if(path == 'release', $.cleanCss()))
         .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
 });
-
 gulp.task('copy', function() {
-    return gulp.src(['**/*.*', '!**/*.html', '!**/!(*.min).js', '!**/!(*.min).css', '!bilibili_live/**', '!manifest.json'], {cwd: './src'})
+    return gulp.src(['**/*.*', '!**/*.html', '!**/!(*.min).js', '!**/!(*.min).css', '!live/**', '!manifest.json'], {cwd: './src'})
         .pipe(gulp.dest(path + '/src/'));
 });
-
 gulp.task('manifest', function() {
     var manifest = JSON.parse(fs.readFileSync('./src/manifest.json', 'utf8'));
     manifest.version = pkg.version + '.' + (path == 'release' ? process.env.TRAVIS_BUILD_NUMBER : '0');
@@ -83,7 +76,6 @@ gulp.task('manifest', function() {
     fs.writeFileSync(path + '/src/manifest.json', JSON.stringify(manifest, null, '  '), {flag: 'w+'});
     return;
 });
-
 gulp.task('crx', function() {
     return gulp.src(path + '/src/')
         .pipe($.crxPack({
@@ -92,7 +84,6 @@ gulp.task('crx', function() {
         }))
         .pipe(gulp.dest(path + '/'));
 });
-
 gulp.task('zip', function() {
     return gulp.src(path + '/src/**')
         .pipe($.zip(filename + '.zip'))

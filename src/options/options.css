@@ -1,5 +1,6 @@
 body { min-width: 340px; }
 h1 { margin: 0; }
+h2 { margin: .5rem 0 -.7rem 0; }
 
 a[href^=\#] {
   color: #000;
@@ -7,13 +8,17 @@ a[href^=\#] {
 }
 a[href^=\#]:hover { color: #000; }
 
-.bootstrap-switch-small { margin-top: -3px; }
+.bootstrap-switch { margin-top: -5px; }
+.bootstrap-switch-handle-on, .bootstrap-switch-handle-off { font-size: 1.5rem !important; }
 .bh-version {
   margin: 0;
   font-size: 1.6rem;
   line-height: 3.5rem;
 }
-.bh-updatelog { margin: 0; }
+.bh-updatelog {
+  margin: 0;
+  font-size: 1.5rem;
+}
 
 .panel {
   border-radius: 0;
@@ -35,6 +40,10 @@ a[href^=\#]:hover { color: #000; }
 .list-group-item>.panel .list-group-item {
   font-size: .9em;
   padding-left: 1.2em;
+}
+.list-group.collapse .panel-heading>a, .list-group.collapsing .panel-heading>a {
+  font-size: .9em;
+  padding-left: .1em;
 }
 
 [data-toggle=collapse]>.glyphicon { transition: All 0.5s ease-in-out; }
