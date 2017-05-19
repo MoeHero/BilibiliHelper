@@ -8,12 +8,12 @@ Helper.sendMessage({command: 'getInfo'}, (result) => {
         return;
     }
 
+    Helper.addStylesheetByFile('live_inject.min.css');
     Helper.init(() => {
         if(!Helper.roomID || isNaN(Helper.roomID)) {
             ModuleConsole.info('非直播间, 插件不加载');
             return;
         }
-        Helper.addStylesheetByFile('live_inject.min.css');
         Helper.addScriptByText(`var extensionID='${Helper.info.extensionID}';`);
         Helper.addScriptByFile('live_inject.min.js');
 

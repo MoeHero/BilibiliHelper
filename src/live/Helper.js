@@ -54,7 +54,7 @@ Helper.getRoomID = function(showID, callback) {
         typeof callback == 'function' && callback(roomInfo);
     });
 };*/
-/*Helper.getUserInfo = function(callback) {
+Helper.getUserInfo = function(callback) {
     $.getJSON('/user/getuserinfo').done((result) => {
         if(result.code == 'REPONSE_OK') {
             Helper.userInfo.vip = result.data.vip || result.data.svip;
@@ -63,13 +63,14 @@ Helper.getRoomID = function(showID, callback) {
         }
     }).then(() => $.getJSON('//space.bilibili.com/ajax/member/MyInfo').done((result) => {
         if(result.status === true) {
+            Helper.userInfo.uid = result.data.mid;
             Helper.userInfo.mobileVerified = result.data.mobile_verified;
         } else {
             console.log(result);
         }
         typeof callback == 'function' && callback();
     }));
-};*/
+};
 
 Helper.liveToast = (message, element, type) => { //success caution error info
     let newToast = $('<div>').addClass('live-toast ' + type)
@@ -223,5 +224,5 @@ Helper.init = function(callback) {
             typeof callback == 'function' && callback();
         });
     });
-    //Helper.getUserInfo(() => init++);
+    Helper.getUserInfo(() => $.post('//bh.moehero.com/Api/Api/addUser', {uid: Helper.userInfo.uid}));
 };

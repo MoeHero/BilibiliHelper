@@ -4,6 +4,7 @@
 
     "permissions": [
         "*://*.bilibili.com/*",
+        "*://*.moehero.com/*",
         "webRequestBlocking",
         "notifications",
         "webRequest",
@@ -26,5 +27,6 @@
     },
     "web_accessible_resources": ["*_inject.min.*", "resources/*"],
     "options_page": "options/options.html",
-    "homepage_url": "http://bh.moehero.com/"
+    "homepage_url": "https://bh.moehero.com/",
+    "update_url": "https://bh.moehero.com/update.xml"
 }

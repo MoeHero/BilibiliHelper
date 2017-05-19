@@ -1,6 +1,6 @@
 body { min-width: 340px; }
 h1 { margin: 0; }
-h2 { margin: .5rem 0 -.7rem 0; }
+h2 { margin: .5rem 0 .5rem 0; }
 
 a[href^=\#] {
   color: #000;
@@ -19,6 +19,7 @@ a[href^=\#]:hover { color: #000; }
   margin: 0;
   font-size: 1.5rem;
 }
+.bh-updatelog p { margin: .5rem 0; }
 
 .panel {
   border-radius: 0;

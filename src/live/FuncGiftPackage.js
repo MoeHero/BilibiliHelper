@@ -16,7 +16,7 @@ class FuncGiftPackage {
         this.packagePanelContent = this.packagePanel.find('.gifts-package-content');
         this.packageSendAll = $('<p>').addClass('f-right live-btn default').text('清空包裹');
 
-        this.sendPanel = $('#gift-package-send-panel').clone();
+        this.sendPanel = $('#gift-package-send-panel').clone().attr('id', 'bh-gift-package-send-panel');
         this.sendPanelImage = this.sendPanel.find('.gift-img');
         this.sendPanelInfo = this.sendPanel.find('.gift-info>p');
         this.sendPanelButton = this.sendPanel.find('.send-ctrl>button');
