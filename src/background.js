@@ -107,12 +107,20 @@ function saveOptions() {
     window.localStorage.bh_option = JSON.stringify(Options);
 }
 function createNotifications(param) {
-    chrome.notifications.create('bh-' + param.id, {
-        type: 'basic',
-        iconUrl: 'resources/images/' + (param.icon || 'icon.png'),
-        title: param.title,
-        message: param.message
-    });
+    let xhr = new XMLHttpRequest();
+    xhr.open('get', param.icon);
+    xhr.responseType = 'blob';
+    xhr.onload = function() {
+        if (this.status == 200) {
+            chrome.notifications.create('bh-' + param.id, {
+                type: 'basic',
+                iconUrl: window.URL.createObjectURL(this.response),
+                title: param.title,
+                message: param.message
+            });
+        }
+    };
+    xhr.send();
 }
 
 if(window.localStorage.bh_option) {

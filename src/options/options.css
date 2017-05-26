@@ -9,7 +9,7 @@ a[href^=\#] {
 a[href^=\#]:hover { color: #000; }
 
 .bootstrap-switch { margin-top: -5px; }
-.bootstrap-switch-handle-on, .bootstrap-switch-handle-off { font-size: 1.5rem !important; }
+.bootstrap-switch-handle-on, .bootstrap-switch-handle-off { font-size: 1.4rem !important; }
 .bh-version {
   margin: 0;
   font-size: 1.6rem;

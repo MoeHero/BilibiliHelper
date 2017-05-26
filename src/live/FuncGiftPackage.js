@@ -56,7 +56,7 @@ class FuncGiftPackage {
                 switch(result.code) {
                     case 0:
                         if(result.data.remain === 0) {
-                            delete this.gifts[result.gift.giftID][result.gift.key];
+                            this.gifts[result.gift.giftID].splice(result.gift.key, 1);
                             this.sendPanel.hide();
                         } else {
                             this.gifts[result.gift.giftID][result.gift.key].number = result.data.remain;

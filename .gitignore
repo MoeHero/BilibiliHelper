@@ -1,0 +1,5 @@
+node_modules/
+release/
+.idea/
+debug/
+BilibiliHelper.pem

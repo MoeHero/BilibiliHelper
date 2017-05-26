@@ -5,6 +5,7 @@
     "permissions": [
         "*://*.bilibili.com/*",
         "*://*.moehero.com/*",
+        "*://static.hdslb.com/*",
         "webRequestBlocking",
         "notifications",
         "webRequest",

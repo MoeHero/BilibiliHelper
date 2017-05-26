@@ -55,6 +55,7 @@ i.bh-icon.tv-enabled { background-position: -40px -20px; }
   margin-right: 15px;
   background-size: cover;
 }
+#bh-gift-package-send-panel .send-ctrl { margin-top: 10px; }
 .gifts-package-panel>.live-btn {
   line-height: 26px;
   font-size: 13px;
