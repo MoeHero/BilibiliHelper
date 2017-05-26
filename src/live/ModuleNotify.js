@@ -17,7 +17,7 @@ class ModuleNotify {
             return;
         }
         let sign = Helper.localize.sign;
-        let icon = 'sign.png';
+        let icon = 'https://static.hdslb.com/live-static/live-room/images/gift-section/gift-1.gif';
         let msg = '';
         switch(key) {
             case 'enabled':
@@ -40,7 +40,7 @@ class ModuleNotify {
             return;
         }
         let treasure = Helper.localize.treasure;
-        let icon = 'treasure.png';
+        let icon = 'https://static.hdslb.com/live-static/live-room/images/treasure-box/7.png';
         let msg = '';
         switch(key) {
             case 'enabled':
@@ -65,7 +65,7 @@ class ModuleNotify {
             return;
         }
         let smallTV = Helper.localize.smallTV;
-        let icon = 'smallTV.png';
+        let icon = 'https://static.hdslb.com/live-static/live-room/images/gift-section/gift-25.png';
         let msg = '';
         switch(key) {
             case 'enabled':
@@ -82,7 +82,7 @@ class ModuleNotify {
             return;
         }
         let lighten = Helper.localize.lighten;
-        let icon = 'lighten.png';
+        let icon = 'https://static.hdslb.com/live-static/live-room/images/gift-section/gift-69.gif';
         let msg = '';
         switch(key) {
             case 'enabled':

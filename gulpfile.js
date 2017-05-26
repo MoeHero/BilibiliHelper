@@ -29,7 +29,7 @@ gulp.task('set:d', function() {
 });
 
 gulp.task('live', function() {
-    return gulp.src('./src/live/*.js')
+    return gulp.src('src/live/*.js')
         .pipe($.order(['Helper.js', 'Module*.js', 'Func*.js', '!Core.js', 'Core.js']))
         .pipe($.jshintChannel())
         .pipe($.concat('live.js'))
@@ -38,14 +38,14 @@ gulp.task('live', function() {
         .pipe(gulp.dest(path + '/src/'));
 });
 gulp.task('script', function() {
-    return gulp.src(['./src/**/!(*.min).js', '!src/live/*.js'])
+    return gulp.src(['src/**/!(*.min).js', '!src/live/*.js'])
         .pipe($.jshintChannel())
         .pipe($.if(path == 'release', $.babel({presets: ['babili']})))
         .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
 });
 gulp.task('html', function() {
-    return gulp.src('./src/**/*.html')
+    return gulp.src('src/**/*.html')
         .pipe($.if(path == 'release', $.htmlmin({
             collapseBooleanAttributes: true,
             minifyCSS: true,
@@ -56,7 +56,7 @@ gulp.task('html', function() {
         .pipe(gulp.dest(path + '/src/'));
 });
 gulp.task('css', function() {
-    return gulp.src('./src/**/!(*.min).css')
+    return gulp.src('src/**/!(*.min).css')
         .pipe($.if(path == 'release', $.cleanCss()))
         .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
