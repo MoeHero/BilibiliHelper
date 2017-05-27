@@ -60,6 +60,7 @@ var Options = {
     live_autoSmallTV: true,
     live_autoLighten: true,
     live_giftPackage: true,
+    live_danmuEnhance: true,
     live_hideSetting_gift: true,
     live_hideSetting_vip: true,
     live_hideSetting_sysmsg: true,
@@ -124,7 +125,6 @@ function createNotifications(param) {
 }
 
 if(window.localStorage.bh_option) {
-    JSON.parse(window.localStorage.bh_option).live_lighten !== undefined && (window.localStorage.bh_option = '{}');
     $.extend(Options, JSON.parse(window.localStorage.bh_option));
 }
 saveOptions();

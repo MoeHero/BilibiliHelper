@@ -7,40 +7,42 @@ var Helper = {
     showID: location.pathname.substr(1)
 };
 
-Helper.addScriptByFile = function(fileName) {
+Helper.addScriptByFile = (fileName) => {
     let script = $('<script>').attr('src', chrome.extension.getURL(fileName));
     $('head').append(script);
     return script;
 };
-Helper.addScriptByText = function(text) {
+Helper.addScriptByText = (text) => {
     let script = $('<script>').text(text);
     $('head').append(script);
     return script;
 };
 
-Helper.addStylesheetByFile = function(fileName) {
+Helper.addStylesheetByFile = (fileName) => {
     let link = $('<link>').attr('rel', 'stylesheet').attr('href', chrome.extension.getURL(fileName));
     $('head').append(link);
     return link;
 };
-Helper.addStylesheetByText = function(text) {
+Helper.addStylesheetByText = (text) => {
     let style = $('<style>').attr('type', 'text/css').text(text);
     $('head').append(style);
     return style;
 };
 
-Helper.getRoomID = function(showID, callback) {
-    let rid = ModuleStore.roomID_get(showID);
-    if(!rid) {
-        $.get('/' + showID).done((result) => {
-            let reg = result.match(/var ROOMID = (\d+)/);
-            rid = (reg && reg[1]) || 0;
-            ModuleStore.roomID_add(showID, rid);
-            typeof callback == 'function' && callback(rid);
-        });
-    } else {
-        typeof callback == 'function' && callback(rid);
-    }
+Helper.getRoomID = (showID) => {
+    return new Promise((resolve) => {
+        let rid = ModuleStore.roomID_get(showID);
+        if(!rid) {
+            $.get('/' + showID).done((result) => {
+                let reg = result.match(/var ROOMID = (\d+)/);
+                rid = (reg && reg[1]) || 0;
+                ModuleStore.roomID_add(showID, rid);
+                resolve(rid);
+            }).fail(() => Helper.countdown(2, () => Helper.getRoomID(showID)));
+        } else {
+            resolve(rid);
+        }
+    });
 };
 /*Helper.getRoomInfo = function(roomID, callback) {
     let roomInfo = {};
@@ -54,22 +56,28 @@ Helper.getRoomID = function(showID, callback) {
         typeof callback == 'function' && callback(roomInfo);
     });
 };*/
-Helper.getUserInfo = function(callback) {
-    $.getJSON('/user/getuserinfo').done((result) => {
-        if(result.code == 'REPONSE_OK') {
-            Helper.userInfo.vip = result.data.vip || result.data.svip;
-        } else {
-            console.log(result);
-        }
-    }).then(() => $.getJSON('//space.bilibili.com/ajax/member/MyInfo').done((result) => {
-        if(result.status === true) {
-            Helper.userInfo.uid = result.data.mid;
-            Helper.userInfo.mobileVerified = result.data.mobile_verified;
-        } else {
-            console.log(result);
-        }
-        typeof callback == 'function' && callback();
-    }));
+Helper.getUserInfo = () => {
+    return new Promise((resolve) => {
+        Promise.all([
+            $.getJSON('/user/getuserinfo').promise(),
+            $.getJSON('//space.bilibili.com/ajax/member/MyInfo').promise()
+        ]).then(([userLiveInfo, userInfo]) => {
+            if(userLiveInfo.code == 'REPONSE_OK') {
+                Helper.userInfo.vip = userLiveInfo.data.vip || userLiveInfo.data.svip;
+                Helper.userInfo.userLevel = userLiveInfo.data.user_level;
+            } else {
+                console.log(userLiveInfo);
+            }
+
+            if(userInfo.status === true) {
+                Helper.userInfo.uid = userInfo.data.mid;
+                Helper.userInfo.mobileVerified = userInfo.data.mobile_verified;
+            } else {
+                console.log(userInfo);
+            }
+            resolve();
+        }).catch(() => Helper.countdown(2, () => Helper.getUserInfo()));
+    });
 };
 
 Helper.liveToast = (message, element, type) => { //success caution error info
@@ -178,51 +186,37 @@ Helper.timer.prototype.clearTimer = function() {
 };
 
 Helper.sendMessage = (msg, callback) => chrome.runtime.sendMessage(msg, (response) => typeof callback == 'function' && callback(response));
-Helper.getMessage = (callback) => chrome.runtime.onMessage.addListener((request, sender, sendResponse) => typeof callback == 'function' && callback(request, sender, sendResponse));
+Helper.getMessage = (callback) => chrome.runtime.onMessage.addListener((request, sender, sendResponse) => callback(request, sender, sendResponse));
 
-$.fn.stopPropagation = function() {
-    return this.on('click', (e) => e.stopPropagation());
-};
-$.getTop = function(element) {
-    var offset = element.offsetTop;
-    element.offsetParent !== null ? offset += $.getTop(element.offsetParent) : 0;
-    return offset;
-};
-$.getLeft = function(element) {
-    var offset = element.offsetLeft;
-    element.offsetParent !== null ? offset += $.getLeft(element.offsetParent) : 0;
-    return offset;
-};
+$.fn.stopPropagation = function() {return this.on('click', (e) => e.stopPropagation());};
+$.getTop = (element) => element.offsetParent !== null ? element.offsetTop + $.getTop(element.offsetParent) : 0;
+$.getLeft = (element) => element.offsetParent !== null ? element.offsetLeft + $.getLeft(element.offsetParent) : 0;
 
-Helper.init = function(callback) {
+Helper.init = (callback) => {
     ModuleStore.init();
-    Helper.getRoomID(Helper.showID, (roomID) => {
+    Promise.all([
+        new Promise((resolve) => Helper.sendMessage({command: 'getOptions'}, (option) => resolve(option))),
+        Helper.getRoomID(Helper.showID),
+        Helper.getUserInfo()
+    ]).then(([option, roomID]) => {
+        Helper.option = option;
         Helper.roomID = roomID;
+        $.post('//bh.moehero.com/api/helper/upload/userinfo', {uid: Helper.userInfo.uid, version: Helper.info.version});
 
-        /*Helper.getRoomInfo(Helper.roomID, (roomInfo) => {
-            Helper.roomInfo = roomInfo;
-            init++;
-        });*/
-        Helper.sendMessage({command: 'getOptions'}, (result) => {
-            Helper.option = result;
+        {
+            Helper.DOM.info = $('<div>').addClass('seeds-buy-cntr').append($('<div>').addClass('ctrl-item').html(`${Helper.localize.helper} V${Helper.info.version}　QQ群:<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">285795550</a>`));
+            $('.control-panel').prepend(Helper.DOM.info);
+        } //瓜子数量 左
+        if(Helper.option.live && (Helper.option.live_autoTreasure || Helper.option.live_autoSmallTV)) {
+            Helper.DOM.funcInfoRow = $('<div>').addClass('bh-func-info-row').append($('<div>').addClass('func-info v-top').html('<span>分区: </span>' + $('.room-info-row a')[0].outerHTML));
+            $('.anchor-info-row').css('margin-top', 0).after(Helper.DOM.funcInfoRow);
 
-            {
-                Helper.DOM.info = $('<div>').addClass('seeds-buy-cntr').append($('<div>').addClass('ctrl-item').html(`${Helper.localize.helper} V${Helper.info.version}　QQ群:<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">285795550</a>`));
-                $('.control-panel').prepend(Helper.DOM.info);
-            } //瓜子数量 左
-            if(Helper.option.live && (Helper.option.live_autoTreasure || Helper.option.live_autoSmallTV)) {
-                Helper.DOM.funcInfoRow = $('<div>').addClass('bh-func-info-row').append($('<div>').addClass('func-info v-top').html('<span>分区: </span>' + $('.room-info-row a')[0].outerHTML));
-                $('.anchor-info-row').css('margin-top', 0).after(Helper.DOM.funcInfoRow);
-
-                $('.room-info-row').remove();
-            } //主播信息 下
-            //自动扩大关注列表
-            Helper.sidebarHeight = $('.colorful').css('display') == 'none' ? 499 : 550;
-            $('.my-attention-body').height($(window).height() - Helper.sidebarHeight);
-            $(window).resize(() => $('.my-attention-body').height($(window).height() - Helper.sidebarHeight));
-
-            typeof callback == 'function' && callback();
-        });
+            $('.room-info-row').remove();
+        } //主播信息 下
+        //自动扩大关注列表
+        Helper.sidebarHeight = $('.colorful').css('display') == 'none' ? 499 : 550;
+        $('.my-attention-body').height($(window).height() - Helper.sidebarHeight);
+        $(window).resize(() => $('.my-attention-body').height($(window).height() - Helper.sidebarHeight));
+        callback();
     });
-    Helper.getUserInfo(() => $.post('//bh.moehero.com/Api/Api/addUser', {uid: Helper.userInfo.uid}));
 };
