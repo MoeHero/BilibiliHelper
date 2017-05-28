@@ -33,4 +33,13 @@ function bh_updateSilverSeed(number) {
 function bh_setSigned() {
     window.avalon.vmodels.signUpCtrl.$fire('all!roomDoSign');
 }
+
+function bh_getDanmuInfo() {
+    let _danmuInfo = window.avalon.vmodels.chatCtrlPanelCtrl.danmuColor;
+    let danmuInfo = {
+        selectColor: _danmuInfo.selectColor,
+        selectMode: _danmuInfo.selectMode
+    };
+    chrome.runtime.sendMessage(extensionID, {command: 'getDanmuInfo', danmuInfo: danmuInfo});
+}
 console.log('%c直播间脚本注入成功~', 'color:#FFF;background-color:#57D2F7;padding:5px;border-radius:7px;line-height:30px;');
