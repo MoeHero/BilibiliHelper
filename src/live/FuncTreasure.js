@@ -15,7 +15,7 @@ class FuncTreasure {
         this.timesDom = $('<span>').text('0/0').hide();
         this.countdownDom = $('<span>').text('00:00').hide();
         let funcInfo = $('<a>').addClass('func-info v-top').append(this.stateText, this.timesDom, ' ', this.countdownDom);
-        Helper.DOM.funcInfoRow.prepend(this.stateIcon, funcInfo);
+        Helper.DOM.funcInfoRow.prepend(this.stateIcon, ' ', funcInfo);
     }
     static addEvent() {
         Helper.sendMessage({command: 'getTreasure'}, result => {

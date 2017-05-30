@@ -48,6 +48,12 @@ i.bh-icon.tv-enabled { background-position: -40px -20px; }
 }
 .bh-statinfo ul { margin-bottom: 6px; }
 
+.bh-tvstate {
+  left: 0;
+  top: 119px;
+  width: 300px;
+}
+
 #bh-gift-package-send-panel .gift-img {
   width: 60px;
   height: 60px;

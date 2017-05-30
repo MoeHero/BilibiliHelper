@@ -60,6 +60,7 @@ var Options = {
     live_hideSetting_vipicon: true,
     live_hideSetting_guardicon: true,
     live_hideSetting_adminicon: true,
+    live_hideSetting_guardmsg: true,
     live_hideSetting: true,
     live: true,
 

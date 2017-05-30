@@ -56,6 +56,10 @@ class FuncHideSetting {
             adminicon: {
                 name: '房管图标',
                 css: '.admin{display:none!important;}'
+            },
+            guardmsg: {
+                name: '船员聊天背景',
+                css: '.guard-msg{margin:0!important;padding:4px 5px!important;}.guard-msg:before{background:transparent!important;border-image:none!important;}.guard-msg:after{background:transparent!important;}'
             }
         };
 
