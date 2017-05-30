@@ -30,11 +30,11 @@ class ALPlugin_SmallTV {
         Helper.DOM.funcInfoRow.prepend(this.stateIcon, this.stateText);
     }
     static addEvent() {
-        Helper.sendMessage({command: 'getSmallTV'}, (result) => {
+        Helper.sendMessage({command: 'getSmallTV'}, result => {
             if(!result.showID) {
                 Helper.sendMessage({command: 'setSmallTV', showID: Helper.showID});
-                $(window).on('beforeunload', () => Helper.sendMessage({command: 'getSmallTV'}, (result) => result.showID == Helper.showID && Helper.sendMessage({command: 'delSmallTV'})));
-                Helper.getMessage((request) => {
+                $(window).on('beforeunload', () => Helper.sendMessage({command: 'getSmallTV'}, result => result.showID == Helper.showID && Helper.sendMessage({command: 'delSmallTV'})));
+                Helper.getMessage(request => {
                     if(request.cmd && request.cmd == 'SYS_MSG' && request.tv_id && request.real_roomid) {
                         this.join(request.real_roomid, request.tv_id);
                     }
@@ -59,7 +59,7 @@ class ALPlugin_SmallTV {
     }
 
     static join(roomID, TVID) {
-        $.getJSON('/SmallTV/join', {roomid: roomID, id: TVID}).done((result) => {
+        $.getJSON('/SmallTV/join', {roomid: roomID, id: TVID}).done(result => {
             if(result.code === 0) {
                 this.countdown[TVID] && this.countdown[TVID].clearCountdown();
                 this.countdown[TVID] = new Helper.countdown(result.data.dtime, () => this.getAward(TVID));
@@ -71,7 +71,7 @@ class ALPlugin_SmallTV {
         }).fail(() => Helper.countdown(2, () => this.join()));
     }
     static getAward(TVID) {
-        $.getJSON('/SmallTV/getReward', {id: TVID}).done((result) => {
+        $.getJSON('/SmallTV/getReward', {id: TVID}).done(result => {
             result = result.data;
             switch(result.status) {
                 case 0:

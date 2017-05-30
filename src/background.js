@@ -40,25 +40,11 @@ let SmallTV = {
         SmallTV.tabID = false;
     }
 };
-let Lighten = {
-    showID: false,
-    tabID: false,
-    getLighten: () => Lighten,
-    setLighten: function(options) {
-        Lighten.showID = options.showID;
-        Lighten.tabID = options.tabID;
-    },
-    delLighten: function() {
-        Lighten.showID = false;
-        Lighten.tabID = false;
-    }
-};
 
 var Options = {
     live_autoSign: true,
     live_autoTreasure: true,
     live_autoSmallTV: true,
-    live_autoLighten: true,
     live_giftPackage: true,
     live_danmuEnhance: true,
     live_hideSetting_gift: true,
@@ -105,6 +91,7 @@ var Info = {
 };
 
 function saveOptions() {
+    window.localStorage.live_autoLighten !== undefined && delete window.localStorage.live_autoLighten;
     window.localStorage.bh_option = JSON.stringify(Options);
 }
 function createNotifications(param) {
@@ -171,16 +158,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             break;
         case 'delSmallTV':
             sendResponse(SmallTV.delSmallTV());
-            break;
-
-        case 'getLighten':
-            sendResponse(Lighten.getLighten());
-            break;
-        case 'setLighten':
-            Lighten.setLighten({tabID: sender.tab.id, showID: request.showID});
-            break;
-        case 'delLighten':
-            sendResponse(Lighten.delLighten());
             break;
 
         case 'getInfo':

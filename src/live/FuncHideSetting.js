@@ -73,7 +73,7 @@ class FuncHideSetting {
         let top = -65;
         for(let key in this.funcList) {
             let li = $('<li>').addClass('clear-float').append($('<span>').text(this.funcList[key].name));
-            let button = $('<a>').addClass('f-right live-btn').attr('key', key).on('click', (e) => this.buttonClickEvent($(e.currentTarget)));
+            let button = $('<a>').addClass('f-right live-btn').attr('key', key).on('click', e => this.buttonClickEvent($(e.currentTarget)));
             this.funcList[key].showButton = button.clone(true).addClass(this.funcList[key].state ? 'default' : 'ghost').text('显示');
             this.funcList[key].hideButton = button.clone(true).addClass(this.funcList[key].state ? 'ghost' : 'default').text('隐藏');
             !this.funcList[key].state && (this.funcList[key].cssDOM = Helper.addStylesheetByText(this.funcList[key].css));

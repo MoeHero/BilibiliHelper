@@ -6,13 +6,11 @@ class ModuleStore {
         !store.get('BH_TreasureDate') && store.set('BH_TreasureDate', '1970/1/1');
         !store.get('BH_SmallTVStatInfo') && store.set('BH_SmallTVStatInfo', {});
         !store.get('BH_SmallTVTimes') && store.set('BH_SmallTVTimes', 0);
-        !store.get('BH_LightenTimes') && store.set('BH_LightenTimes', 0);
         !store.get('BH_HideSetting') && store.set('BH_HideSetting', {});
 
         //store.get('BH_SmallTVCount') !== undefined && store.set('BH_SmallTVTimes', store.get('BH_SmallTVTimes') + store.get('BH_SmallTVCount')) && store.remove('BH_SmallTVCount');
 
         this.list = {
-            'lighten': 'BH_Lighten',
             'smallTV': 'BH_SmallTV'
         };
     }

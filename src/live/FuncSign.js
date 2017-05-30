@@ -8,10 +8,10 @@ class FuncSign {
     }
 
     static addEvent() {
-        Helper.sendMessage({command: 'getSign'}, (result) => {
+        Helper.sendMessage({command: 'getSign'}, result => {
             if(!result.showID) {
                 Helper.sendMessage({command: 'setSign', showID: Helper.showID});
-                $(window).on('beforeunload', () => Helper.sendMessage({command: 'getSign'}, (result) => result.showID == Helper.showID && Helper.sendMessage({command: 'delSign'})));
+                $(window).on('beforeunload', () => Helper.sendMessage({command: 'getSign'}, result => result.showID == Helper.showID && Helper.sendMessage({command: 'delSign'})));
                 ModuleNotify.sign('enabled');
                 ModuleConsole.sign('enabled');
                 Helper.timer(60 * 60 * 1000, () => this.doSign());
@@ -28,7 +28,7 @@ class FuncSign {
 
     static doSign() {
         if(!ModuleStore.sign('get')) {
-            $.getJSON('/sign/doSign').done((result) => {
+            $.getJSON('/sign/doSign').done(result => {
                 switch(result.code) {
                     case 0:
                         let award = {award: result.data.text};

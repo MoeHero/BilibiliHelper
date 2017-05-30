@@ -127,16 +127,16 @@ class FuncDanmuEnhance {
         return danmus;
     }
     static sendDanmu(danmus) {
-        this.sendDanmu_flash(danmus[0]).then(() => {
+        this.sendDanmu_player(danmus[0]).then(() => {
             if(danmus.length > 1) {
                 danmus.splice(0, 1);
                 Helper.countdown(2, () => this.sendDanmu(danmus));
             }
         });
     }
-    static sendDanmu_flash(danmu) {
+    static sendDanmu_player(danmu) {
         return new Promise((resolve) => {
-            $('#player_object')[0].sendMsg(danmu, '0x' + this.danmuColorList[this.selectDanmuColor], this.selectDanmuMode);
+            Helper.addScriptByText(`bh_sendDanmu(${danmu}, '0x'${this.danmuColorList[this.selectDanmuColor]}, ${this.selectDanmuMode});`).remove();
             resolve();
         });
     }
