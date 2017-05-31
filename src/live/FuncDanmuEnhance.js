@@ -3,6 +3,8 @@ class FuncDanmuEnhance {
         if(!Helper.option.live || !Helper.option.live_danmuEnhance) {
             return;
         }
+        this.danmuEmojiList = ['(⌒▽⌒)', '（￣▽￣）', '(=・ω・=)', '(｀・ω・´)', '(〜￣△￣)〜', '(･∀･)', '(°∀°)ﾉ', '(￣3￣)', '╮(￣▽￣)╭', '_(:3」∠)_', '( ´_ゝ｀)', '←_←', '→_→', '(&lt;_&lt;)', '(&gt;_&gt;)', '(;¬_¬)', '(\'▔□▔)/', '(ﾟДﾟ≡ﾟдﾟ)!?', 'Σ(ﾟдﾟ;)', 'Σ( ￣□￣||)', '(´；ω；`)', '（/TДT)/', '(^・ω・^ )', '(｡･ω･｡)', '(●￣(ｴ)￣●)', 'ε=ε=(ノ≧∇≦)ノ', '(´･_･`)', '(-_-#)', '（￣へ￣）', '(￣ε(#￣) Σ', 'ヽ(`Д´)ﾉ', '（#-_-)┯━┯', '(╯°口°)╯(┴—┴', '←◡←', '( ♥д♥)', 'Σ>―(〃°ω°〃)♡→', '⁄(⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄', '(╬ﾟдﾟ)▄︻┻┳═一', '･*･:≡(　ε:)', '(汗)', '(苦笑)'];
+        this.danmuHotwordList = ['当然是选择原谅她啊！', '还有这种操作！', '怕是要修仙哦', 'gay里gay气', '身败名裂', '请大家注意弹幕礼仪哦！', '那你很棒哦！', '向大佬低头', '厉害了我的哥！', 'bilibili-(゜-゜)つロ乾杯~', 'prprpr', '一颗赛艇', '因吹思婷', 'excuse me？', 'gg', '你为什么这么熟练啊', '老司机带带我', '666666666', '啪啪啪啪啪', 'Yooooooo', 'FFFFFFFFFF', '色情主播', '红红火火恍恍惚惚', '喂，妖妖零吗', '_(:з」∠)_', '2333333'];
         this.danmuColorList = ['ffffff', 'ff6868', '66ccff', 'e33fff', '00fffc', '7eff00', 'ffed4f', 'ff9800', 'ff739a'];
         this.danmuModeList = [{name: '滚动', mode: 1, type: 'scroll'}, {name: '顶部', mode: 5, type: 'top'}];
         this.selectDanmuColor = 0;
@@ -21,17 +23,35 @@ class FuncDanmuEnhance {
         this.danmuTextbox = $('.danmu-textbox').clone().removeAttr('maxlength');
         this.danmuSendButton = $('.danmu-send-btn').clone();
         this.danmuLenghtText = $('.danmu-length-count').clone().text('0 / ' + this.maxLength);
+        this.danmuEmojiPanel = $('.emoji-panel').clone().empty();
+        for(let emoji of this.danmuEmojiList) {
+            this.danmuEmojiPanel.append($('<a>').text(emoji).on('click', (e) => this.addMsg($(e.currentTarget).text())));
+        }
+        this.danmuHotwordPanel = $('.hot-words-ctnr').clone().attr('style', 'overflow:auto!important;overflow-x:hidden;').empty();
+        for(let hotword of this.danmuHotwordList) {
+            this.danmuHotwordPanel.append($('<a>').text(hotword).on('click', (e) => this.addMsg($(e.currentTarget).text())));
+        }
 
-        $('.danmu-color').after(this.danmuColorButton).remove();
         $('.danmu-color-panel').after(this.danmuColorPanel).remove();
         $('.danmu-textbox').after(this.danmuTextbox).remove();
         $('.danmu-send-btn').after(this.danmuSendButton).remove();
         $('.danmu-length-count').after(this.danmuLenghtText).remove();
+        $('.emoji-panel').after(this.danmuEmojiPanel).remove();
+        $('.hot-words-ctnr').after(this.danmuHotwordPanel).remove();
     }
     static addEvent() {
+        $('.danmu-color').on('click', () => this.danmuColorPanel.show()).stopPropagation();
+        $('.hot-words').on('click', () => this.danmuHotwordPanel.show()).stopPropagation();
+        $('.emoji').on('click', () => this.danmuEmojiPanel.show()).stopPropagation();
+
         this.danmuColorPanel.stopPropagation();
-        this.danmuColorButton.on('click', () => this.danmuColorPanel.show()).stopPropagation();
-        $(document).on('click', () => this.danmuColorPanel.fadeOut(200));
+        this.danmuEmojiPanel.stopPropagation();
+        this.danmuHotwordPanel.stopPropagation();
+        $(document).on('click', () => {
+            this.danmuColorPanel.fadeOut(200);
+            this.danmuEmojiPanel.fadeOut(200);
+            this.danmuHotwordPanel.fadeOut(200);
+        });
         this.danmuSendButton.on('click', () => this.sendLongDanmu());
 
         this.danmuTextbox.on('input', () => {
@@ -59,6 +79,10 @@ class FuncDanmuEnhance {
                 }
             }
         });
+    }
+
+    static addMsg(msg) {
+        this.danmuTextbox.val(this.danmuTextbox.val() + msg).trigger('input');
     }
 
     static updateDanmuColorPanel() {
