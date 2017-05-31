@@ -60,6 +60,10 @@ class FuncHideSetting {
             guardmsg: {
                 name: '船员聊天背景',
                 css: '.guard-msg{margin:0!important;padding:4px 5px!important;}.guard-msg:before{background:transparent!important;border-image:none!important;}.guard-msg:after{background:transparent!important;}'
+            },
+            ad: {
+                name: '简介上方活动广告',
+                css: '.live-ad-full{display:none!important;}'
             }
         };
 

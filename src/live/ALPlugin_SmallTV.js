@@ -84,9 +84,9 @@ class ALPlugin_SmallTV {
     static join(roomID, TVID) {
         $.getJSON('/SmallTV/join', {roomid: roomID, id: TVID}).done(result => {
             if(result.code === 0) {
-                this.list[TVID] && this.list[TVID].countdown.clearCountdown();
-                this.countdown[TVID].countdown_dom = $('<span>');
-                this.countdown[TVID].countdown = new Helper.countdown(result.data.dtime, () => this.getAward(TVID), this.countdown[TVID].countdown_dom);
+                !this.list[TVID] && (this.list[TVID] = {});
+                this.list[TVID].countdown_dom = $('<span>');
+                this.list[TVID].countdown = new Helper.countdown(result.data.dtime, () => this.getAward(TVID), this.list[TVID].countdown_dom);
                 ModuleConsole.smallTV('joinSuccess', {roomID:roomID, TVID: TVID});
             } else if(result.code == -400) { //已经错过
             } else {
