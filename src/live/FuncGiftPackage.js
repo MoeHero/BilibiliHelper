@@ -155,25 +155,24 @@ class FuncGiftPackage {
     }
 
     static openSendPanel(target) {
-        let giftID = target.attr('class').match(/gift-(\d+)/)[1];
-        let index = target.parent().index();
-        let bagID = this.gifts[giftID][index].bagID;
+        this.giftID = target.attr('class').match(/gift-(\d+)/)[1];
+        this.index = target.parent().index();
 
-        this.sendPanelImage.attr('class', 'gift-img float-left gift-' + this.chooseGiftID);
-        this.sendPanelInfo.text(`您的包裹中还剩 ${this.currentGift.number} 个可用`);
-        this.sendPanelCount.val(this.currentGift.number);
-        this.sendPanelButton.off('click').on('click', () => this.sendGift(giftID, this.sendPanelCount.val(), bagID, index));
+        this.sendPanelImage.attr('class', 'gift-img float-left gift-' + this.giftID);
+        this.sendPanelInfo.text(`您的包裹中还剩 ${this.gifts[this.giftID][this.index].number} 个可用`);
+        this.sendPanelCount.val(this.gifts[this.giftID][this.index].number);
+        this.sendPanelButton.off('click').on('click', () => this.sendGift(this.giftID, this.sendPanelCount.val(), this.gifts[this.giftID][this.index].bagID, this.index));
         this.sendPanel.show();
     }
     static setNumber(target) {
         let number = target.text();
         if(number == 'MAX') {
-            number = this.currentGift.number;
+            number = this.gifts[this.giftID][this.index].number;
         } else if(number.endsWith('%')) {
-            number = Math.round(this.currentGift.number * Number.parseInt(number) * 0.01);
+            number = Math.round(this.gifts[this.giftID][this.index].number * Number.parseInt(number) * 0.01);
         }
-        if(number > this.currentGift.number || Number.isNaN(number)) {
-            number = this.currentGift.number;
+        if(number > this.gifts[this.giftID][this.index].number || Number.isNaN(number)) {
+            number = this.gifts[this.giftID][this.index].number;
         }
         if(number < 1) {
             number = 1;
