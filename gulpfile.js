@@ -86,6 +86,6 @@ gulp.task('crx', function() {
 });
 gulp.task('zip', function() {
     return gulp.src(path + '/src/**')
-        .pipe($.zip(filename + '.zip'))
+        .pipe($.archiver(filename + '.zip'))
         .pipe(gulp.dest(path + '/'));
 });
