@@ -5,13 +5,11 @@ class FuncAutoLottery {
             return;
         }
         this.pluginList = [
-            ALPlugin_SmallTV,
-            ALPlugin_Lighten
+            ALPlugin_SmallTV
         ];
         this.initDOM();
         this.addEvent();
-        for(let key in this.pluginList) {
-            let plugin = this.pluginList[key];
+        for(let plugin of this.pluginList) {
             plugin.init();
         }
     }

@@ -76,20 +76,4 @@ class ModuleConsole {
         }
         this.info(msg);
     }
-    static lighten(key, param) {
-        var lighten = Helper.localize.lighten;
-        var msg = lighten.title + ': ';
-        switch(key) {
-            case 'enabled':
-                msg += Helper.localize.enabled;
-                break;
-            case 'award':
-                msg += lighten.action.award;
-                break;
-            case 'exist':
-                msg += Helper.format(lighten.action.exist, param);
-                break;
-        }
-        this.info(msg);
-    }
 }

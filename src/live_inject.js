@@ -2,7 +2,7 @@
 'use strict';
 //消息拦截
 window._server_callback = window.server_callback;
-window.server_callback = (json) => {
+window.server_callback = json => {
     window._server_callback(json);
     chrome.runtime.sendMessage(extensionID, json);
     if(json.cmd && json.cmd == 'SPECIAL_GIFT') {
@@ -21,7 +21,7 @@ function bh_sendGift_package(giftID, number, bagID, key) {
             coinType: 'silver',
             bagId: bagID
         },
-        callback: function(result) {
+        callback: result => {
             result.gift = {giftID: giftID, key: key};
             chrome.runtime.sendMessage(extensionID, {command: 'sendGiftCallback', result: result});
         }
@@ -41,5 +41,8 @@ function bh_getDanmuInfo() {
         selectMode: _danmuInfo.selectMode
     };
     chrome.runtime.sendMessage(extensionID, {command: 'getDanmuInfo', danmuInfo: danmuInfo});
+}
+function bh_sendDanmu(danmu, color, mode) {
+    window.LivePlayer && window.LivePlayer(danmu, color, mode);
 }
 console.log('%c直播间脚本注入成功~', 'color:#FFF;background-color:#57D2F7;padding:5px;border-radius:7px;line-height:30px;');

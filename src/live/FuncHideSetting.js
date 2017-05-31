@@ -56,6 +56,10 @@ class FuncHideSetting {
             adminicon: {
                 name: '房管图标',
                 css: '.admin{display:none!important;}'
+            },
+            guardmsg: {
+                name: '船员聊天背景',
+                css: '.guard-msg{margin:0!important;padding:4px 5px!important;}.guard-msg:before{background:transparent!important;border-image:none!important;}.guard-msg:after{background:transparent!important;}'
             }
         };
 
@@ -73,7 +77,7 @@ class FuncHideSetting {
         let top = -65;
         for(let key in this.funcList) {
             let li = $('<li>').addClass('clear-float').append($('<span>').text(this.funcList[key].name));
-            let button = $('<a>').addClass('f-right live-btn').attr('key', key).on('click', (e) => this.buttonClickEvent($(e.currentTarget)));
+            let button = $('<a>').addClass('f-right live-btn').attr('key', key).on('click', e => this.buttonClickEvent($(e.currentTarget)));
             this.funcList[key].showButton = button.clone(true).addClass(this.funcList[key].state ? 'default' : 'ghost').text('显示');
             this.funcList[key].hideButton = button.clone(true).addClass(this.funcList[key].state ? 'ghost' : 'default').text('隐藏');
             !this.funcList[key].state && (this.funcList[key].cssDOM = Helper.addStylesheetByText(this.funcList[key].css));

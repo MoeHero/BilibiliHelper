@@ -7,38 +7,38 @@ var Helper = {
     showID: location.pathname.substr(1)
 };
 
-Helper.addScriptByFile = (fileName) => {
+Helper.addScriptByFile = fileName => {
     let script = $('<script>').attr('src', chrome.extension.getURL(fileName));
     $('head').append(script);
     return script;
 };
-Helper.addScriptByText = (text) => {
+Helper.addScriptByText = text => {
     let script = $('<script>').text(text);
     $('head').append(script);
     return script;
 };
 
-Helper.addStylesheetByFile = (fileName) => {
+Helper.addStylesheetByFile = fileName => {
     let link = $('<link>').attr('rel', 'stylesheet').attr('href', chrome.extension.getURL(fileName));
     $('head').append(link);
     return link;
 };
-Helper.addStylesheetByText = (text) => {
+Helper.addStylesheetByText = text => {
     let style = $('<style>').attr('type', 'text/css').text(text);
     $('head').append(style);
     return style;
 };
 
-Helper.getRoomID = (showID) => {
-    return new Promise((resolve) => {
+Helper.getRoomID = showID => {
+    return new Promise(resolve => {
         let rid = ModuleStore.roomID_get(showID);
         if(!rid) {
-            $.get('/' + showID).done((result) => {
+            $.get('/' + showID).done(result => {
                 let reg = result.match(/var ROOMID = (\d+)/);
                 rid = (reg && reg[1]) || 0;
                 ModuleStore.roomID_add(showID, rid);
                 resolve(rid);
-            }).fail(() => Helper.countdown(2, () => Helper.getRoomID(showID)));
+            }).fail(() => resolve(0));
         } else {
             resolve(rid);
         }
@@ -57,7 +57,7 @@ Helper.getRoomID = (showID) => {
     });
 };*/
 Helper.getUserInfo = () => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         Promise.all([
             $.getJSON('/user/getuserinfo').promise(),
             $.getJSON('//space.bilibili.com/ajax/member/MyInfo').promise()
@@ -91,7 +91,7 @@ Helper.liveToast = (message, element, type) => { //success caution error info
 Helper.format = (template, data) => {
     if(data) {
         let keys = Object.keys(data);
-        let dataList = keys.map((key) => data[key]);
+        let dataList = keys.map(key => data[key]);
         return new Function(keys.join(','), 'return `' + template + '`;').apply(null, dataList); //jshint ignore:line
     }
     return template;
@@ -124,13 +124,6 @@ Helper.localize = {//TODO 重构 去除不必要文本
             award: '获得${awardName}x${awardNumber}',
             exist: '已在直播间${showID}启动',
             joinSuccess: '参加成功',
-        }
-    },
-    lighten: {
-        title: '自动领取应援棒',
-        action: {
-            award: '获得应援棒x1',
-            exist: '已在直播间${showID}启动'
         }
     }
 };
@@ -185,17 +178,17 @@ Helper.timer.prototype.clearTimer = function() {
     clearInterval(this.timer);
 };
 
-Helper.sendMessage = (msg, callback) => chrome.runtime.sendMessage(msg, (response) => typeof callback == 'function' && callback(response));
-Helper.getMessage = (callback) => chrome.runtime.onMessage.addListener((request, sender, sendResponse) => callback(request, sender, sendResponse));
+Helper.sendMessage = (msg, callback) => chrome.runtime.sendMessage(msg, response => typeof callback == 'function' && callback(response));
+Helper.getMessage = callback => chrome.runtime.onMessage.addListener((request, sender, sendResponse) => callback(request, sender, sendResponse));
 
-$.fn.stopPropagation = function() {return this.on('click', (e) => e.stopPropagation());};
-$.getTop = (element) => element.offsetParent !== null ? element.offsetTop + $.getTop(element.offsetParent) : 0;
-$.getLeft = (element) => element.offsetParent !== null ? element.offsetLeft + $.getLeft(element.offsetParent) : 0;
+$.fn.stopPropagation = function() {return this.on('click', e => e.stopPropagation());};
+$.getTop = e => e.offsetParent !== null ? e.offsetTop + $.getTop(e.offsetParent) : 0;
+$.getLeft = e => e.offsetParent !== null ? e.offsetLeft + $.getLeft(e.offsetParent) : 0;
 
-Helper.init = (callback) => {
+Helper.init = callback => {
     ModuleStore.init();
     Promise.all([
-        new Promise((resolve) => Helper.sendMessage({command: 'getOptions'}, (option) => resolve(option))),
+        new Promise(resolve => Helper.sendMessage({command: 'getOptions'}, option => resolve(option))),
         Helper.getRoomID(Helper.showID),
         Helper.getUserInfo()
     ]).then(([option, roomID]) => {
@@ -217,6 +210,6 @@ Helper.init = (callback) => {
         Helper.sidebarHeight = $('.colorful').css('display') == 'none' ? 499 : 550;
         $('.my-attention-body').height($(window).height() - Helper.sidebarHeight);
         $(window).resize(() => $('.my-attention-body').height($(window).height() - Helper.sidebarHeight));
-        callback();
+        Helper.countdown(0.1, () => callback());
     });
 };

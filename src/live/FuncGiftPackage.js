@@ -24,7 +24,7 @@ class FuncGiftPackage {
         this.sendPanelCount = this.sendPanel.find('.send-ctrl>input');
         let numberGroup = $('<div>').addClass('number-group');
         for(let key in this.numberGroup) {
-            let numberButton = $('<span>').text(this.numberGroup[key]).on('click', (e) => this.setNumber($(e.currentTarget)));
+            let numberButton = $('<span>').text(this.numberGroup[key]).on('click', e => this.setNumber($(e.currentTarget)));
             numberGroup.append(numberButton);
         }
         this.sendPanel.find('.panel-content').append(numberGroup);
@@ -41,15 +41,12 @@ class FuncGiftPackage {
 
         this.packageButton.on('click', () => this.openGiftPackage());
         this.packageSendAll.on('click', () => this.sendAllGift());
-        this.sendPanelButton.on('click', () => this.sendGift());
         this.sendPanelCloseButton.on('click', () => this.sendPanel.hide());
 
-        Helper.getMessage((request) => {
+        Helper.getMessage(request => {
             if(request.command && request.command == 'openGiftPackage') {
                 this.openGiftPackage();
             }
-        });
-        Helper.getMessage((request) => {
             if(request.command && request.command == 'sendGiftCallback') {
                 let result = request.result;
                 let liveToastElement = this.sendPanel.css('display') == 'none' ? this.packageButton : this.sendPanelButton;
@@ -90,7 +87,7 @@ class FuncGiftPackage {
 
     static openGiftPackage() {
         if(this.packagePanel.css('display') == 'none') {
-            $.getJSON('/gift/playerBag').done((result) => {
+            $.getJSON('/gift/playerBag').done(result => {
                 switch(result.code) {
                     case 0:
                         this.gifts = this.sortGift(result.data);
@@ -150,7 +147,7 @@ class FuncGiftPackage {
                     .html(`<span class="expires">${gift.expireText}</span>`);
                 let giftCount = $('<div>').addClass('gift-count').text('x' + gift.number);
 
-                giftItem.on('click', (e) => this.openSendPanel($(e.currentTarget)));
+                giftItem.on('click', e => this.openSendPanel($(e.currentTarget)));
                 giftsDom.append(giftDom.append(giftItem, giftCount));
             }
             this.packagePanelContent.append(giftsDom);
@@ -158,13 +155,14 @@ class FuncGiftPackage {
     }
 
     static openSendPanel(target) {
-        this.currentGiftID = target.attr('class').match(/gift-(\d+)/)[1];
-        this.currentKey = target.parent().index();
-        this.currentGift = this.gifts[this.currentGiftID][this.currentKey];
+        let giftID = target.attr('class').match(/gift-(\d+)/)[1];
+        let index = target.parent().index();
+        let bagID = this.gifts[giftID][index].bagID;
 
-        this.sendPanelImage.attr('class', 'gift-img float-left gift-' + this.currentGiftID);
+        this.sendPanelImage.attr('class', 'gift-img float-left gift-' + this.chooseGiftID);
         this.sendPanelInfo.text(`您的包裹中还剩 ${this.currentGift.number} 个可用`);
         this.sendPanelCount.val(this.currentGift.number);
+        this.sendPanelButton.off('click').on('click', () => this.sendGift(giftID, this.sendPanelCount.val(), bagID, index));
         this.sendPanel.show();
     }
     static setNumber(target) {
@@ -174,24 +172,25 @@ class FuncGiftPackage {
         } else if(number.endsWith('%')) {
             number = Math.round(this.currentGift.number * Number.parseInt(number) * 0.01);
         }
-        if(number > this.currentGift.number || isNaN(number)) {
+        if(number > this.currentGift.number || Number.isNaN(number)) {
             number = this.currentGift.number;
-        } else if(number < 1) {
+        }
+        if(number < 1) {
             number = 1;
         }
         this.sendPanelCount.val(number);
-    }
-    static sendGift() {
-        Helper.addScriptByText(`bh_sendGift_package(${this.currentGiftID}, ${this.sendPanelCount.val()}, ${this.currentGift.bagID}, ${this.currentKey});`).remove();
     }
     static sendAllGift() {
         for(let id in this.gifts) {
             for(let key in this.gifts[id]) {
                 let gift = this.gifts[id][key];
                 if(id != 69 && gift.expire != Infinity) {
-                    Helper.addScriptByText(`bh_sendGift_package(${id}, ${gift.number}, ${gift.bagID}, ${key});`).remove();
+                    this.sendGift(id, gift.number, gift.bagID, key);
                 }
             }
         }
+    }
+    static sendGift(giftID, number, bagID, key) {
+        Helper.addScriptByText(`bh_sendGift_package(${giftID}, ${number}, ${bagID}, ${key});`).remove();
     }
 }

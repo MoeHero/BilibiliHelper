@@ -15,14 +15,14 @@ class FuncTreasure {
         this.timesDom = $('<span>').text('0/0').hide();
         this.countdownDom = $('<span>').text('00:00').hide();
         let funcInfo = $('<a>').addClass('func-info v-top').append(this.stateText, this.timesDom, ' ', this.countdownDom);
-        Helper.DOM.funcInfoRow.prepend(this.stateIcon, funcInfo);
+        Helper.DOM.funcInfoRow.prepend(this.stateIcon, ' ', funcInfo);
     }
     static addEvent() {
-        Helper.sendMessage({command: 'getTreasure'}, (result) => {
+        Helper.sendMessage({command: 'getTreasure'}, result => {
             if(!result.showID) {
                 Helper.sendMessage({command: 'setTreasure', showID: Helper.showID});
                 $(window).on('beforeunload', () => {
-                    Helper.sendMessage({command: 'getTreasure'}, (result) => result.showID == Helper.showID && Helper.sendMessage({command: 'delTreasure'}));
+                    Helper.sendMessage({command: 'getTreasure'}, result => result.showID == Helper.showID && Helper.sendMessage({command: 'delTreasure'}));
                 });
                 ModuleNotify.treasure('enabled');
                 ModuleConsole.treasure('enabled');
@@ -50,7 +50,7 @@ class FuncTreasure {
 
     static checkNewTask() {
         if(!ModuleStore.treasure('getEnd')) {
-            $.getJSON('/FreeSilver/getCurrentTask?bh').done((result) => {
+            $.getJSON('/FreeSilver/getCurrentTask?bh').done(result => {
                 switch(result.code) {
                     case 0:
                         this.getTimes();
@@ -91,7 +91,7 @@ class FuncTreasure {
     static getAward() {
         let image = $('<img>').attr('src', '/freeSilver/getCaptcha?ts=' + Date.now()).on('load', () => {
             this.answer = this.calculateCaptcha(OCRAD(image[0]));
-            $.getJSON('/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done((result) => {
+            $.getJSON('/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done(result => {
                 switch(result.code) {
                     case 0:
                         let award = {award: result.data.awardSilver, silver: result.data.silver};
@@ -123,7 +123,7 @@ class FuncTreasure {
         }).on('error', () => Helper.countdown(2, () => this.getAward()));
     }
     static getTimes() {
-        $.getJSON('/i/api/taskInfo').done((result) => {
+        $.getJSON('/i/api/taskInfo').done(result => {
             if(result.code === 0) {
                 result = result.data.box_info;
                 let maxTimes = result.max_times * 3;

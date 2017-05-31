@@ -77,21 +77,4 @@ class ModuleNotify {
         }
         Helper.option.notify_autoSmallTV && this.create('smallTV_' + key, icon, Helper.localize.helper + ' - ' + smallTV.title, msg);
     }
-    static lighten(key, param) {
-        if(Helper.option['notify_autoLighten_' + key] === false) {
-            return;
-        }
-        let lighten = Helper.localize.lighten;
-        let icon = 'https://static.hdslb.com/live-static/live-room/images/gift-section/gift-69.gif';
-        let msg = '';
-        switch(key) {
-            case 'enabled':
-                msg = Helper.localize.enabled;
-                break;
-            case 'award':
-                msg = lighten.action.award;
-                break;
-        }
-        Helper.option.notify_autoLighten && this.create('lighten_' + key, icon, Helper.localize.helper + ' - ' + lighten.title, msg);
-    }
 }
