@@ -136,7 +136,7 @@ class FuncDanmuEnhance {
     }
     static sendDanmu_player(danmu) {
         return new Promise((resolve) => {
-            Helper.addScriptByText(`bh_sendDanmu(${danmu}, '0x'${this.danmuColorList[this.selectDanmuColor]}, ${this.selectDanmuMode});`).remove();
+            Helper.addScriptByText(`bh_sendDanmu('${Helper.escape(danmu)}', '0x${this.danmuColorList[this.selectDanmuColor]}', ${this.selectDanmuMode});`).remove();
             resolve();
         });
     }
