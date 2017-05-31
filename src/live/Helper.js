@@ -96,6 +96,9 @@ Helper.format = (template, data) => {
     }
     return template;
 };
+Helper.escape = string => {
+    return string.replace(/([\\'"&])+?/g, '\\$1');
+};
 Helper.localize = {//TODO 重构 去除不必要文本
     helper: 'Bilibili助手',
     enabled: '已启用',
