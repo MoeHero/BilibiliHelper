@@ -50,6 +50,7 @@ class FuncGiftPackage {
             if(request.command && request.command == 'sendGiftCallback') {
                 let result = request.result;
                 let liveToastElement = this.sendPanel.css('display') == 'none' ? this.packageButton : this.sendPanelButton;
+                console.log(result);
                 switch(result.code) {
                     case 0:
                         if(result.data.remain === 0) {
@@ -63,12 +64,12 @@ class FuncGiftPackage {
                         this.updateGiftPackage();
                         break;
                     case -400: //错误
-                        if(result.msg.includes('偶像活动')) { //应援棒提示
-                            Helper.liveToast('只有在入围偶像活动的主播房间才能赠送该道具!', liveToastElement, 'caution');
-                        } else { //参数错误
+                        // if(result.msg.includes('偶像活动')) { //应援棒提示
+                        //     Helper.liveToast('只有在入围偶像活动的主播房间才能赠送该道具!', liveToastElement, 'caution');
+                        // } else { //参数错误
                             console.log(result);
                             Helper.liveToast('参数错误!', liveToastElement, 'error');
-                        }
+                        // }
                         break;
                     case 200005: //无法给自己赠送道具
                         Helper.liveToast('无法给自己赠送道具!', liveToastElement, 'caution');
@@ -183,7 +184,7 @@ class FuncGiftPackage {
         for(let id in this.gifts) {
             for(let key in this.gifts[id]) {
                 let gift = this.gifts[id][key];
-                if(id != 69 && gift.expire != Infinity) {
+                if(id != 71 && gift.expire != Infinity) {
                     this.sendGift(id, gift.number, gift.bagID, key);
                 }
             }
