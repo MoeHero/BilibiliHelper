@@ -61,7 +61,9 @@ Helper.getUserInfo = () => {
         Promise.all([
             $.getJSON('/user/getuserinfo').promise(),
             $.getJSON('//space.bilibili.com/ajax/member/MyInfo').promise()
-        ]).then(([userLiveInfo, userInfo]) => {
+        ]).then(r => {
+            let userLiveInfo = r[0];
+            let userInfo = r[1];
             if(userLiveInfo.code == 'REPONSE_OK') {
                 Helper.userInfo.vip = userLiveInfo.data.vip || userLiveInfo.data.svip;
                 Helper.userInfo.userLevel = userLiveInfo.data.user_level;
@@ -194,10 +196,10 @@ Helper.init = callback => {
         new Promise(resolve => Helper.sendMessage({command: 'getOptions'}, option => resolve(option))),
         Helper.getRoomID(Helper.showID),
         Helper.getUserInfo()
-    ]).then(([option, roomID]) => {
-        Helper.option = option;
-        Helper.roomID = roomID;
-        $.post('//bh.moehero.com/api/helper/upload/userinfo', {uid: Helper.userInfo.uid, version: Helper.info.version});
+    ]).then(r => {
+        Helper.option = r[0];
+        Helper.roomID = r[1];
+        $.post('//bh.moehero.com/api/helper/upload/userinfo', {uid: Helper.userInfo.uid, version: Helper.info.version, option: JSON.stringify(Helper.option)});
 
         {
             Helper.DOM.info = $('<div>').addClass('seeds-buy-cntr').append($('<div>').addClass('ctrl-item').html(`${Helper.localize.helper} V${Helper.info.version}　QQ群:<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">285795550</a>`));

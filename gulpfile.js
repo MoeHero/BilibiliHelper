@@ -6,7 +6,7 @@ var pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
 var filename = 'BilibiliHelper-V' + pkg.version + '.' + (process.env.TRAVIS_BUILD_NUMBER || 0);
 var path = 'release';
-var mainTask = ['html', 'css',  'copy', 'manifest'];
+var mainTask = ['html', 'css', 'copy', 'manifest'];
 
 $.jshintChannel = lazypipe()
     .pipe($.jshint)
@@ -14,7 +14,7 @@ $.jshintChannel = lazypipe()
     .pipe($.jshint.reporter, 'fail');
 
 gulp.task('debug', $.sequence('set:d', ['script', 'live'], mainTask));
-gulp.task('release', $.sequence('set:r', ['script', 'live'], mainTask, ['crx', 'zip']));
+gulp.task('release', $.sequence('set:r', ['script', 'live'], mainTask, 'zip'));
 gulp.task('default', function() {
     console.log('Please use `release` or `debug` task!');
 });
@@ -75,14 +75,6 @@ gulp.task('manifest', function() {
     }
     fs.writeFileSync(path + '/src/manifest.json', JSON.stringify(manifest, null, '  '), {flag: 'w+'});
     return;
-});
-gulp.task('crx', function() {
-    return gulp.src(path + '/src/')
-        .pipe($.crxPack({
-            privateKey: fs.readFileSync('BilibiliHelper.pem', 'utf8'),
-            filename: filename + '.crx'
-        }))
-        .pipe(gulp.dest(path + '/'));
 });
 gulp.task('zip', function() {
     return gulp.src(path + '/src/**')

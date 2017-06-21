@@ -2,11 +2,30 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="/resources/css/bootstrap.min.css">
   <style>
-    body { min-width: 30px; }
+    body { width: 180px; }
+    li {
+      padding: 5px;
+      list-style-type: none;
+    }
   </style>
 </head>
 <body>
-  <a href="/options/options.html" target="_blank">选项</a>
+  <ul class="container-fluid">
+    <li class="row">
+      <div class="input-group">
+        <input type="text" class="form-control" id="av-number" placeholder="AV号">
+        <span class="input-group-btn">
+          <button class="btn btn-default" id="video" type="button">GO</button>
+        </span>
+      </div>
+    </li>
+    <li class="row">
+      <a class="btn btn-default col-xs-33" href="/options/options.html" target="_blank">选项</a>
+    </li>
+  </ul>
+  <script src="/resources/js/jquery-3.1.1.min.js"></script>
+  <script src="./popup.min.js"></script>
 </body>
 </html>
