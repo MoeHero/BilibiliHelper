@@ -122,9 +122,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
     if(changeInfo.status == 'complete' &&
         tabInfo.status == 'complete' &&
         tabInfo.url.includes('live.bilibili.com')) {
-        chrome.tabs.executeScript(tabId, {file: './jquery-3.1.1.min.js'});
-        chrome.tabs.executeScript(tabId, {file: './ocrad.min.js'});
-        chrome.tabs.executeScript(tabId, {file: './store.min.js'});
+        chrome.tabs.executeScript(tabId, {file: './resources/js/jquery-3.1.1.min.js'});
+        chrome.tabs.executeScript(tabId, {file: './resources/js/ocrad.min.js'});
+        chrome.tabs.executeScript(tabId, {file: './resources/js/store.min.js'});
         chrome.tabs.executeScript(tabId, {file: './live.min.js'});
         console.log('Execute Script: ' + tabInfo.url);
     }

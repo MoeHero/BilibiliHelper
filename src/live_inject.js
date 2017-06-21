@@ -35,11 +35,18 @@ function bh_setSigned() {
 }
 
 function bh_getDanmuInfo() {
-    let _danmuInfo = window.avalon.vmodels.chatCtrlPanelCtrl.danmuColor;
+    let _danmuInfo = window.avalon.vmodels.chatCtrlPanelCtrl;
     let danmuInfo = {
-        selectColor: _danmuInfo.selectColor,
-        selectMode: _danmuInfo.selectMode
+        selectColor: _danmuInfo.danmuColor.selectColor,
+        selectMode: _danmuInfo.danmuColor.selectMode,
+        emojiList: JSON.stringify(_danmuInfo.emoji.data),
+        colorList: []
     };
+    for(let i = 0;i < _danmuInfo.danmuColor.colors.length;i++) {
+        danmuInfo.colorList.push(_danmuInfo.danmuColor.colors[i].color.replace('#', ''));
+    }
+    danmuInfo.colorList = JSON.stringify(danmuInfo.colorList);
+    console.log(danmuInfo);
     chrome.runtime.sendMessage(extensionID, {command: 'getDanmuInfo', danmuInfo: danmuInfo});
 }
 function bh_sendDanmu(danmu, color, mode) {

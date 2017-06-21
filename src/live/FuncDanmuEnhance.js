@@ -3,9 +3,9 @@ class FuncDanmuEnhance {
         if(!Helper.option.live || !Helper.option.live_danmuEnhance) {
             return;
         }
-        this.danmuEmojiList = ['(⌒▽⌒)', '（￣▽￣）', '(=・ω・=)', '(｀・ω・´)', '(〜￣△￣)〜', '(･∀･)', '(°∀°)ﾉ', '(￣3￣)', '╮(￣▽￣)╭', '_(:3」∠)_', '( ´_ゝ｀)', '←_←', '→_→', '(<_<)', '(>_>)', '(;¬_¬)', '(\'▔□▔)/', '(ﾟДﾟ≡ﾟдﾟ)!?', 'Σ(ﾟдﾟ;)', 'Σ( ￣□￣||)', '(´；ω；`)', '（/TДT)/', '(^・ω・^ )', '(｡･ω･｡)', '(●￣(ｴ)￣●)', 'ε=ε=(ノ≧∇≦)ノ', '(´･_･`)', '(-_-#)', '（￣へ￣）', '(￣ε(#￣) Σ', 'ヽ(`Д´)ﾉ', '（#-_-)┯━┯', '(╯°口°)╯(┴—┴', '←◡←', '( ♥д♥)', 'Σ>―(〃°ω°〃)♡→', '⁄(⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄', '(╬ﾟдﾟ)▄︻┻┳═一', '･*･:≡(　ε:)', '(汗)', '(苦笑)'];
+        this.danmuEmojiList = [];//['(⌒▽⌒)', '（￣▽￣）', '(=・ω・=)', '(｀・ω・´)', '(〜￣△￣)〜', '(･∀･)', '(°∀°)ﾉ', '(￣3￣)', '╮(￣▽￣)╭', '_(:3」∠)_', '( ´_ゝ｀)', '←_←', '→_→', '(<_<)', '(>_>)', '(;¬_¬)', '(\'▔□▔)/', '(ﾟДﾟ≡ﾟдﾟ)!?', 'Σ(ﾟдﾟ;)', 'Σ( ￣□￣||)', '(´；ω；`)', '（/TДT)/', '(^・ω・^ )', '(｡･ω･｡)', '(●￣(ｴ)￣●)', 'ε=ε=(ノ≧∇≦)ノ', '(´･_･`)', '(-_-#)', '（￣へ￣）', '(￣ε(#￣) Σ', 'ヽ(`Д´)ﾉ', '（#-_-)┯━┯', '(╯°口°)╯(┴—┴', '←◡←', '( ♥д♥)', 'Σ>―(〃°ω°〃)♡→', '⁄(⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄', '(╬ﾟдﾟ)▄︻┻┳═一', '･*･:≡(　ε:)', '(汗)', '(苦笑)'];
         this.danmuHotwordList = ['当然是选择原谅她啊！', '还有这种操作！', '怕是要修仙哦', 'gay里gay气', '身败名裂', '请大家注意弹幕礼仪哦！', '那你很棒哦！', '向大佬低头', '厉害了我的哥！', 'bilibili-(゜-゜)つロ乾杯~', 'prprpr', '一颗赛艇', '因吹思婷', 'excuse me？', 'gg', '你为什么这么熟练啊', '老司机带带我', '666666666', '啪啪啪啪啪', 'Yooooooo', 'FFFFFFFFFF', '色情主播', '红红火火恍恍惚惚', '喂，妖妖零吗', '_(:з」∠)_', '2333333'];
-        this.danmuColorList = ['ffffff', 'ff6868', '66ccff', 'e33fff', '00fffc', '7eff00', 'ffed4f', 'ff9800', 'ff739a'];
+        this.danmuColorList = [];//['ffffff', 'ff6868', '66ccff', 'e33fff', '00fffc', '7eff00', 'ffed4f', 'ff9800', 'ff739a'];
         this.danmuModeList = [{name: '滚动', mode: 1, type: 'scroll'}, {name: '顶部', mode: 5, type: 'top'}];
         this.selectDanmuColor = 0;
         this.selectDanmuMode = 1;
@@ -24,12 +24,9 @@ class FuncDanmuEnhance {
         this.danmuSendButton = $('.danmu-send-btn').clone();
         this.danmuLenghtText = $('.danmu-length-count').clone().text('0 / ' + this.maxLength);
         this.danmuEmojiPanel = $('.emoji-panel').clone().empty();
-        for(let emoji of this.danmuEmojiList) {
-            this.danmuEmojiPanel.append($('<a>').text(emoji).on('click', (e) => this.addMsg($(e.currentTarget).text())));
-        }
         this.danmuHotwordPanel = $('.hot-words-ctnr').clone().attr('style', 'overflow:auto!important;overflow-x:hidden;').empty();
         for(let hotword of this.danmuHotwordList) {
-            this.danmuHotwordPanel.append($('<a>').text(hotword).on('click', (e) => this.addMsg($(e.currentTarget).text())));
+            this.danmuHotwordPanel.append($('<a>').text(hotword).on('click', e => this.addMsg($(e.currentTarget).text())));
         }
 
         $('.danmu-color-panel').after(this.danmuColorPanel).remove();
@@ -73,6 +70,8 @@ class FuncDanmuEnhance {
                 if(request.danmuInfo.selectColor === '') {
                     Helper.countdown(1, () => Helper.addScriptByText('bh_getDanmuInfo();').remove());
                 } else {
+                    this.danmuColorList = JSON.parse(request.danmuInfo.colorList);
+                    this.danmuEmojiList = JSON.parse(request.danmuInfo.emojiList);
                     this.selectDanmuColor = this.danmuColorList.indexOf(request.danmuInfo.selectColor.substring(2));
                     this.selectDanmuMode = request.danmuInfo.selectMode;
                     this.updateDanmuColorPanel();
@@ -88,6 +87,7 @@ class FuncDanmuEnhance {
     static updateDanmuColorPanel() {
         this.danmuModeSelectPanel.empty();
         this.danmuColorSelectPanel.empty();
+        this.danmuEmojiPanel.empty();
         for(let danmuMode of this.danmuModeList) {
             let modeDOM = $('<a>').addClass('list danmu-mode-block ' + danmuMode.type).text(danmuMode.name)
                 .on('click', (e) => this.setDanmuConfig('mode', $(e.currentTarget)));
@@ -103,6 +103,9 @@ class FuncDanmuEnhance {
                 colorDOM.addClass('active');
             }
             this.danmuColorSelectPanel.append($('<li>').append(colorDOM));
+        }
+        for(let emoji of this.danmuEmojiList) {
+            this.danmuEmojiPanel.append($('<a>').html(emoji).on('click', e => this.addMsg($(e.currentTarget).text())));
         }
     }
     static setDanmuConfig(type, target) {

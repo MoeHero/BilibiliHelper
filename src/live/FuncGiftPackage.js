@@ -184,7 +184,7 @@ class FuncGiftPackage {
         for(let id in this.gifts) {
             for(let key in this.gifts[id]) {
                 let gift = this.gifts[id][key];
-                if(id != 71 && gift.expire != Infinity) {
+                if(id != 73 && gift.expire != Infinity) {
                     this.sendGift(id, gift.number, gift.bagID, key);
                 }
             }
