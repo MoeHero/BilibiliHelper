@@ -6,10 +6,10 @@
 [![license](https://img.shields.io/badge/license-MPL--2.0-blue.svg)](https://github.com/MoeHero/BilibiliHelper/blob/master/LICENSE)
 
 ## 更新日志
-`新增` 隐藏设置支持屏蔽简介上方活动广告  
-`修复` 小电视功能不正常的问题  
-`修复` 礼物包裹功能不正常的问题  
-`修复` 弹幕增强开启后颜文字以及弹幕热词不正常的问题
+`新增` 弹出菜单新增打开指定av号的视频  
+`优化` 弹出菜单样式更改  
+`修复` 开启弹幕增强后某些Emoji显示错误的问题  
+`修复` 百度浏览器不能正常使用的问题
 
 ## TODO List
 ### 计划功能
