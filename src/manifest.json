@@ -20,7 +20,7 @@
         "default_popup": "popup.html"
     },
     "background": {
-        "scripts": ["jquery-3.1.1.min.js", "background.min.js"]
+        "scripts": ["resources/js/jquery-3.1.1.min.js", "background.min.js"]
     },
     "externally_connectable": {
         "ids": ["*"],
