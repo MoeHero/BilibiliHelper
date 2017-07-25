@@ -43,27 +43,42 @@ class ALPlugin_Summer {
     }
 
     static join(roomID) {
-        $.getJSON('http://api.live.bilibili.com/activity/v1/SummerBattle/check', {roomid: roomID}).done(result => {
+        $.getJSON('//api.live.bilibili.com/activity/v1/SummerBattle/check', {roomid: roomID}).done(result => {
             if(result.code === 0) {
-                $.getJSON('http://api.live.bilibili.com/activity/v1/SummerBattle/join', {roomid: roomID, raffleId: result.data.raffleId}).done(result => {
-                    if(result.code === 0) {
-                        let raffleID = result.data.raffleId;
-                        this.list[raffleID] = new Helper.countdown(result.data.time, () => this.getAward(roomID, raffleID), this.list[raffleID].countdown_dom);
+                for(let data of result.data) {
+                    if(this.list[data.raffleId] === undefined) {
+                        $.getJSON('//api.live.bilibili.com/activity/v1/SummerBattle/join', {roomid: roomID, raffleId: data.raffleId}).done(r => {
+                            if(r.code === 0) {
+                                this.list[data.raffleId] = new Helper.countdown(r.data.time + 10, () => this.getAward(roomID, data.raffleId));
+                            } else {
+                                console.log(r);
+                            }
+                        }).fail(() => Helper.countdown(2, () => this.join(roomID)));
                     }
-                }).fail(() => Helper.countdown(2, () => this.join(roomID)));
+                }
             } else {
                 console.log(result);
             }
         }).fail(() => Helper.countdown(2, () => this.join(roomID)));
     }
     static getAward(roomID, raffleID) {
-        $.getJSON('http://api.live.bilibili.com/activity/v1/SummerBattle/notice', {roomid: roomID, raffleId: raffleID}).done(result => {
-            if(!result.msg.includes('很遗憾')) {
-                delete this.list[raffleID];
-                ModuleStore.addTimes('summer', 1);
-                ModuleNotify.summer('award');
-                ModuleConsole.summer('award');
-                console.log(result);
+        $.getJSON('//api.live.bilibili.com/activity/v1/SummerBattle/notice', {roomid: roomID, raffleId: raffleID}).done(result => {
+            switch(result.code) {
+                case 0:
+                    delete this.list[raffleID];
+                    if(!result.msg.includes('很遗憾')) {
+                        ModuleStore.addTimes('summer', 1);
+                        ModuleNotify.summer('award');
+                        ModuleConsole.summer('award');
+                        console.log(result);
+                    }
+                    break;
+                case -400: //正在开奖
+                    Helper.countdown(10, () => this.getAward(roomID, raffleID));
+                    break;
+                default:
+                    console.log(result);
+                    break;
             }
         }).fail(() => Helper.countdown(2, () => this.getAward(roomID, raffleID)));
     }
