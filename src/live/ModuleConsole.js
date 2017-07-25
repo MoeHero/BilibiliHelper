@@ -70,8 +70,21 @@ class ModuleConsole {
             case 'exist':
                 msg += Helper.format(smallTV.action.exist, param);
                 break;
-            case 'joinSuccess':
-                msg += smallTV.action.joinSuccess + Helper.format(' RoomID:${roomID} TVID:${TVID}', param);
+        }
+        this.info(msg);
+    }
+    static summer(key, param) {
+        var summer = Helper.localize.summer;
+        var msg = summer.title + ': ';
+        switch(key) {
+            case 'enabled':
+                msg += Helper.localize.enabled;
+                break;
+            case 'award':
+                msg += summer.action.award;
+                break;
+            case 'exist':
+                msg += Helper.format(summer.action.exist, param);
                 break;
         }
         this.info(msg);
