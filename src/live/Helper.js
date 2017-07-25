@@ -128,7 +128,13 @@ Helper.localize = {//TODO 重构 去除不必要文本
         action: {
             award: '获得${awardName}x${awardNumber}',
             exist: '已在直播间${showID}启动',
-            joinSuccess: '参加成功',
+        }
+    },
+    summer: {
+        title: '夏日挑战抽奖',
+        action: {
+            award: '获得柠檬茶x1',
+            exist: '已在直播间${showID}启动',
         }
     }
 };

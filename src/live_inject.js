@@ -46,7 +46,6 @@ function bh_getDanmuInfo() {
         danmuInfo.colorList.push(_danmuInfo.danmuColor.colors[i].color.replace('#', ''));
     }
     danmuInfo.colorList = JSON.stringify(danmuInfo.colorList);
-    console.log(danmuInfo);
     chrome.runtime.sendMessage(extensionID, {command: 'getDanmuInfo', danmuInfo: danmuInfo});
 }
 function bh_sendDanmu(danmu, color, mode) {

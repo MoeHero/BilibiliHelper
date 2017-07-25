@@ -40,11 +40,25 @@ let SmallTV = {
         SmallTV.tabID = false;
     }
 };
+let Summer = {
+    showID: false,
+    tabID: false,
+    getSummer: () => Summer,
+    setSummer: function(options) {
+        Summer.showID = options.showID;
+        Summer.tabID = options.tabID;
+    },
+    delSummer: function() {
+        Summer.showID = false;
+        Summer.tabID = false;
+    }
+};
 
 var Options = {
     live_autoSign: true,
     live_autoTreasure: true,
     live_autoSmallTV: true,
+    live_autoSummer: true,
     live_giftPackage: true,
     live_danmuEnhance: true,
     live_hideSetting_gift: true,
@@ -82,9 +96,9 @@ var Options = {
     notify_autoSmallTV_award_7: true,
     notify_autoSmallTV_award: true,
     notify_autoSmallTV: true,
-    notify_autoLighten_award: true,
-    notify_autoLighten_enabled: true,
-    notify_autoLighten: true,
+    notify_autoSummer_award: true,
+    notify_autoSummer_enabled: true,
+    notify_autoSummer: true,
     notify: true
 };
 var Info = {
@@ -160,6 +174,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             break;
         case 'delSmallTV':
             sendResponse(SmallTV.delSmallTV());
+            break;
+
+        case 'getSummer':
+            sendResponse(Summer.getSummer());
+            break;
+        case 'setSummer':
+            Summer.setSummer({tabID: sender.tab.id, showID: request.showID});
+            break;
+        case 'delSummer':
+            sendResponse(Summer.delSummer());
             break;
 
         case 'getInfo':

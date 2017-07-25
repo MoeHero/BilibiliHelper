@@ -67,7 +67,7 @@ class FuncDanmuEnhance {
         Helper.addScriptByText('bh_getDanmuInfo();').remove();
         Helper.getMessage((request) => {
             if(request.command && request.command == 'getDanmuInfo') {
-                if(request.danmuInfo.selectColor === '') {
+                if(request.danmuInfo.selectColor === '' || request.danmuInfo.colorList == '[]') {
                     Helper.countdown(1, () => Helper.addScriptByText('bh_getDanmuInfo();').remove());
                 } else {
                     this.danmuColorList = JSON.parse(request.danmuInfo.colorList);
