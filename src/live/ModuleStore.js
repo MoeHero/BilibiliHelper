@@ -15,14 +15,6 @@ class ModuleStore {
             'smallTV': 'BH_SmallTV',
             'school': 'BH_School',
         };
-
-        $.post('//bh.moehero.com/api/helper/upload/statinfo', {
-            uid: Helper.userInfo.uid,
-            smalltv_times: store.get('BH_SmallTVTimes'),
-            school_times: store.get('BH_SchoolTimes') || 0,
-            summer_times: store.get('BH_SummerTimes') || 0,
-            lighten_times: store.get('BH_LightenTimes') || 0,
-        });
     }
 
     static roomID_get(showID) {
