@@ -1,7 +1,7 @@
 /* globals OCRAD,ModuleStore,ModuleNotify,ModuleConsole */
 class FuncTreasure {
     static init() {
-        if(!Helper.option.live || !Helper.option.live_autoTreasure) {
+        if(!Helper.option.live || !Helper.option.live_autoTreasure || Helper.option.idle_treasureOn) {
             return;
         }
         this.initDOM();
