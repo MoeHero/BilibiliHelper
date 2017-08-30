@@ -201,7 +201,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.runtime.onMessageExternal.addListener((request, sender) => chrome.tabs.sendMessage(sender.tab.id, request));
 
 chrome.webRequest.onBeforeRequest.addListener((details) => {
-    return {cancel: Options.live_autoTreasure && details.url.includes('getCurrentTask') && !details.url.endsWith('getCurrentTask?bh')};
+    return {cancel: (Options.live_autoTreasure || Options.idle_treasureOn) && details.url.includes('getCurrentTask') && !details.url.endsWith('getCurrentTask?bh')};
 }, {urls: ['*://live.bilibili.com/*']}, ['blocking']);
 
 console.log('Loaded');

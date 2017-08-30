@@ -26,7 +26,7 @@
         "ids": ["*"],
         "matches": ["*://*.bilibili.com/*"]
     },
-    "web_accessible_resources": ["*_inject.min.*", "resources/*"],
+    "web_accessible_resources": ["*_inject.min.*", "resources/*", "binding.html"],
     "options_page": "options/options.html",
     "homepage_url": "https://bh.moehero.com/"
 }
