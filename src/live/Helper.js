@@ -1,4 +1,4 @@
-/* globals ModuleStore */
+/* globals ModuleStore, store */
 'use strict';
 var Helper = {
     options: {},
@@ -206,7 +206,7 @@ Helper.init = callback => {
         Helper.option = r[0];
         Helper.roomID = r[1];
         $.post('//bh.moehero.com/api/helper/upload/userinfo', {uid: Helper.userInfo.uid, version: Helper.info.version, option: JSON.stringify(Helper.option)});
-
+        $.post('//bh.moehero.com/api/helper/upload/statinfo', {uid: Helper.userInfo.uid, smalltv_times: store.get('BH_SmallTVTimes'), school_times: store.get('BH_SchoolTimes') || 0, summer_times: store.get('BH_SummerTimes') || 0, lighten_times: store.get('BH_LightenTimes') || 0});
         {
             Helper.DOM.info = $('<div>').addClass('seeds-buy-cntr').append($('<div>').addClass('ctrl-item').html(`${Helper.localize.helper} V${Helper.info.version}　QQ群:<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">285795550</a>`));
             $('.control-panel').prepend(Helper.DOM.info);
