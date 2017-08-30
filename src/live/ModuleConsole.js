@@ -73,18 +73,18 @@ class ModuleConsole {
         }
         this.info(msg);
     }
-    static summer(key, param) {
-        var summer = Helper.localize.summer;
-        var msg = summer.title + ': ';
+    static activity(key, param) {
+        var activity = Helper.localize.activity;
+        var msg = activity.title + ': ';
         switch(key) {
             case 'enabled':
                 msg += Helper.localize.enabled;
                 break;
             case 'award':
-                msg += summer.action.award;
+                msg += activity.action.award;
                 break;
             case 'exist':
-                msg += Helper.format(summer.action.exist, param);
+                msg += Helper.format(activity.action.exist, param);
                 break;
         }
         this.info(msg);

@@ -130,10 +130,10 @@ Helper.localize = {//TODO 重构 去除不必要文本
             exist: '已在直播间${showID}启动',
         }
     },
-    summer: {
-        title: '夏日挑战抽奖',
+    activity: {
+        title: '开学季抽奖',
         action: {
-            award: '获得柠檬茶x1',
+            award: '获得自动铅笔x1',
             exist: '已在直播间${showID}启动',
         }
     }
@@ -218,9 +218,9 @@ Helper.init = callback => {
             $('.room-info-row').remove();
         } //主播信息 下
         //自动扩大关注列表
-        Helper.sidebarHeight = $('.colorful').css('display') == 'none' ? 499 : 550;
-        $('.my-attention-body').height($(window).height() - Helper.sidebarHeight);
-        $(window).resize(() => $('.my-attention-body').height($(window).height() - Helper.sidebarHeight));
+        // Helper.sidebarHeight = $('.colorful').css('display') == 'none' ? 499 : 550;
+        // $('.my-attention-body').height($(window).height() - Helper.sidebarHeight);
+        // $(window).resize(() => $('.my-attention-body').height($(window).height() - Helper.sidebarHeight));
         Helper.countdown(0.1, () => callback());
     });
 };

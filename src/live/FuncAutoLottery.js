@@ -1,4 +1,4 @@
-/* globals ModuleDom,ALPlugin_SmallTV,ALPlugin_Summer */
+/* globals ModuleDom,ALPlugin_SmallTV,ALPlugin_Activity */
 class FuncAutoLottery {
     static init() {
         if(!Helper.option.live || !Helper.option.live) {
@@ -6,7 +6,7 @@ class FuncAutoLottery {
         }
         this.pluginList = [
             ALPlugin_SmallTV,
-            ALPlugin_Summer,
+            ALPlugin_Activity,
         ];
         this.initDOM();
         this.addEvent();

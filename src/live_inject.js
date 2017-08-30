@@ -52,3 +52,4 @@ function bh_sendDanmu(danmu, color, mode) {
     window.LivePlayer && window.LivePlayer.sendMsg(danmu, color, mode);
 }
 console.log('%c直播间脚本注入成功~', 'color:#FFF;background-color:#57D2F7;padding:5px;border-radius:7px;line-height:30px;');
+//TODO 储存信息分用户 礼物包裹分类清空

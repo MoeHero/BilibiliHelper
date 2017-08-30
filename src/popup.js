@@ -8,4 +8,11 @@ $(function() {
     $('#av-number').on('keypress', e => {
         e.keyCode == 13 && openVideo();
     });
+    $('#reload').on('click', () => {
+        let background = chrome.extension.getBackgroundPage();
+        background.Sign.delSign();
+        background.Treasure.delTreasure();
+        background.SmallTV.delSmallTV();
+        background.Activity.delActivity();
+    });
 });

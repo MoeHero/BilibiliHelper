@@ -42,7 +42,7 @@ class ALPlugin_SmallTV {
         Helper.sendMessage({command: 'getSmallTV'}, result => {
             if(!result.showID) {
                 Helper.sendMessage({command: 'setSmallTV', showID: Helper.showID});
-                $(window).on('beforeunload', () => Helper.sendMessage({command: 'getSmallTV'}, result => result.showID == Helper.showID && Helper.sendMessage({command: 'delSmallTV'})));
+                $(window).on('beforeunload', () => Helper.sendMessage({command: 'delSmallTV'}));
                 Helper.getMessage(request => {
                     if(request.cmd && request.cmd == 'SYS_MSG' && request.tv_id && request.real_roomid) {
                         this.join(request.real_roomid, request.tv_id);

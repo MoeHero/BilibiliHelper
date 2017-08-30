@@ -50,7 +50,6 @@ class FuncGiftPackage {
             if(request.command && request.command == 'sendGiftCallback') {
                 let result = request.result;
                 let liveToastElement = this.sendPanel.css('display') == 'none' ? this.packageButton : this.sendPanelButton;
-                console.log(result);
                 switch(result.code) {
                     case 0:
                         if(result.data.remain === 0) {
@@ -184,7 +183,7 @@ class FuncGiftPackage {
         for(let id in this.gifts) {
             for(let key in this.gifts[id]) {
                 let gift = this.gifts[id][key];
-                if(id != 73 && gift.expire != Infinity) {
+                if(id != 84 && id != 85 && gift.expire != Infinity) {
                     this.sendGift(id, gift.number, gift.bagID, key);
                 }
             }

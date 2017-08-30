@@ -1,7 +1,7 @@
 'use strict';
 console.log('Start Loading...');
 //TODO 重构
-let Sign = {
+var Sign = {
     showID: false,
     tabID: false,
     getSign: () => Sign,
@@ -14,7 +14,7 @@ let Sign = {
         Sign.tabID = false;
     }
 };
-let Treasure = {
+var Treasure = {
     showID: false,
     tabID: false,
     getTreasure: () => Treasure,
@@ -27,7 +27,7 @@ let Treasure = {
         Treasure.tabID = false;
     }
 };
-let SmallTV = {
+var SmallTV = {
     showID: false,
     tabID: false,
     getSmallTV: () => SmallTV,
@@ -40,25 +40,26 @@ let SmallTV = {
         SmallTV.tabID = false;
     }
 };
-let Summer = {
+var Activity = {
     showID: false,
     tabID: false,
-    getSummer: () => Summer,
-    setSummer: function(options) {
-        Summer.showID = options.showID;
-        Summer.tabID = options.tabID;
+    getActivity: () => Activity,
+    setActivity: function(options) {
+        Activity.showID = options.showID;
+        Activity.tabID = options.tabID;
     },
-    delSummer: function() {
-        Summer.showID = false;
-        Summer.tabID = false;
+    delActivity: function() {
+        Activity.showID = false;
+        Activity.tabID = false;
     }
 };
 
 var Options = {
+    idle_treasureOn: false,
     live_autoSign: true,
     live_autoTreasure: true,
     live_autoSmallTV: true,
-    live_autoSummer: true,
+    live_autoActivity: true,
     live_giftPackage: true,
     live_danmuEnhance: true,
     live_hideSetting_gift: true,
@@ -96,9 +97,9 @@ var Options = {
     notify_autoSmallTV_award_7: true,
     notify_autoSmallTV_award: true,
     notify_autoSmallTV: true,
-    notify_autoSummer_award: true,
-    notify_autoSummer_enabled: true,
-    notify_autoSummer: true,
+    notify_autoActivity_award: true,
+    notify_autoActivity_enabled: true,
+    notify_autoActivity: true,
     notify: true
 };
 var Info = {
@@ -176,14 +177,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse(SmallTV.delSmallTV());
             break;
 
-        case 'getSummer':
-            sendResponse(Summer.getSummer());
+        case 'getActivity':
+            sendResponse(Activity.getActivity());
             break;
-        case 'setSummer':
-            Summer.setSummer({tabID: sender.tab.id, showID: request.showID});
+        case 'setActivity':
+            Activity.setActivity({tabID: sender.tab.id, showID: request.showID});
             break;
-        case 'delSummer':
-            sendResponse(Summer.delSummer());
+        case 'delActivity':
+            sendResponse(Activity.delActivity());
             break;
 
         case 'getInfo':

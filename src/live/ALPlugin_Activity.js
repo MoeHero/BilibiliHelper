@@ -1,9 +1,8 @@
 /* globals ModuleStore,ModuleNotify,ModuleConsole */
-class ALPlugin_Summer {
+class ALPlugin_Activity {
     static init() {
         this.list = [];
-        // this.awardName = {1: '小电视抱枕', 2: '蓝白胖次', 3: 'B坷垃', 4: '喵娘', 5: '爱心便当', 6: '银瓜子', 7: '辣条'};
-        if(!Helper.option.live || !Helper.option.live_autoSummer) {
+        if(!Helper.option.live || !Helper.option.live_autoActivity) {
             return;
         }
 
@@ -12,12 +11,12 @@ class ALPlugin_Summer {
     }
     static getInfo() {
         let info = {
-            name: '夏日挑战抽奖',
-            times: ModuleStore.getTimes('summer'),
+            name: '开学季抽奖',
+            times: ModuleStore.getTimes('school'),
             statinfo: {}
         };
         if(info.times > 0) {
-            info.statinfo['柠檬茶'] = info.times;
+            info.statinfo['自动铅笔'] = info.times;
         }
         return info;
     }
@@ -25,29 +24,29 @@ class ALPlugin_Summer {
     static initDOM() {
     }
     static addEvent() {
-        Helper.sendMessage({command: 'getSummer'}, result => {
+        Helper.sendMessage({command: 'getActivity'}, result => {
             if(!result.showID) {
-                Helper.sendMessage({command: 'setSummer', showID: Helper.showID});
-                $(window).on('beforeunload', () => Helper.sendMessage({command: 'getSummer'}, result => result.showID == Helper.showID && Helper.sendMessage({command: 'delSummer'})));
+                Helper.sendMessage({command: 'setActivity', showID: Helper.showID});
+                $(window).on('beforeunload', () => Helper.sendMessage({command: 'delActivity'}));
                 Helper.getMessage(request => {
-                    if(request.cmd && request.cmd == 'SYS_GIFT' && request.roomid && request.msg.includes('一起来打水仗吧')) {
+                    if(request.cmd && request.cmd == 'SYS_GIFT' && request.roomid) {
                         this.join(request.roomid);
                     }
                 });
-                ModuleNotify.summer('enabled');
-                ModuleConsole.summer('enabled');
+                ModuleNotify.activity('enabled');
+                ModuleConsole.activity('enabled');
             } else {
-                ModuleConsole.summer('exist', result);
+                ModuleConsole.activity('exist', result);
             }
         });
     }
 
     static join(roomID) {
-        $.getJSON('//api.live.bilibili.com/activity/v1/SummerBattle/check', {roomid: roomID}).done(result => {
+        $.getJSON('//api.live.bilibili.com/activity/v1/SchoolOpen/check', {roomid: roomID}).done(result => {
             if(result.code === 0) {
                 for(let data of result.data) {
                     if(this.list[data.raffleId] === undefined) {
-                        $.getJSON('//api.live.bilibili.com/activity/v1/SummerBattle/join', {roomid: roomID, raffleId: data.raffleId}).done(r => {
+                        $.getJSON('//api.live.bilibili.com/activity/v1/SchoolOpen/join', {roomid: roomID, raffleId: data.raffleId}).done(r => {
                             if(r.code === 0) {
                                 this.list[data.raffleId] = new Helper.countdown(r.data.time + 10, () => this.getAward(roomID, data.raffleId));
                             } else {
@@ -62,14 +61,14 @@ class ALPlugin_Summer {
         }).fail(() => Helper.countdown(2, () => this.join(roomID)));
     }
     static getAward(roomID, raffleID) {
-        $.getJSON('//api.live.bilibili.com/activity/v1/SummerBattle/notice', {roomid: roomID, raffleId: raffleID}).done(result => {
+        $.getJSON('//api.live.bilibili.com/activity/v1/SchoolOpen/notice', {roomid: roomID, raffleId: raffleID}).done(result => {
             switch(result.code) {
                 case 0:
                     delete this.list[raffleID];
                     if(!result.msg.includes('很遗憾')) {
-                        ModuleStore.addTimes('summer', 1);
-                        ModuleNotify.summer('award');
-                        ModuleConsole.summer('award');
+                        ModuleStore.addTimes('school', 1);
+                        ModuleNotify.activity('award');
+                        ModuleConsole.activity('award');
                         console.log(result);
                     }
                     break;
