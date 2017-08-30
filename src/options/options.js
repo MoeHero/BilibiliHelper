@@ -22,4 +22,20 @@ $(function() {
 
     $('.bh-version').text('V' + background.Info.version);
     $('.bh-updatelog').load('updatelog.html');
+
+    if(window.localStorage.getItem('bh_token') !== null) {
+        $.ajaxSetup({headers: {Authorization: `Bearer ${window.localStorage.getItem('bh_token')}`}});
+        $.post('http://helper.moehero.com/oauth/checkToken').done(r => {
+            if(r.code === 0) {
+                $('#binding-account').hide();
+                $('#is-binding').show();
+                $.post('http://helper.moehero.com/oauth/checkTreasure').done(r => {
+                    background.Option.idle_treasureOn = r.code === 0;
+                    $('#live_autoTreasure').bootstrapSwitch('disabled', background.Option.idle_treasureOn);
+                });
+            } else {
+                window.localStorage.removeItem('bh_token');
+            }
+        });
+    }
 });

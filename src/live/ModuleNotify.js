@@ -77,21 +77,21 @@ class ModuleNotify {
         }
         Helper.option.notify_autoSmallTV && this.create('smallTV_' + key, icon, Helper.localize.helper + ' - ' + smallTV.title, msg);
     }
-    static summer(key) {
-        if(Helper.option['notify_autoSummer_' + key] === false) {
+    static activity(key) {
+        if(Helper.option['notify_autoActivity_' + key] === false) {
             return;
         }
-        let summer = Helper.localize.summer;
-        let icon = 'https://static.hdslb.com/live-static/live-room/images/gift-section/gift-76.png';
+        let activity = Helper.localize.activity;
+        let icon = 'https://static.hdslb.com/live-static/live-room/images/gift-section/gift-84.png';
         let msg = '';
         switch(key) {
             case 'enabled':
                 msg = Helper.localize.enabled;
                 break;
             case 'award':
-                msg = summer.action.award;
+                msg = activity.action.award;
                 break;
         }
-        Helper.option.notify_autoSummer && this.create('summer_' + key, icon, Helper.localize.helper + ' - ' + summer.title, msg);
+        Helper.option.notify_autoActivity && this.create('summer_' + key, icon, Helper.localize.helper + ' - ' + activity.title, msg);
     }
 }
