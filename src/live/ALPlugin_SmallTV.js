@@ -14,6 +14,7 @@ class ALPlugin_SmallTV {
         let info = {
             name: '小电视抽奖',
             times: ModuleStore.getTimes('smallTV'),
+            totalTimes: ModuleStore.getTimes('smallTV'), // 100% award rate
             statinfo: {}
         };
         let statinfos = ModuleStore.getStatinfo('smallTV');
