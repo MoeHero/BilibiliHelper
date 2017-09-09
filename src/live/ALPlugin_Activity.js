@@ -13,6 +13,7 @@ class ALPlugin_Activity {
         let info = {
             name: '开学季抽奖',
             times: ModuleStore.getTimes('school'),
+            totalTimes: ModuleStore.getTimes('schoolTotal'),
             statinfo: {}
         };
         if(info.times > 0) {
@@ -48,7 +49,7 @@ class ALPlugin_Activity {
                     if(this.list[data.raffleId] === undefined) {
                         $.getJSON('//api.live.bilibili.com/activity/v1/SchoolOpen/join', {roomid: roomID, raffleId: data.raffleId}).done(r => {
                             if(r.code === 0) {
-                                this.list[data.raffleId] = new Helper.countdown(r.data.time + 10, () => this.getAward(roomID, data.raffleId));
+                                this.list[data.raffleId] = new Helper.countdown(r.data.time + Math.round(Math.random() * 6 + 9), () => this.getAward(roomID, data.raffleId));
                             } else {
                                 console.log(r);
                             }
@@ -65,6 +66,7 @@ class ALPlugin_Activity {
             switch(result.code) {
                 case 0:
                     delete this.list[raffleID];
+                    ModuleStore.addTimes('schoolTotal', 1);
                     if(!result.msg.includes('很遗憾')) {
                         ModuleStore.addTimes('school', 1);
                         ModuleNotify.activity('award');
