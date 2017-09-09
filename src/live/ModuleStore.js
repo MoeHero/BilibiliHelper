@@ -8,12 +8,14 @@ class ModuleStore {
         !store.get('BH_SmallTVTimes') && store.set('BH_SmallTVTimes', 0);
         !store.get('BH_SchoolTimes') && store.set('BH_SchoolTimes', 0);
         !store.get('BH_HideSetting') && store.set('BH_HideSetting', {});
+        !store.get('BH_SchoolTotalTimes') && store.set('BH_SchoolTotalTimes', 0);
 
         //store.get('BH_SmallTVCount') !== undefined && store.set('BH_SmallTVTimes', store.get('BH_SmallTVTimes') + store.get('BH_SmallTVCount')) && store.remove('BH_SmallTVCount');
 
         this.list = {
             'smallTV': 'BH_SmallTV',
             'school': 'BH_School',
+            'schoolTotal': 'BH_SchoolTotal',
         };
     }
 
