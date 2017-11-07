@@ -40,7 +40,7 @@ gulp.task('live', function() {
 gulp.task('script', function() {
     return gulp.src(['src/**/!(*.min).js', '!src/live/*.js'])
         .pipe($.jshintChannel())
-        .pipe($.if(path == 'release', $.babel({presets: ['babili']})))
+        .pipe($.if(path == 'release', $.babel({presets: ['es2015', 'babili']})))
         .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
 });

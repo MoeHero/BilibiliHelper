@@ -1,10 +1,9 @@
 /* globals ModuleStore, store */
 'use strict';
 var Helper = {
-    options: {},
     userInfo: {},
     DOM: {},
-    showID: location.pathname.substr(1)
+    showID: location.pathname.substr(1),
 };
 
 Helper.addScriptByFile = fileName => {
@@ -33,9 +32,8 @@ Helper.getRoomID = showID => {
     return new Promise(resolve => {
         let rid = ModuleStore.roomID_get(showID);
         if(!rid) {
-            $.get('/' + showID).done(result => {
-                let reg = result.match(/var ROOMID = (\d+)/);
-                rid = (reg && reg[1]) || 0;
+            $.getJSON('//api.live.bilibili.com/room/v1/Room/room_init?id=' + showID).done(r => {
+                rid = r.data.room_id;
                 ModuleStore.roomID_add(showID, rid);
                 resolve(rid);
             }).fail(() => resolve(0));
@@ -104,6 +102,8 @@ Helper.escape = string => {
 Helper.localize = {//TODO 重构 去除不必要文本
     helper: 'Bilibili助手',
     enabled: '已启用',
+    noLogin: '未登录',
+    noPhone: '未绑定手机',
     sign: {
         title: '自动签到',
         action: {
@@ -118,8 +118,6 @@ Helper.localize = {//TODO 重构 去除不必要文本
             award: '已领取${award}瓜子',
             exist: '已在直播间${showID}启动',
             totalSilver: '总瓜子:${silver}',
-            noLogin: '未登录',
-            noPhone: '未绑定手机',
             end: '领取完毕'
         }
     },
@@ -131,9 +129,9 @@ Helper.localize = {//TODO 重构 去除不必要文本
         }
     },
     activity: {
-        title: '开学季抽奖',
+        title: '活动抽奖',
         action: {
-            award: '获得自动铅笔x1',
+            award: '获得${awardName}x${awardNumber}',
             exist: '已在直播间${showID}启动',
         }
     }
@@ -195,28 +193,47 @@ Helper.getMessage = callback => chrome.runtime.onMessage.addListener((request, s
 $.fn.stopPropagation = function() {return this.on('click', e => e.stopPropagation());};
 $.getTop = e => e.offsetParent !== null ? e.offsetTop + $.getTop(e.offsetParent) : 0;
 $.getLeft = e => e.offsetParent !== null ? e.offsetLeft + $.getLeft(e.offsetParent) : 0;
+Date.prototype.Format = function (format) { //jshint ignore:line
+    var o = {
+        'M+': this.getMonth() + 1, //月份
+        'd+': this.getDate(), //日
+        'h+': this.getHours(), //小时
+        'm+': this.getMinutes(), //分
+        's+': this.getSeconds(), //秒
+        'q+': Math.floor((this.getMonth() + 3) / 3), //季度
+        'S': this.getMilliseconds() //毫秒
+    };
+    if(/(y+)/.test(format)) {format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));}
+    for(var k in o) {
+        if(new RegExp('(' + k + ')').test(format)) {
+            format = format.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
+        }
+    }
+    return format;
+};
 
 Helper.init = callback => {
     ModuleStore.init();
     Promise.all([
-        new Promise(resolve => Helper.sendMessage({command: 'getOptions'}, option => resolve(option))),
+        new Promise(resolve => Helper.sendMessage({cmd: 'getOptions'}, option => resolve(option))),
         Helper.getRoomID(Helper.showID),
-        Helper.getUserInfo()
+        Helper.getUserInfo(),
     ]).then(r => {
         Helper.option = r[0];
         Helper.roomID = r[1];
-        $.post('//bh.moehero.com/api/helper/upload/userinfo', {uid: Helper.userInfo.uid, version: Helper.info.version, option: JSON.stringify(Helper.option)});
-        $.post('//bh.moehero.com/api/helper/upload/statinfo', {uid: Helper.userInfo.uid, smalltv_times: store.get('BH_SmallTVTimes'), school_times: store.get('BH_SchoolTimes') || 0, summer_times: store.get('BH_SummerTimes') || 0, lighten_times: store.get('BH_LightenTimes') || 0});
+        $.post('https://bh.moehero.com/api/helper/userinfo', {uid: Helper.userInfo.uid, version: Helper.info.version, option: JSON.stringify(Helper.option)});
+        $.post('https://bh.moehero.com/api/helper/statinfo', {uid: Helper.userInfo.uid, smalltv_times: store.get('BH_SmallTVTimes'), school_times: store.get('BH_SchoolTimes') || 0, summer_times: store.get('BH_SummerTimes') || 0, lighten_times: store.get('BH_LightenTimes') || 0});
         {
-            Helper.DOM.info = $('<div>').addClass('seeds-buy-cntr').append($('<div>').addClass('ctrl-item').html(`${Helper.localize.helper} V${Helper.info.version}　QQ群:<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">285795550</a>`));
-            $('.control-panel').prepend(Helper.DOM.info);
+            Helper.DOM.info = $('.seeds-wrap .btn').clone().removeClass('btn').html(`${Helper.localize.helper} V${Helper.info.version}　<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">加入QQ群</a>`);
+            // Helper.DOM.info = $('<div>').addClass('seeds-buy-cntr').append($('<div>').addClass('ctrl-item').html(`${Helper.localize.helper} V${Helper.info.version}　QQ群:<a class="bili-link" target="_blank" href="//jq.qq.com/?k=47vw4s3">285795550</a>`));
+            $('.seeds-wrap').prepend(Helper.DOM.info);
         } //瓜子数量 左
-        if(Helper.option.live && (Helper.option.live_autoTreasure || Helper.option.live_autoSmallTV)) {
-            Helper.DOM.funcInfoRow = $('<div>').addClass('bh-func-info-row').append($('<div>').addClass('func-info v-top').html('<span>分区: </span>' + $('.room-info-row a')[0].outerHTML));
-            $('.anchor-info-row').css('margin-top', 0).after(Helper.DOM.funcInfoRow);
-
-            $('.room-info-row').remove();
-        } //主播信息 下
+        // if(Helper.option.live && (Helper.option.live_autoTreasure || Helper.option.live_autoSmallTV)) {
+        //     Helper.DOM.funcInfoRow = $('<div>').addClass('bh-func-info-row').append($('<div>').addClass('func-info v-top').html('<span>分区: </span>' + $('.room-info-row a')[0].outerHTML));
+        //     $('.anchor-info-row').css('margin-top', 0).after(Helper.DOM.funcInfoRow);
+        //
+        //     $('.room-info-row').remove();
+        // } //主播信息 下
         //自动扩大关注列表
         // Helper.sidebarHeight = $('.colorful').css('display') == 'none' ? 499 : 550;
         // $('.my-attention-body').height($(window).height() - Helper.sidebarHeight);

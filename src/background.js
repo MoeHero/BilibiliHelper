@@ -1,58 +1,28 @@
 'use strict';
 console.log('Start Loading...');
-//TODO 重构
-var Sign = {
-    showID: false,
-    tabID: false,
-    getSign: () => Sign,
-    setSign: function(options) {
-        Sign.showID = options.showID;
-        Sign.tabID = options.tabID;
-    },
-    delSign: function() {
-        Sign.showID = false;
-        Sign.tabID = false;
+
+class RoomInfo {
+    constructor() {
+        this.showID = false;
+        this.tabID = false;
     }
-};
-var Treasure = {
-    showID: false,
-    tabID: false,
-    getTreasure: () => Treasure,
-    setTreasure: function(options) {
-        Treasure.showID = options.showID;
-        Treasure.tabID = options.tabID;
-    },
-    delTreasure: function() {
-        Treasure.showID = false;
-        Treasure.tabID = false;
+
+    get() {
+        return this;
     }
-};
-var SmallTV = {
-    showID: false,
-    tabID: false,
-    getSmallTV: () => SmallTV,
-    setSmallTV: function(options) {
-        SmallTV.showID = options.showID;
-        SmallTV.tabID = options.tabID;
-    },
-    delSmallTV: function() {
-        SmallTV.showID = false;
-        SmallTV.tabID = false;
+    set(showID, tabID) {
+        this.showID = showID;
+        this.tabID = tabID;
     }
-};
-var Activity = {
-    showID: false,
-    tabID: false,
-    getActivity: () => Activity,
-    setActivity: function(options) {
-        Activity.showID = options.showID;
-        Activity.tabID = options.tabID;
-    },
-    delActivity: function() {
-        Activity.showID = false;
-        Activity.tabID = false;
+    del() {
+        this.showID = false;
+        this.tabID = false;
     }
-};
+}
+var Sign = new RoomInfo();
+var Treasure = new RoomInfo();
+var SmallTV = new RoomInfo();
+var Activity = new RoomInfo();
 
 var Options = {
     idle_treasureOn: false,
@@ -108,7 +78,6 @@ var Info = {
 };
 
 function saveOptions() {
-    window.localStorage.live_autoLighten !== undefined && delete window.localStorage.live_autoLighten;
     window.localStorage.bh_option = JSON.stringify(Options);
 }
 function createNotifications(param) {
@@ -138,7 +107,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
         tabInfo.status == 'complete' &&
         tabInfo.url.includes('live.bilibili.com')) {
         chrome.tabs.executeScript(tabId, {file: './resources/js/jquery-3.1.1.min.js'});
-        chrome.tabs.executeScript(tabId, {file: './resources/js/ocrad.min.js'});
         chrome.tabs.executeScript(tabId, {file: './resources/js/store.min.js'});
         chrome.tabs.executeScript(tabId, {file: './live.min.js'});
         console.log('Execute Script: ' + tabInfo.url);
@@ -146,47 +114,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    switch(request.command) {
-        case 'getSign':
-            sendResponse(Sign.getSign());
-            break;
-        case 'setSign':
-            Sign.setSign({tabID: sender.tab.id, showID: request.showID});
-            break;
-        case 'delSign':
-            sendResponse(Sign.delSign());
-            break;
-
-        case 'getTreasure':
-            sendResponse(Treasure.getTreasure());
-            break;
-        case 'setTreasure':
-            Treasure.setTreasure({tabID: sender.tab.id, showID: request.showID});
-            break;
-        case 'delTreasure':
-            sendResponse(Treasure.delTreasure());
-            break;
-
-        case 'getSmallTV':
-            sendResponse(SmallTV.getSmallTV());
-            break;
-        case 'setSmallTV':
-            SmallTV.setSmallTV({tabID: sender.tab.id, showID: request.showID});
-            break;
-        case 'delSmallTV':
-            sendResponse(SmallTV.delSmallTV());
-            break;
-
-        case 'getActivity':
-            sendResponse(Activity.getActivity());
-            break;
-        case 'setActivity':
-            Activity.setActivity({tabID: sender.tab.id, showID: request.showID});
-            break;
-        case 'delActivity':
-            sendResponse(Activity.delActivity());
-            break;
-
+    switch(request.cmd) {
         case 'getInfo':
             sendResponse(Info);
             break;
@@ -196,12 +124,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case 'createNotifications':
             createNotifications(request.param);
             break;
+
+        case 'get':
+            sendResponse(eval(request.type + '.get()')); //jshint ignore:line
+            break;
+        case 'set':
+            eval(request.type + '.set(' + request.showID + ',' + sender.tab.id + ')'); //jshint ignore:line
+            break;
+        case 'del':
+            eval(request.type + '.del()'); //jshint ignore:line
+            break;
     }
 });
 chrome.runtime.onMessageExternal.addListener((request, sender) => chrome.tabs.sendMessage(sender.tab.id, request));
 
-chrome.webRequest.onBeforeRequest.addListener((details) => {
-    return {cancel: (Options.live_autoTreasure || Options.idle_treasureOn) && details.url.includes('getCurrentTask') && !details.url.endsWith('getCurrentTask?bh')};
-}, {urls: ['*://live.bilibili.com/*']}, ['blocking']);
+// chrome.webRequest.onBeforeRequest.addListener((details) => {
+//     return {cancel: (Options.live_autoTreasure || Options.idle_treasureOn) && details.url.includes('getCurrentTask') && !details.url.endsWith('bh')};
+// }, {urls: ['*://*.bilibili.com/*']}, ['blocking']);
 
 console.log('Loaded');

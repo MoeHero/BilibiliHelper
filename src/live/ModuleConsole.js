@@ -1,13 +1,13 @@
 class ModuleConsole {
     static info(msg, color) {
         color = color || '57D2F7';
-        console.log('%c' + msg, 'color:#FFF;background-color:#' + color + ';padding:5px;border-radius:7px;line-height:30px;');
+        console.log('%cInfo%c [' + (new Date()).Format('yyyy-MM-dd hh:mm:ss.S') + '] ' + msg, 'color:#FFF;background-color:#' + color + ';padding:5px;line-height:21px', '');
     }
     static warn(msg) {
-        console.warn('%c' + msg, 'color:#FFF;background-color:#F29F3F;padding:5px;border-radius:7px;line-height:30px;');
+        console.log('%cWarning%c [' + (new Date()).Format('yyyy-MM-dd hh:mm:ss.S') + '] ' + msg, 'color:#FFF;background-color:#F29F3F;padding:5px;line-height:21px', '');
     }
     static error(msg) {
-        console.error('%c' + msg, 'color:#FFF;background-color:#EB3F2F;padding:5px;border-radius:7px;line-height:30px;');
+        console.log('%cError%c [' + (new Date()).Format('yyyy-MM-dd hh:mm:ss.S') + '] ' + msg, 'color:#FFF;background-color:#EB3F2F;padding:5px;line-height:21px', '');
     }
 
     static sign(key, param) {
@@ -22,6 +22,12 @@ class ModuleConsole {
                 break;
             case 'exist':
                 msg += Helper.format(sign.action.exist, param);
+                break;
+            case 'noLogin':
+                msg += Helper.localize.noLogin;
+                break;
+            case 'noPhone':
+                msg += Helper.localize.noPhone;
                 break;
             case 'signed':
                 msg += sign.action.signed;
@@ -46,10 +52,10 @@ class ModuleConsole {
                 msg += Helper.format(treasure.action.exist, param);
                 break;
             case 'noLogin':
-                msg += treasure.action.noLogin;
+                msg += Helper.localize.noLogin;
                 break;
             case 'noPhone':
-                msg += treasure.action.noPhone;
+                msg += Helper.localize.noPhone;
                 break;
             case 'end':
                 msg += treasure.action.end;
@@ -81,7 +87,7 @@ class ModuleConsole {
                 msg += Helper.localize.enabled;
                 break;
             case 'award':
-                msg += activity.action.award;
+                msg += Helper.format(activity.action.award, param);
                 break;
             case 'exist':
                 msg += Helper.format(activity.action.exist, param);
