@@ -6,7 +6,6 @@
         "*://*.bilibili.com/*",
         "*://*.moehero.com/*",
         "*://static.hdslb.com/*",
-        "webRequestBlocking",
         "notifications",
         "webRequest",
         "tabs"
@@ -28,5 +27,6 @@
     },
     "web_accessible_resources": ["*_inject.min.*", "resources/*", "binding.html"],
     "options_page": "options/options.html",
-    "homepage_url": "https://bh.moehero.com/"
+    "homepage_url": "https://bh.moehero.com/",
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

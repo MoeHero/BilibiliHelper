@@ -26,7 +26,7 @@ class ModuleStore {
         store.set('BH_RoomID', o);
     }
 
-    static sign(key) {
+    static sign(key) {//TODO 删除
         switch(key) {
             case 'get':
                 return store.get('BH_SignDate') == new Date().toLocaleDateString();
@@ -36,7 +36,7 @@ class ModuleStore {
         }
     }
 
-    static treasure(key) {
+    static treasure(key) {//TODO 删除
         switch(key) {
             case 'getEnd':
                 return store.get('BH_TreasureDate') == new Date().toLocaleDateString();

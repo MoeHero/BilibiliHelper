@@ -115,6 +115,7 @@ class FuncGiftPackage {
                     newGift.expireText = '今天';
                     break;
                 case 0:
+                case '0':
                     newGift.expire = Infinity;
                     newGift.expireText = '永久';
                     break;

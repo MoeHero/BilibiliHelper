@@ -7,7 +7,7 @@ class ALPlugin_SmallTV {
             return;
         }
 
-        this.initDOM();
+        //this.initDOM();
         this.addEvent();
     }
     static getInfo() {
@@ -36,82 +36,105 @@ class ALPlugin_SmallTV {
         Helper.DOM.funcInfoRow.prepend(this.stateIcon, ' ', this.stateText, this.statePanel);
     }
     static addEvent() {
-        this.stateText.on('click', () => this.openStatePanel()).stopPropagation();
-        this.statePanel.stopPropagation();
-        $(document).on('click', () => this.statePanel.fadeOut(200));
-        Helper.sendMessage({command: 'getSmallTV'}, result => {
+        var $this = this;
+        //this.stateText.on('click', () => this.openStatePanel()).stopPropagation();
+        //this.statePanel.stopPropagation();
+        //$(document).on('click', () => this.statePanel.fadeOut(200));
+        Helper.sendMessage({cmd: 'get', type: 'SmallTV'}, result => {
             if(!result.showID) {
-                Helper.sendMessage({command: 'setSmallTV', showID: Helper.showID});
-                $(window).on('beforeunload', () => Helper.sendMessage({command: 'delSmallTV'}));
-                Helper.getMessage(request => {
-                    if(request.cmd && request.cmd == 'SYS_MSG' && request.tv_id && request.real_roomid) {
-                        this.join(request.real_roomid, request.tv_id);
-                    }
+                Helper.sendMessage({cmd: 'set', type: 'SmallTV', showID: Helper.showID});
+                $(window).on('beforeunload', () => Helper.sendMessage({cmd: 'del', type: 'SmallTV'}));
+                $(document).on('DOMNodeInserted', '.small-tv', function() {
+                    var info = $(this).find('div a');
+                    Helper.getRoomID(info.attr('href').match(/\/(\d+)/)[1]).then(roomID => {
+                        $this.join(roomID);
+                    });
                 });
-                this.setStateIcon('enabled');
-                this.setStateText(Helper.localize.enabled);
+                // Helper.getMessage(request => {
+                //     if(request.cmd && request.cmd == 'SYS_MSG' && request.tv_id && request.real_roomid) {
+                //
+                //     }
+                // });
+                // this.setStateIcon('enabled');
+                // this.setStateText(Helper.localize.enabled);
                 ModuleNotify.smallTV('enabled');
                 ModuleConsole.smallTV('enabled');
             } else {
-                this.setStateIcon('exist');
-                this.setStateText(Helper.format(Helper.localize.smallTV.action.exist, result));
+                // this.setStateIcon('exist');
+                // this.setStateText(Helper.format(Helper.localize.smallTV.action.exist, result));
                 ModuleConsole.smallTV('exist', result);
             }
         });
     }
 
-    static setStateText(text) {
-        this.stateText.text(text);
-    }
-    static setStateIcon(key) {
-        this.stateIcon.attr('class', 'bh-icon tv-' + key);
-    }
-    static openStatePanel() {
-        let number = Object.keys(this.list).length;
-        this.statePanelNumber.text(number + ' 个');
-        if(number !== 0) {
-            this.statePanelContent.empty();
-            for(let tvid in this.list) {
-                let stateDom = $('<li>').text('#' + tvid).append(this.list[tvid].countdown_dom.addClass('f-right'));
-                this.statePanelContent.append(stateDom);
-            }
-        } else {
-            this.statePanelContent.text('暂无小电视');
-        }
-        this.statePanel.show();
-    }
+    // static setStateText(text) {
+    //     this.stateText.text(text);
+    // }
+    // static setStateIcon(key) {
+    //     this.stateIcon.attr('class', 'bh-icon tv-' + key);
+    // }
+    // static openStatePanel() {
+    //     let number = Object.keys(this.list).length;
+    //     this.statePanelNumber.text(number + ' 个');
+    //     if(number !== 0) {
+    //         this.statePanelContent.empty();
+    //         for(let tvid in this.list) {
+    //             let stateDom = $('<li>').text('#' + tvid).append(this.list[tvid].countdown_dom.addClass('f-right'));
+    //             this.statePanelContent.append(stateDom);
+    //         }
+    //     } else {
+    //         this.statePanelContent.text('暂无小电视');
+    //     }
+    //     this.statePanel.show();
+    // }
 
-    static join(roomID, TVID) {
-        $.getJSON('/SmallTV/join', {roomid: roomID, id: TVID}).done(result => {
-            if(result.code === 0) {
-                !this.list[TVID] && (this.list[TVID] = {});
-                this.list[TVID].countdown_dom = $('<span>');
-                this.list[TVID].countdown = new Helper.countdown(result.data.dtime, () => this.getAward(TVID), this.list[TVID].countdown_dom);
-            } else if(result.code == -400) { //已经错过
+    static join(roomID) {
+        $.getJSON('https://api.live.bilibili.com/gift/v2/smalltv/check', {roomid: roomID}).done(r1 => {
+            if(r1.code === 0) {
+                for(let data of r1.data) {
+                    if(this.list[data.raffleId] === undefined) {
+                        $.getJSON('https://api.live.bilibili.com/gift/v2/smalltv/join', {roomid: roomID, raffleId: data.raffleId}).done(r2 => {
+                            if(r2.code === 0) {
+                                this.list[data.raffleId] = new Helper.countdown(r2.data.time + 30, () => this.getAward(roomID, data.raffleId));
+                            } else {
+                                console.log(r2);
+                            }
+                        }).fail(() => Helper.countdown(2, () => this.join(roomID)));
+                    }
+                }
             } else {
-                console.log(result);
+                console.log(r1);
             }
-        }).fail(() => Helper.countdown(2, () => this.join(roomID, TVID)));
+        }).fail(() => Helper.countdown(2, () => this.join(roomID)));
+        // $.getJSON('/SmallTV/join', {roomid: roomID, id: TVID}).done(result => {
+        //     if(result.code === 0) {
+        //         !this.list[TVID] && (this.list[TVID] = {});
+        //         this.list[TVID].countdown_dom = $('<span>');
+        //         this.list[TVID].countdown = new Helper.countdown(result.data.dtime, () => this.getAward(TVID), this.list[TVID].countdown_dom);
+        //     } else if(result.code == -400) { //已经错过
+        //     } else {
+        //         console.log(result);
+        //     }
+        // }).fail(() => Helper.countdown(2, () => this.join(roomID, TVID)));
     }
-    static getAward(TVID) {
-        $.getJSON('/SmallTV/getReward', {id: TVID}).done(result => {
-            result = result.data;
-            switch(result.status) {
+    static getAward(roomID, raffleID) {
+        $.getJSON('https://api.live.bilibili.com/gift/v2/smalltv/notice', {roomid: roomID, raffleId: raffleID}).done(result => {
+            switch(result.code) {
                 case 0:
-                    delete this.list[TVID];
-                    let award = {awardNumber: result.reward.num, awardName: this.awardName[result.reward.id]};
-                    ModuleStore.addStatinfo('smallTV', result.reward.id, result.reward.num);
-                    ModuleStore.addTimes('smallTV', 1);
-                    Helper.option['notify_autoSmallTV_award_' + result.reward.id] && ModuleNotify.smallTV('award', award);
+                    delete this.list[raffleID];
+                    let award = {awardNumber: result.data.gift_num, awardName: result.data.gift_name};
+                    // ModuleStore.addStatinfo('smallTV', result.reward.id, result.reward.num);
+                    // ModuleStore.addTimes('smallTV', 1);
+                    // Helper.option['notify_autoSmallTV_award_' + result.data.gift_id] && ModuleNotify.smallTV('award', award);
                     ModuleConsole.smallTV('award', award);
                     break;
-                case 2: //正在开奖
-                    Helper.countdown(10, () => this.getAward(TVID));
+                case -400: //正在开奖
+                    Helper.countdown(10, () => this.getAward(roomID, raffleID));
                     break;
                 default:
                     console.log(result);
                     break;
             }
-        }).fail(() => Helper.countdown(2, () => this.getAward(TVID)));
+        }).fail(() => Helper.countdown(2, () => this.getAward(roomID, raffleID)));
     }
 }

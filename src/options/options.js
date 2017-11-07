@@ -30,8 +30,9 @@ $(function() {
                 $('#binding-account').hide();
                 $('#is-binding').show();
                 $.post('https://bh.moehero.com/oauth/checkTreasure').done(r => {
-                    background.Option.idle_treasureOn = r.code === 0;
-                    $('#live_autoTreasure').bootstrapSwitch('disabled', background.Option.idle_treasureOn);
+                    background.Options.idle_treasureOn = r.code === 0;
+                    background.saveOptions();
+                    $('#live_autoTreasure').bootstrapSwitch('disabled', background.Options.idle_treasureOn);
                 });
             } else {
                 window.localStorage.removeItem('bh_token');
