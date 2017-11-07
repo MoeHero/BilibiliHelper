@@ -13,8 +13,9 @@
     "test": "echo \"Error: no test specified.\" && exit 0",
     "gulp": "gulp release"
   },
-  "devDependencies": {
-    "babel-preset-babili": "0.0.12",
+  "dependencies": {
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-minify": "^0.2.0",
     "gulp": "^3.9.1",
     "gulp-archiver": "^1.0.0",
     "gulp-babel": "^6.1.2",

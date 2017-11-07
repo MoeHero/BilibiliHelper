@@ -33,14 +33,14 @@ gulp.task('live', function() {
         .pipe($.order(['Helper.js', 'Module*.js', 'Func*.js', '!Core.js', 'Core.js']))
         .pipe($.jshintChannel())
         .pipe($.concat('live.js'))
-        .pipe($.if(path == 'release', $.babel({presets: ['babili']})))
+        .pipe($.if(path == 'release', $.babel({presets: ['env', 'minify']})))
         .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
 });
 gulp.task('script', function() {
     return gulp.src(['src/**/!(*.min).js', '!src/live/*.js'])
         .pipe($.jshintChannel())
-        .pipe($.if(path == 'release', $.babel({presets: ['es2015', 'babili']})))
+        .pipe($.if(path == 'release', $.babel({presets: ['env', 'minify']})))
         .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest(path + '/src/'));
 });
