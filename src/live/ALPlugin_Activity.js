@@ -5,8 +5,11 @@ class ALPlugin_Activity {
         if(!Helper.option.live || !Helper.option.live_autoActivity) {
             return;
         }
-
-        //this.initDOM();
+        if(Helper.userInfo.noLogin) {
+            ModuleNotify.activity('noLogin');
+            ModuleConsole.activity('noLogin');
+            return;
+        }
         this.addEvent();
     }
     // static getInfo() {
@@ -21,8 +24,6 @@ class ALPlugin_Activity {
     //     return info;
     // }
 
-    static initDOM() {
-    }
     static addEvent() {
         var $this = this;
         Helper.sendMessage({cmd: 'get', type: 'Activity'}, result => {
@@ -45,26 +46,31 @@ class ALPlugin_Activity {
     }
 
     static join(roomID) {
-        $.getJSON('https://api.live.bilibili.com/activity/v1/Raffle/check', {roomid: roomID}).done(result => {
-            if(result.code === 0) {
-                for(let data of result.data) {
+        $.getJSON('//api.live.bilibili.com/activity/v1/Raffle/check', {roomid: roomID}).done(r1 => {
+            if(r1.code === 0) {
+                for(let data of r1.data) {
                     if(this.list[data.raffleId] === undefined) {
-                        $.getJSON('https://api.live.bilibili.com/activity/v1/Raffle/join', {roomid: roomID, raffleId: data.raffleId}).done(r => {
-                            if(r.code === 0) {
-                                this.list[data.raffleId] = new Helper.countdown(r.data.time + 30, () => this.getAward(roomID, data.raffleId));
-                            } else {
-                                console.log(r);
+                        $.getJSON('//api.live.bilibili.com/activity/v1/Raffle/join', {roomid: roomID, raffleId: data.raffleId}).done(r2 => {
+                            switch(r2.code) {
+                                case 0:
+                                    this.list[data.raffleId] = new Helper.countdown(r2.data.time + 30, () => this.getAward(roomID, data.raffleId));
+                                    break;
+                                case -400: //已参加抽奖
+                                    break;
+                                default:
+                                    console.log(r2);
+                                    break;
                             }
                         }).fail(() => Helper.countdown(2, () => this.join(roomID)));
                     }
                 }
             } else {
-                console.log(result);
+                console.log(r1);
             }
         }).fail(() => Helper.countdown(2, () => this.join(roomID)));
     }
     static getAward(roomID, raffleID) {
-        $.getJSON('https://api.live.bilibili.com/activity/v1/Raffle/notice', {roomid: roomID, raffleId: raffleID}).done(result => {
+        $.getJSON('//api.live.bilibili.com/activity/v1/Raffle/notice', {roomid: roomID, raffleId: raffleID}).done(result => {
             switch(result.code) {
                 case 0:
                     delete this.list[raffleID];

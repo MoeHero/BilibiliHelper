@@ -1,10 +1,14 @@
-/* globals OCRAD,ModuleStore,ModuleNotify,ModuleConsole */
+/* globals ModuleStore,ModuleNotify,ModuleConsole */
 class FuncTreasure {
     static init() {
         if(!Helper.option.live || !Helper.option.live_autoTreasure || Helper.option.idle_treasureOn) {
             return;
         }
-
+        if(Helper.userInfo.noLogin) {
+            ModuleNotify.treasure('noLogin');
+            ModuleConsole.treasure('noLogin');
+            return;
+        }
         this.initDOM();
         this.addEvent();
     }
@@ -16,8 +20,7 @@ class FuncTreasure {
         this.countdownDom = $('<span>').text('00:00').hide();
         this.treasureBox.find('.awarding-panel').remove();
         this.treasureBox.find('.count-down').empty().append(this.statusTextDom, this.countdownDom, '<br>', this.timesDom);
-        this.oldTreasureBox = $('.treasure-box');
-        this.oldTreasureBox.hide().parent().append(this.treasureBox);
+        $('.treasure-box').parent().empty().append(this.treasureBox);
         //Helper.DOM.funcInfoRow.prepend(this.stateIcon, ' ', funcInfo);
     }
     static addEvent() {
@@ -42,7 +45,7 @@ class FuncTreasure {
         this.statusTextDom.hide();
     }
     static setStateText(text) {
-        this.statusTextDom.text(text).show();
+        this.statusTextDom.html(text).show();
         this.timesDom.hide();
         this.countdownDom.hide();
     }
@@ -51,7 +54,14 @@ class FuncTreasure {
     // }
 
     static checkNewTask() {
-        $.getJSON('https://api.live.bilibili.com/FreeSilver/getCurrentTask?bh').done(result => {
+        if(!Helper.userInfo.mobileVerify) {
+            this.setStateText(Helper.localize.noPhone);
+            // this.setStateIcon('error');
+            ModuleNotify.treasure('noPhone');
+            ModuleConsole.treasure('noPhone');
+            return;
+        }
+        $.getJSON('//api.live.bilibili.com/FreeSilver/getCurrentTask?bh').done(result => {
             switch(result.code) {
                 case 0:
                     let times = (result.data.times - 1) * 3 + result.data.minute / 3;
@@ -66,19 +76,10 @@ class FuncTreasure {
                     }, this.countdownDom.show());
                     // this.setStateIcon('processing');
                     break;
-                case -101: //未登录
-                    // this.setStateIcon('error');
-                    // this.setStateText(Helper.localize.treasure.action.noLogin);
-                    this.treasureBox.hide();
-                    this.oldTreasureBox.show();
-                    ModuleNotify.treasure('noLogin');
-                    ModuleConsole.treasure('noLogin');
-                    break;
                 case -10017: //领取完毕
                     // ModuleStore.treasure('end');
                     // this.setStateIcon('end');
-                    // this.setStateText(Helper.localize.treasure.action.end);
-                    this.treasureBox.hide();
+                    this.setStateText('领取<br>完毕');
                     ModuleNotify.treasure('end');
                     ModuleConsole.treasure('end');
                     break;
@@ -89,9 +90,9 @@ class FuncTreasure {
         }).fail(() => Helper.countdown(2, () => this.checkNewTask()));
     }
     static getAward() {
-        let image = $('<img>').attr('src', 'https://live.bilibili.com/freeSilver/getCaptcha?ts=' + Date.now()).on('load', () => {
+        let image = $('<img>').attr('src', '//live.bilibili.com/freeSilver/getCaptcha?ts=' + Date.now()).on('load', () => {
             this.answer = this.getCaptcha(image[0]);
-            $.getJSON('https://api.live.bilibili.com/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done(result => {
+            $.getJSON('//api.live.bilibili.com/FreeSilver/getAward', {time_start: this.startTime, time_end: this.endTime, captcha: this.answer}).done(result => {
                 switch(result.code) {
                     case 0:
                         let award = {award: result.data.awardSilver, silver: result.data.silver};
@@ -103,12 +104,6 @@ class FuncTreasure {
                     case -902: //验证码错误
                         Helper.countdown(5, () => this.getAward());
                         break;
-                    case -800: //未绑定手机
-                        this.setStateText(Helper.localize.noPhone);
-                        // this.setStateIcon('error');
-                        ModuleNotify.treasure('noPhone');
-                        ModuleConsole.treasure('noPhone');
-                        break;
                     default:
                         console.log(result);
                         break;
@@ -116,79 +111,51 @@ class FuncTreasure {
             }).fail(() => Helper.countdown(2, () => this.getAward()));
         }).on('error', () => Helper.countdown(2, () => this.getAward()));
     }
-    static getTimes() {
-        $.getJSON('https://api.live.bilibili.com/i/api/taskInfo').done(result => {
-            if(result.code === 0) {
-                result = result.data.box_info;
-                let maxTimes = result.max_times * 3;
-                let times = (result.times - 2) * 3 + result.type;
-                this.setTimes(times + '/' + maxTimes);
-            } else {
-                console.log(result);
-            }
-        }).fail(() => Helper.countdown(2, () => this.getTimes()));
-    }
     static getCaptcha(image) {
         let context = $('<canvas>')[0].getContext('2d');
         context.drawImage(image, 0, 0, 120, 40, 0, 0, 120, 40);
         let pixels = context.getImageData(0, 0, 120, 40).data;
-
-        let pix = []; //定义一维数组
-        let j = 0;
-        for(let i = 1;i <= 40;i++) {
-            pix[i] = []; //将每一个子元素又定义为数组
-            for(let n = 1;n <= 120;n++) {
-                let c = 1;
-                if(pixels[j] + pixels[j + 1] + pixels[j + 2] > 200) {
-                    c = 0;
+        this.formula = '';
+        let last_line = 0;
+        let line = 0;
+        var word = {f: 0, l: 0, t: 0};
+        for(let y = 1;y <= 120;y++) {
+            let i = 0;
+            for(let x = 1;x <= 40;x++) {
+                if(pixels[i] + pixels[i + 1] + pixels[i + 2] < 200) {
+                    line++;
                 }
-                j = j + 4;
-                pix[i][n] = c; //此时pix[i][n]可以看作是一个二级数组
+                i = (y - 1) * 4 + (x - 1) * 120 * 4 + 4;
+            }
+            if(line > 0 && last_line === 0) {
+                word.f = line;
+            } else if(last_line > 0 && line === 0) {
+                word.l = last_line;
+                this.formula += getWord(word);
+                word.t = 0;
+            }
+            if(line > 0) {
+                word.t += line;
+            }
+            last_line = line;
+            line = 0;
+        }
+        function getWord(word) {
+            if(word.t <= 50) {return '-';}
+            if(word.t > 120 && word.t < 135) {return '+';}
+            if(word.t > 155 && word.t < 162) {return '1';}
+            if(word.t > 250 && word.t < 260) {return '2';}
+            if(word.t > 286 && word.t < 296) {return '3';}
+            if(word.t > 228 && word.t < 237) {return '4';}
+            if(word.t > 303 && word.t < 313) {return '5';}
+            if(word.t > 189 && word.t < 195) {return '7';}
+            if(word.t > 335 && word.t < 342) {return '8';}
+            if(word.t > 343 && word.t < 350) {
+                if(word.f > 24 && word.l > 24) {return '0';}
+                if(word.f > 24 && word.l < 24) {return '6';}
+                if(word.f < 24 && word.l > 24) {return '9';}
             }
         }
-        //我们得到了二值化后的像素矩阵pix[40][120]
-        //console.log(pix);
-        var lie = [];
-        lie[0] = 0;
-        for(let i=1;i <= 120;i++){
-            lie[i] = 0;
-            for(let n = 1;n <= 40;n++){
-                lie[i] = lie[i] + pix[n][i];
-            }
-        }
-        var ta = [];
-        j = 0;
-        for(let i = 1;i <= 120;i++){
-            if(lie[i] > 0 && lie[i - 1] === 0){
-                j++;
-                ta[j] = {};
-                ta[j].fi = lie[i];
-                ta[j].total = 0;
-            }
-            if(lie[i] > 0){
-                ta[j].total = ta[j].total + lie[i];
-            }
-            if(lie[i - 1] > 0 && lie[i] === 0){
-                ta[j].la = lie[i - 1];
-            }
-        }
-        function getWord(a) {
-            if(a.total <= 50) {return '-';}
-            if(a.total > 120 && a.total < 135) {return '+';}
-            if(a.total > 155 && a.total < 162) {return '1';}
-            if(a.total > 250 && a.total < 260) {return '2';}
-            if(a.total > 286 && a.total < 296) {return '3';}
-            if(a.total > 228 && a.total < 237) {return '4';}
-            if(a.total > 303 && a.total < 313) {return '5';}
-            if(a.total > 189 && a.total < 195) {return '7';}
-            if(a.total > 335 && a.total < 342) {return '8';}
-            if(a.total > 343 && a.total < 350) {
-                if(a.fi > 24 && a.la > 24) {return '0';}
-                if(a.fi > 24 && a.la < 24) {return '6';}
-                if(a.fi < 24 && a.la > 24) {return '9';}
-            }
-        }
-        //console.log(getWord(ta[1]) + getWord(ta[2]) + getWord(ta[3]) + getWord(ta[4]));
-        return eval(getWord(ta[1]) + getWord(ta[2]) + getWord(ta[3]) + getWord(ta[4])); //jshint ignore:line
+        return eval(this.formula); //jshint ignore:line
     }
 }

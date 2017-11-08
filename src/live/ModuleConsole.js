@@ -21,7 +21,7 @@ class ModuleConsole {
                 msg += Helper.format(sign.action.award, param);
                 break;
             case 'exist':
-                msg += Helper.format(sign.action.exist, param);
+                msg += Helper.format(Helper.localize.exist, param);
                 break;
             case 'noLogin':
                 msg += Helper.localize.noLogin;
@@ -42,14 +42,11 @@ class ModuleConsole {
             case 'enabled':
                 msg += Helper.localize.enabled;
                 break;
-            case 'awarding':
-                msg += '领取中...';
-                break;
             case 'award':
                 msg += Helper.format(treasure.action.award + ' ' + treasure.action.totalSilver, param);
                 break;
             case 'exist':
-                msg += Helper.format(treasure.action.exist, param);
+                msg += Helper.format(Helper.localize.exist, param);
                 break;
             case 'noLogin':
                 msg += Helper.localize.noLogin;
@@ -74,7 +71,10 @@ class ModuleConsole {
                 msg += Helper.format(smallTV.action.award, param);
                 break;
             case 'exist':
-                msg += Helper.format(smallTV.action.exist, param);
+                msg += Helper.format(Helper.localize.exist, param);
+                break;
+            case 'noLogin':
+                msg += Helper.localize.noLogin;
                 break;
         }
         this.info(msg);
@@ -90,7 +90,10 @@ class ModuleConsole {
                 msg += Helper.format(activity.action.award, param);
                 break;
             case 'exist':
-                msg += Helper.format(activity.action.exist, param);
+                msg += Helper.format(Helper.localize.exist, param);
+                break;
+            case 'noLogin':
+                msg += Helper.localize.noLogin;
                 break;
         }
         this.info(msg);
