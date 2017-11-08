@@ -1,40 +1,43 @@
 /* globals ModuleStore,ModuleNotify,ModuleConsole */
 class ALPlugin_SmallTV {
     static init() {
-        this.list = {};
-        this.awardName = {1: '小电视抱枕', 2: '蓝白胖次', 3: 'B坷垃', 4: '喵娘', 5: '爱心便当', 6: '银瓜子', 7: '辣条'};
+        this.list = [];
         if(!Helper.option.live || !Helper.option.live_autoSmallTV) {
             return;
         }
-
+        if(Helper.userInfo.noLogin) {
+            ModuleNotify.smallTV('noLogin');
+            ModuleConsole.smallTV('noLogin');
+            return;
+        }
         //this.initDOM();
         this.addEvent();
     }
-    static getInfo() {
-        let info = {
-            name: '小电视抽奖',
-            times: ModuleStore.getTimes('smallTV'),
-            statinfo: {}
-        };
-        let statinfos = ModuleStore.getStatinfo('smallTV');
-        for(let key in statinfos) {
-            info.statinfo[this.awardName[key]] = statinfos[key];
-        }
-        return info;
-    }
+    // static getInfo() {
+    //     let info = {
+    //         name: '小电视抽奖',
+    //         times: ModuleStore.getTimes('smallTV'),
+    //         statinfo: {}
+    //     };
+    //     let statinfos = ModuleStore.getStatinfo('smallTV');
+    //     for(let key in statinfos) {
+    //         info.statinfo[this.awardName[key]] = statinfos[key];
+    //     }
+    //     return info;
+    // }
 
-    static initDOM() {
-        $('.treasure-box-ctnr').remove();
-        this.stateIcon = $('<i>').addClass('bh-icon tv-init');
-        this.stateText = $('<a>').addClass('func-info v-top bili-link').text('初始化中...');
-        this.statePanel = $('<div>').addClass('live-hover-panel arrow-top show bh-tvstate').hide();
-        this.statePanelContent = $('<ul>');
-        this.statePanelNumber = $('<span>').addClass('f-right').text('0 个');
-
-        this.statePanel.append($('<h4>').addClass('bh-title').text('正在抽取的小电视'), this.statePanelNumber, $('<hr>'), this.statePanelContent);
-
-        Helper.DOM.funcInfoRow.prepend(this.stateIcon, ' ', this.stateText, this.statePanel);
-    }
+    // static initDOM() {
+    //     $('.treasure-box-ctnr').remove();
+    //     this.stateIcon = $('<i>').addClass('bh-icon tv-init');
+    //     this.stateText = $('<a>').addClass('func-info v-top bili-link').text('初始化中...');
+    //     this.statePanel = $('<div>').addClass('live-hover-panel arrow-top show bh-tvstate').hide();
+    //     this.statePanelContent = $('<ul>');
+    //     this.statePanelNumber = $('<span>').addClass('f-right').text('0 个');
+    //
+    //     this.statePanel.append($('<h4>').addClass('bh-title').text('正在抽取的小电视'), this.statePanelNumber, $('<hr>'), this.statePanelContent);
+    //
+    //     Helper.DOM.funcInfoRow.prepend(this.stateIcon, ' ', this.stateText, this.statePanel);
+    // }
     static addEvent() {
         var $this = this;
         //this.stateText.on('click', () => this.openStatePanel()).stopPropagation();
@@ -50,11 +53,6 @@ class ALPlugin_SmallTV {
                         $this.join(roomID);
                     });
                 });
-                // Helper.getMessage(request => {
-                //     if(request.cmd && request.cmd == 'SYS_MSG' && request.tv_id && request.real_roomid) {
-                //
-                //     }
-                // });
                 // this.setStateIcon('enabled');
                 // this.setStateText(Helper.localize.enabled);
                 ModuleNotify.smallTV('enabled');
@@ -89,15 +87,20 @@ class ALPlugin_SmallTV {
     // }
 
     static join(roomID) {
-        $.getJSON('https://api.live.bilibili.com/gift/v2/smalltv/check', {roomid: roomID}).done(r1 => {
+        $.getJSON('//api.live.bilibili.com/gift/v2/smalltv/check', {roomid: roomID}).done(r1 => {
             if(r1.code === 0) {
                 for(let data of r1.data) {
                     if(this.list[data.raffleId] === undefined) {
-                        $.getJSON('https://api.live.bilibili.com/gift/v2/smalltv/join', {roomid: roomID, raffleId: data.raffleId}).done(r2 => {
-                            if(r2.code === 0) {
-                                this.list[data.raffleId] = new Helper.countdown(r2.data.time + 30, () => this.getAward(roomID, data.raffleId));
-                            } else {
-                                console.log(r2);
+                        $.getJSON('//api.live.bilibili.com/gift/v2/smalltv/join', {roomid: roomID, raffleId: data.raffleId}).done(r2 => {
+                            switch(r2.code) {
+                                case 0:
+                                    this.list[data.raffleId] = new Helper.countdown(r2.data.time + 30, () => this.getAward(roomID, data.raffleId));
+                                    break;
+                                case -400: //已参加抽奖
+                                    break;
+                                default:
+                                    console.log(r2);
+                                    break;
                             }
                         }).fail(() => Helper.countdown(2, () => this.join(roomID)));
                     }
@@ -118,7 +121,7 @@ class ALPlugin_SmallTV {
         // }).fail(() => Helper.countdown(2, () => this.join(roomID, TVID)));
     }
     static getAward(roomID, raffleID) {
-        $.getJSON('https://api.live.bilibili.com/gift/v2/smalltv/notice', {roomid: roomID, raffleId: raffleID}).done(result => {
+        $.getJSON('//api.live.bilibili.com/gift/v2/smalltv/notice', {roomid: roomID, raffleId: raffleID}).done(result => {
             switch(result.code) {
                 case 0:
                     delete this.list[raffleID];

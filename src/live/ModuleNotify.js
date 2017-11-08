@@ -29,8 +29,14 @@ class ModuleNotify {
             case 'award':
                 msg = Helper.format(sign.action.award, param);
                 break;
+            case 'noLogin':
+                msg += Helper.localize.noLogin;
+                break;
+            case 'noPhone':
+                msg += Helper.localize.noPhone;
+                break;
             case 'signed':
-                msg += Helper.format(sign.action.signed, param);
+                msg += sign.action.signed;
                 break;
         }
         Helper.option.notify_autoSign && this.create('sign_' + key, icon, Helper.localize.helper + ' - ' + sign.title, msg);

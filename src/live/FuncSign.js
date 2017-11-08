@@ -4,6 +4,11 @@ class FuncSign {
         if(!Helper.option.live || !Helper.option.live_autoSign) {
             return;
         }
+        if(Helper.userInfo.noLogin) {
+            ModuleNotify.sign('noLogin');
+            ModuleConsole.sign('noLogin');
+            return;
+        }
         this.addEvent();
     }
 
@@ -27,7 +32,7 @@ class FuncSign {
     // }
 
     static doSign() {
-        $.getJSON('https://api.live.bilibili.com/sign/doSign').done(result => {
+        $.getJSON('//api.live.bilibili.com/sign/doSign').done(result => {
             switch(result.code) {
                 case 0:
                     let award = {award: result.data.text};
@@ -40,9 +45,6 @@ class FuncSign {
                     // ModuleStore.sign('set');
                     ModuleNotify.sign('signed');
                     ModuleConsole.sign('signed');
-                    break;
-                case -101: //未登录
-                    ModuleConsole.sign('noLogin');
                     break;
                 default:
                     console.log(result);
