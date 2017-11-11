@@ -45,8 +45,8 @@ class ALPlugin_SmallTV {
         //$(document).on('click', () => this.statePanel.fadeOut(200));
         Helper.sendMessage({cmd: 'get', type: 'SmallTV'}, result => {
             if(!result.showID) {
-                Helper.sendMessage({cmd: 'set', type: 'SmallTV', showID: Helper.showID});
                 $(window).on('beforeunload', () => Helper.sendMessage({cmd: 'del', type: 'SmallTV'}));
+                Helper.sendMessage({cmd: 'set', type: 'SmallTV', showID: Helper.showID});
                 $(document).on('DOMNodeInserted', '.small-tv', function() {
                     var info = $(this).find('div a');
                     Helper.getRoomID(info.attr('href').match(/\/(\d+)/)[1]).then(roomID => {

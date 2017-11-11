@@ -6,7 +6,7 @@ var pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
 var filename = 'BilibiliHelper-V' + pkg.version + '.' + (process.env.TRAVIS_BUILD_NUMBER || 0);
 var path = 'release';
-var mainTask = ['html', 'css', 'copy', 'manifest'];
+var mainTask = ['html', 'style', 'copy', 'manifest'];
 
 $.jshintChannel = lazypipe()
     .pipe($.jshint)
@@ -55,7 +55,7 @@ gulp.task('html', function() {
         })))
         .pipe(gulp.dest(path + '/src/'));
 });
-gulp.task('css', function() {
+gulp.task('style', function() {
     return gulp.src('src/**/!(*.min).css')
         .pipe($.if(path == 'release', $.cleanCss()))
         .pipe($.rename({suffix: '.min'}))
@@ -78,6 +78,6 @@ gulp.task('manifest', function() {
 });
 gulp.task('zip', function() {
     return gulp.src(path + '/src/**')
-        .pipe($.archiver(filename + '.zip'))
+        .pipe($.zip(filename + '.zip'))
         .pipe(gulp.dest(path + '/'));
 });

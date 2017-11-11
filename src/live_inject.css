@@ -1,3 +1,22 @@
+.treasure-link {
+  color: #FFF;
+  transition: color .5s;
+}
+.treasure-link:hover {
+  color: #23ADE5;
+}
+
+.progress-tv {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: url(//s1.hdslb.com/bfs/static/blive/blfe-live-room/static/img/pic.loading-tv.e11a9bf.gif);
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
 /*i.bh-icon {*/
   /*display: inline-block;*/
   /*height: 20px;*/

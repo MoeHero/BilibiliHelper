@@ -25,16 +25,18 @@ class ALPlugin_Activity {
     // }
 
     static addEvent() {
-        var $this = this;
+        let $this = this;
         Helper.sendMessage({cmd: 'get', type: 'Activity'}, result => {
             if(!result.showID) {
-                Helper.sendMessage({cmd: 'set', type: 'Activity', showID: Helper.showID});
                 $(window).on('beforeunload', () => Helper.sendMessage({cmd: 'del', type: 'Activity'}));
+                Helper.sendMessage({cmd: 'set', type: 'Activity', showID: Helper.showID});
                 $(document).on('DOMNodeInserted', '.system-msg.news', function() {
-                    var info = $(this).find('div a');
+                    let info = $(this).find('div a');
+                    let roomID = info.attr('href').match(/\/(\d+)/);
                     if(info.text().includes('丰收祭典')) {
-                        var roomID = info.attr('href').match(/\/(\d+)/)[1];
-                        $this.join(roomID);
+                        $this.join(roomID[1]);
+                    } else if(info.text().includes('丰实之仓')) {
+                        $this.getReceiveGift(roomID[1]);
                     }
                 });
                 ModuleNotify.activity('enabled');
@@ -45,6 +47,17 @@ class ALPlugin_Activity {
         });
     }
 
+    static getReceiveGift(roomID) {
+        $.getJSON('//api.live.bilibili.com/activity/v1/Common/getReceiveGift', {roomid: roomID}).done(result => {
+            switch(result.code) {
+                case 0:
+                    break;
+                default:
+                    console.log(result);
+                    break;
+            }
+        }).fail(() => Helper.countdown(2, () => this.getReceiveGift(roomID)));
+    }
     static join(roomID) {
         $.getJSON('//api.live.bilibili.com/activity/v1/Raffle/check', {roomid: roomID}).done(r1 => {
             if(r1.code === 0) {
