@@ -10,79 +10,80 @@ class FuncGiftPackage {
     }
 
     static initDOM() {
-        this.package = $('.items-package').clone();
-        this.packageButton = this.package.find('a');
-        this.packagePanel = this.package.find('.gifts-package-panel');
-        this.packagePanelContent = this.packagePanel.find('.gifts-package-content');
+        this.package = $('.gift-package.light').clone().removeClass('light');
+        this.packagePanel = $('<div>').addClass('gift-package-panel');//this.package.find('.gifts-package-panel');
+        //this.packagePanelContent = this.packagePanel.find('.gifts-package-content');
         this.packageSendAll = $('<p>').addClass('f-right live-btn default').text('清空包裹');
 
-        this.sendPanel = $('#gift-package-send-panel').clone().attr('id', 'bh-gift-package-send-panel');
-        this.sendPanelImage = this.sendPanel.find('.gift-img');
-        this.sendPanelInfo = this.sendPanel.find('.gift-info>p');
-        this.sendPanelButton = this.sendPanel.find('.send-ctrl>button');
-        this.sendPanelCloseButton = this.sendPanel.find('.close-btn');
-        this.sendPanelCount = this.sendPanel.find('.send-ctrl>input');
-        let numberGroup = $('<div>').addClass('number-group');
-        for(let key in this.numberGroup) {
-            let numberButton = $('<span>').text(this.numberGroup[key]).on('click', e => this.setNumber($(e.currentTarget)));
-            numberGroup.append(numberButton);
-        }
-        this.sendPanel.find('.panel-content').append(numberGroup);
+        // this.sendPanel = $('#gift-package-send-panel').clone().attr('id', 'bh-gift-package-send-panel');
+        // this.sendPanelImage = this.sendPanel.find('.gift-img');
+        // this.sendPanelInfo = this.sendPanel.find('.gift-info>p');
+        // this.sendPanelButton = this.sendPanel.find('.send-ctrl>button');
+        // this.sendPanelCloseButton = this.sendPanel.find('.close-btn');
+        // this.sendPanelCount = this.sendPanel.find('.send-ctrl>input');
+        // let numberGroup = $('<div>').addClass('number-group');
+        // for(let key in this.numberGroup) {
+        //     let numberButton = $('<span>').text(this.numberGroup[key]).on('click', e => this.setNumber($(e.currentTarget)));
+        //     numberGroup.append(numberButton);
+        // }
+        // this.sendPanel.find('.panel-content').append(numberGroup);
 
-        this.packagePanel.find('.gifts-package-title').before(this.packageSendAll);
-        this.packagePanel.find('.live-tips').remove();
-        $('.items-package').after(this.package).remove();
-        $('#gift-package-send-panel').after(this.sendPanel).remove();
+        // this.packagePanel.find('.gifts-package-title').before(this.packageSendAll);
+        $('.gift-section.gift-package').empty().append(this.package);
+        // $('#gift-package-send-panel').after(this.sendPanel).remove();
     }
     static addEvent() {
-        this.packagePanel.stopPropagation();
-        this.sendPanel.stopPropagation();
-        $(document).on('click', () => this.packagePanel.fadeOut(200) && this.packageButton.find('i').removeClass('open'));
+        // let $this = this;
+        this.package.on('click', () => this.openGiftPackage());
 
-        this.packageButton.on('click', () => this.openGiftPackage());
-        this.packageSendAll.on('click', () => this.sendAllGift());
-        this.sendPanelCloseButton.on('click', () => this.sendPanel.hide());
-
-        Helper.getMessage(request => {
-            if(request.command && request.command == 'openGiftPackage') {
-                this.openGiftPackage();
-            }
-            if(request.command && request.command == 'sendGiftCallback') {
-                let result = request.result;
-                let liveToastElement = this.sendPanel.css('display') == 'none' ? this.packageButton : this.sendPanelButton;
-                switch(result.code) {
-                    case 0:
-                        if(result.data.remain === 0) {
-                            this.gifts[result.gift.giftID].splice(result.gift.key, 1);
-                            this.sendPanel.hide();
-                        } else {
-                            this.gifts[result.gift.giftID][result.gift.key].number = result.data.remain;
-                            this.sendPanelInfo.text(`您的包裹中还剩 ${result.data.remain} 个可用`);
-                            this.sendPanelCount.val() > result.data.remain && this.sendPanelCount.val(result.data.remain);
-                        }
-                        this.updateGiftPackage();
-                        break;
-                    case -400: //错误
-                        // if(result.msg.includes('偶像活动')) { //应援棒提示
-                        //     Helper.liveToast('只有在入围偶像活动的主播房间才能赠送该道具!', liveToastElement, 'caution');
-                        // } else { //参数错误
-                            console.log(result);
-                            Helper.liveToast('参数错误!', liveToastElement, 'error');
-                        // }
-                        break;
-                    case 200005: //无法给自己赠送道具
-                        Helper.liveToast('无法给自己赠送道具!', liveToastElement, 'caution');
-                        break;
-                    case 1024: //超时
-                        Helper.liveToast('赠送礼物超时,请稍后再试!', liveToastElement, 'error');
-                        break;
-                    default:
-                        console.log(result);
-                        break;
-                }
-                this.sendPanelCount.focus();
-            }
-        });
+        // this.packagePanel.stopPropagation();
+        // this.sendPanel.stopPropagation();
+        // $(document).on('click', () => this.packagePanel.fadeOut(200) && this.packageButton.find('i').removeClass('open'));
+        //
+        // this.packageButton.on('click', () => this.openGiftPackage());
+        // this.packageSendAll.on('click', () => this.sendAllGift());
+        // this.sendPanelCloseButton.on('click', () => this.sendPanel.hide());
+        //
+        // Helper.getMessage(request => {
+        //     if(request.command && request.command == 'openGiftPackage') {
+        //         this.openGiftPackage();
+        //     }
+        //     if(request.command && request.command == 'sendGiftCallback') {
+        //         let result = request.result;
+        //         let liveToastElement = this.sendPanel.css('display') == 'none' ? this.packageButton : this.sendPanelButton;
+        //         switch(result.code) {
+        //             case 0:
+        //                 if(result.data.remain === 0) {
+        //                     this.gifts[result.gift.giftID].splice(result.gift.key, 1);
+        //                     this.sendPanel.hide();
+        //                 } else {
+        //                     this.gifts[result.gift.giftID][result.gift.key].number = result.data.remain;
+        //                     this.sendPanelInfo.text(`您的包裹中还剩 ${result.data.remain} 个可用`);
+        //                     this.sendPanelCount.val() > result.data.remain && this.sendPanelCount.val(result.data.remain);
+        //                 }
+        //                 this.updateGiftPackage();
+        //                 break;
+        //             case -400: //错误
+        //                 // if(result.msg.includes('偶像活动')) { //应援棒提示
+        //                 //     Helper.liveToast('只有在入围偶像活动的主播房间才能赠送该道具!', liveToastElement, 'caution');
+        //                 // } else { //参数错误
+        //                     console.log(result);
+        //                     Helper.liveToast('参数错误!', liveToastElement, 'error');
+        //                 // }
+        //                 break;
+        //             case 200005: //无法给自己赠送道具
+        //                 Helper.liveToast('无法给自己赠送道具!', liveToastElement, 'caution');
+        //                 break;
+        //             case 1024: //超时
+        //                 Helper.liveToast('赠送礼物超时,请稍后再试!', liveToastElement, 'error');
+        //                 break;
+        //             default:
+        //                 console.log(result);
+        //                 break;
+        //         }
+        //         this.sendPanelCount.focus();
+        //     }
+        // });
     }
 
     static openGiftPackage() {

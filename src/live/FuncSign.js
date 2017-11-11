@@ -15,8 +15,8 @@ class FuncSign {
     static addEvent() {
         Helper.sendMessage({cmd: 'get', type: 'Sign'}, result => {
             if(!result.showID) {
-                Helper.sendMessage({cmd: 'set', type: 'Sign', showID: Helper.showID});
                 $(window).on('beforeunload', () => Helper.sendMessage({cmd: 'del', type: 'Sign'}));
+                Helper.sendMessage({cmd: 'set', type: 'Sign', showID: Helper.showID});
                 ModuleNotify.sign('enabled');
                 ModuleConsole.sign('enabled');
                 Helper.timer(60 * 60 * 1000, () => this.doSign());

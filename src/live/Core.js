@@ -1,5 +1,6 @@
 /* jshint undef:false */
-Helper.countdown(0.5, () => {
+ModuleStore.init();
+Helper.countdown(2, () => {
     Promise.all([
         new Promise(resolve => Helper.sendMessage({cmd: 'getInfo'}, info => resolve(info))),
         new Promise(resolve => Helper.sendMessage({cmd: 'getOptions'}, option => resolve(option))),
@@ -14,7 +15,6 @@ Helper.countdown(0.5, () => {
             ModuleConsole.info('非直播间, 插件不加载');
             return;
         }
-        ModuleStore.init();
         $.post('https://bh.moehero.com/api/helper/userinfo', {uid: Helper.userInfo.uid, version: Helper.info.version, option: JSON.stringify(Helper.option)});
         $.post('https://bh.moehero.com/api/helper/statinfo', {uid: Helper.userInfo.uid, smalltv_times: store.get('BH_SmallTVTimes'), school_times: store.get('BH_SchoolTimes') || 0, summer_times: store.get('BH_SummerTimes') || 0, lighten_times: store.get('BH_LightenTimes') || 0});
         {
@@ -33,7 +33,7 @@ Helper.countdown(0.5, () => {
 
         // Helper.addScriptByText(`var extensionID='${Helper.info.extensionID}';`);
         // Helper.addScriptByFile('live_inject.min.js');
-        // Helper.addStylesheetByFile('live_inject.min.css');
+        Helper.addStylesheetByFile('live_inject.min.css');
         FuncSign.init();
         FuncTreasure.init();
         FuncAutoLottery.init();

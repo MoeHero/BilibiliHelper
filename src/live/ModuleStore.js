@@ -2,8 +2,8 @@
 class ModuleStore {
     static init() {
         !store.get('BH_RoomID') && store.set('BH_RoomID', {});
-        !store.get('BH_SignDate') && store.set('BH_SignDate', '1970/1/1');
-        !store.get('BH_TreasureDate') && store.set('BH_TreasureDate', '1970/1/1');
+        // !store.get('BH_SignDate') && store.set('BH_SignDate', '1970/1/1');
+        // !store.get('BH_TreasureDate') && store.set('BH_TreasureDate', '1970/1/1');
         !store.get('BH_SmallTVStatInfo') && store.set('BH_SmallTVStatInfo', {});
         !store.get('BH_SmallTVTimes') && store.set('BH_SmallTVTimes', 0);
         !store.get('BH_SchoolTimes') && store.set('BH_SchoolTimes', 0);

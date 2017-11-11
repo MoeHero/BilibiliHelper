@@ -1,3 +1,4 @@
+/* jshint evil:true */
 'use strict';
 console.log('Start Loading...');
 
@@ -121,18 +122,27 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case 'getOptions':
             sendResponse(Options);
             break;
+        case 'changeTab':
+            if(Treasure.tabID) {
+                chrome.tabs.get(Treasure.tabID, r => {
+                    chrome.tabs.highlight({windowId: r.windowID, tabs: r.index});
+                });
+            }
+            break;
         case 'createNotifications':
             createNotifications(request.param);
             break;
 
         case 'get':
-            sendResponse(eval(request.type + '.get()')); //jshint ignore:line
+            sendResponse(eval(request.type + '.get()'));
             break;
         case 'set':
-            eval(request.type + '.set(' + request.showID + ',' + sender.tab.id + ')'); //jshint ignore:line
+            eval(request.type + '.set(' + request.showID + ',' + sender.tab.id + ')');
             break;
         case 'del':
-            eval(request.type + '.del()'); //jshint ignore:line
+            if(eval(request.type + '.tabID') == sender.tab.id) {
+                eval(request.type + '.del()');
+            }
             break;
     }
 });

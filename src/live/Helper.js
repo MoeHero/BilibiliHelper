@@ -32,7 +32,7 @@ Helper.getRoomID = showID => {
     return new Promise(resolve => {
         let rid = ModuleStore.roomID_get(showID);
         if(!rid) {
-            $.getJSON('//api.live.bilibili.com/room/v1/Room/room_init?id=' + showID).done(r => {
+            $.getJSON('//api.live.bilibili.com/room/v1/Room/room_init', {id: showID}).done(r => {
                 switch(r.code) {
                     case 0:
                         ModuleStore.roomID_add(showID, rid);
@@ -63,7 +63,7 @@ Helper.getRoomID = showID => {
 };*/
 Helper.getUserInfo = () => {
     return new Promise(resolve => {
-        $.getJSON('//api.live.bilibili.com/live_user/v1/UserInfo/get_info_in_room?roomid=22440').done(r => {
+        $.getJSON('//api.live.bilibili.com/live_user/v1/UserInfo/get_info_in_room', {roomid: '22440'}).done(r => {
             switch(r.code) {
                 case 0:
                     Helper.userInfo.mobileVerify = Number.parseInt(r.data.info.mobile_verify) == 1;

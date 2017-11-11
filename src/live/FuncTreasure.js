@@ -26,15 +26,17 @@ class FuncTreasure {
     static addEvent() {
         Helper.sendMessage({cmd: 'get', type: 'Treasure'}, result => {
             if(!result.showID) {
-                Helper.sendMessage({cmd: 'set', type: 'Treasure', showID: Helper.showID});
                 $(window).on('beforeunload', () => Helper.sendMessage({cmd: 'del', type: 'Treasure'}));
+                Helper.sendMessage({cmd: 'set', type: 'Treasure', showID: Helper.showID});
                 ModuleNotify.treasure('enabled');
                 ModuleConsole.treasure('enabled');
                 Helper.timer(60 * 60 * 1000, () => this.checkNewTask());
             } else {
                 // this.setStateIcon('exist');
-                // this.setStateText(Helper.format(Helper.localize.treasure.action.exist, result));
-                this.treasureBox.hide();
+                this.setStateText($('<a class="treasure-link" href="#">').text('已启用').on('click', e => {
+                    e.preventDefault();
+                    Helper.sendMessage({cmd: 'changeTab'});
+                }));
                 ModuleConsole.treasure('exist', result);
             }
         });
@@ -103,6 +105,9 @@ class FuncTreasure {
                         break;
                     case -902: //验证码错误
                         Helper.countdown(5, () => this.getAward());
+                        break;
+                    case -903: //已领取
+                        this.checkNewTask();
                         break;
                     default:
                         console.log(result);
