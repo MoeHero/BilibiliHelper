@@ -91,6 +91,7 @@ class ALPlugin_SmallTV {
             if(r1.code === 0) {
                 for(let data of r1.data) {
                     if(this.list[data.raffleId] === undefined) {
+                        this.list[data.raffleId] = 0;
                         $.getJSON('//api.live.bilibili.com/gift/v2/smalltv/join', {roomid: roomID, raffleId: data.raffleId}).done(r2 => {
                             switch(r2.code) {
                                 case 0:
@@ -102,7 +103,10 @@ class ALPlugin_SmallTV {
                                     console.log(r2);
                                     break;
                             }
-                        }).fail(() => Helper.countdown(2, () => this.join(roomID)));
+                        }).fail(() => {
+                            this.list[data.raffleId] = undefined;
+                            Helper.countdown(2, () => this.join(roomID));
+                        });
                     }
                 }
             } else {
@@ -122,17 +126,17 @@ class ALPlugin_SmallTV {
     }
     static getAward(roomID, raffleID) {
         $.getJSON('//api.live.bilibili.com/gift/v2/smalltv/notice', {roomid: roomID, raffleId: raffleID}).done(result => {
-            switch(result.code) {
-                case 0:
+            switch(result.data.status) {
+                case 2:
                     delete this.list[raffleID];
-                    let award = {awardNumber: result.data.gift_num, awardName: result.data.gift_name};
+                    let award = {awardNumber: result.data.gift_num, awardName: result.data.gift_name, roomID, raffleID};
                     // ModuleStore.addStatinfo('smallTV', result.reward.id, result.reward.num);
                     // ModuleStore.addTimes('smallTV', 1);
                     // Helper.option['notify_autoSmallTV_award_' + result.data.gift_id] && ModuleNotify.smallTV('award', award);
                     ModuleConsole.smallTV('award', award);
                     break;
-                case -400: //正在开奖
-                    Helper.countdown(10, () => this.getAward(roomID, raffleID));
+                case 3: //正在开奖
+                    Helper.countdown(30, () => this.getAward(roomID, raffleID));
                     break;
                 default:
                     console.log(result);

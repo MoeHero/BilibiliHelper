@@ -128,13 +128,13 @@ Helper.localize = {//TODO 重构 去除不必要文本
     smallTV: {
         title: '自动小电视',
         action: {
-            award: '获得${awardName}x${awardNumber}',
+            award: '获得${awardName}x${awardNumber} RaffleID:${raffleID} RoomID:${roomID}',
         }
     },
     activity: {
         title: '活动抽奖',
         action: {
-            award: '获得${awardName}x${awardNumber}',
+            award: '获得${awardName}x${awardNumber} RaffleID:${raffleID} RoomID:${roomID}',
         }
     }
 };
