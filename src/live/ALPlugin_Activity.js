@@ -32,12 +32,12 @@ class ALPlugin_Activity {
                 Helper.sendMessage({cmd: 'set', type: 'Activity', showID: Helper.showID});
                 $(document).on('DOMNodeInserted', '.system-msg.news', function() {
                     let info = $(this).find('div a');
-                    let roomID = info.attr('href').match(/\/(\d+)/);
-                    if(info.text().includes('丰收祭典')) {
+                    let roomID = info.attr('href').match(/\/(\d+)$/);
+                    if(roomID != null) {
                         $this.join(roomID[1]);
-                    } else if(info.text().includes('丰实之仓')) {
-                        $this.getReceiveGift(roomID[1]);
-                    }
+                    }// else if(info.text().includes('丰实之仓')) {
+                    //     $this.getReceiveGift(roomID[1]);
+                    // }
                 });
                 ModuleNotify.activity('enabled');
                 ModuleConsole.activity('enabled');
@@ -47,22 +47,23 @@ class ALPlugin_Activity {
         });
     }
 
-    static getReceiveGift(roomID) {
-        $.getJSON('//api.live.bilibili.com/activity/v1/Common/getReceiveGift', {roomid: roomID}).done(result => {
-            switch(result.code) {
-                case 0:
-                    break;
-                default:
-                    console.log(result);
-                    break;
-            }
-        }).fail(() => Helper.countdown(2, () => this.getReceiveGift(roomID)));
-    }
+    // static getReceiveGift(roomID) {
+    //     $.getJSON('//api.live.bilibili.com/activity/v1/Common/getReceiveGift', {roomid: roomID}).done(result => {
+    //         switch(result.code) {
+    //             case 0:
+    //                 break;
+    //             default:
+    //                 console.log(result);
+    //                 break;
+    //         }
+    //     }).fail(() => Helper.countdown(2, () => this.getReceiveGift(roomID)));
+    // }
     static join(roomID) {
         $.getJSON('//api.live.bilibili.com/activity/v1/Raffle/check', {roomid: roomID}).done(r1 => {
             if(r1.code === 0) {
                 for(let data of r1.data) {
                     if(this.list[data.raffleId] === undefined) {
+                        this.list[data.raffleId] = 0;
                         $.getJSON('//api.live.bilibili.com/activity/v1/Raffle/join', {roomid: roomID, raffleId: data.raffleId}).done(r2 => {
                             switch(r2.code) {
                                 case 0:
@@ -74,7 +75,10 @@ class ALPlugin_Activity {
                                     console.log(r2);
                                     break;
                             }
-                        }).fail(() => Helper.countdown(2, () => this.join(roomID)));
+                        }).fail(() => {
+                            this.list[data.raffleId] = undefined;
+                            Helper.countdown(2, () => this.join(roomID));
+                        });
                     }
                 }
             } else {
@@ -87,7 +91,7 @@ class ALPlugin_Activity {
             switch(result.code) {
                 case 0:
                     delete this.list[raffleID];
-                    let award = {awardNumber: result.data.gift_num, awardName: result.data.gift_name};
+                    let award = {awardNumber: result.data.gift_num, awardName: result.data.gift_name, roomID, raffleID};
                     // ModuleStore.addStatinfo('smallTV', result.reward.id, result.reward.num);
                     // ModuleStore.addTimes('smallTV', 1);
                     // ModuleNotify.activity('award', award);
@@ -100,7 +104,7 @@ class ALPlugin_Activity {
                     // }
                     break;
                 case -400: //正在开奖
-                    Helper.countdown(10, () => this.getAward(roomID, raffleID));
+                    Helper.countdown(30, () => this.getAward(roomID, raffleID));
                     break;
                 default:
                     console.log(result);
