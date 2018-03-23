@@ -68,10 +68,9 @@ class FuncTreasure {
                 case 0:
                     let times = (result.data.times - 1) * 3 + result.data.minute / 3;
                     this.setTimes(times + '/' + result.data.max_times * 3);
-                    //this.getTimes();
                     this.startTime = result.data.time_start;
                     this.endTime = result.data.time_end;
-                    this.countdown && this.countdown.clearCountdown();
+                    if(this.countdown) this.countdown.clearCountdown();
                     this.countdown = new Helper.countdown(result.data.minute * 60, () => {
                         this.setStateText('领取中');
                         this.getAward();
@@ -123,13 +122,11 @@ class FuncTreasure {
         this.formula = '';
         let last_line = 0;
         let line = 0;
-        var word = {f: 0, l: 0, t: 0};
+        let word = {f: 0, l: 0, t: 0};
         for(let y = 1;y <= 120;y++) {
             let i = 0;
             for(let x = 1;x <= 40;x++) {
-                if(pixels[i] + pixels[i + 1] + pixels[i + 2] < 200) {
-                    line++;
-                }
+                if(pixels[i] + pixels[i + 1] + pixels[i + 2] < 200) line++;
                 i = (y - 1) * 4 + (x - 1) * 120 * 4 + 4;
             }
             if(line > 0 && last_line === 0) {
@@ -139,26 +136,24 @@ class FuncTreasure {
                 this.formula += getWord(word);
                 word.t = 0;
             }
-            if(line > 0) {
-                word.t += line;
-            }
+            if(line > 0) word.t += line;
             last_line = line;
             line = 0;
         }
         function getWord(word) {
-            if(word.t <= 50) {return '-';}
-            if(word.t > 120 && word.t < 135) {return '+';}
-            if(word.t > 155 && word.t < 162) {return '1';}
-            if(word.t > 250 && word.t < 260) {return '2';}
-            if(word.t > 286 && word.t < 296) {return '3';}
-            if(word.t > 228 && word.t < 237) {return '4';}
-            if(word.t > 303 && word.t < 313) {return '5';}
-            if(word.t > 189 && word.t < 195) {return '7';}
-            if(word.t > 335 && word.t < 342) {return '8';}
+            if(word.t <= 50) return '-';
+            if(word.t > 120 && word.t < 135) return '+';
+            if(word.t > 155 && word.t < 162) return '1';
+            if(word.t > 250 && word.t < 260) return '2';
+            if(word.t > 286 && word.t < 296) return '3';
+            if(word.t > 228 && word.t < 237) return '4';
+            if(word.t > 303 && word.t < 313) return '5';
+            if(word.t > 189 && word.t < 195) return '7';
+            if(word.t > 335 && word.t < 342) return '8';
             if(word.t > 343 && word.t < 350) {
-                if(word.f > 24 && word.l > 24) {return '0';}
-                if(word.f > 24 && word.l < 24) {return '6';}
-                if(word.f < 24 && word.l > 24) {return '9';}
+                if(word.f > 24 && word.l > 24) return '0';
+                if(word.f > 24 && word.l < 24) return '6';
+                if(word.f < 24 && word.l > 24) return '9';
             }
         }
         return eval(this.formula); //jshint ignore:line

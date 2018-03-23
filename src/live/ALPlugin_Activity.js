@@ -67,7 +67,7 @@ class ALPlugin_Activity {
                         $.getJSON('//api.live.bilibili.com/activity/v1/Raffle/join', {roomid: roomID, raffleId: data.raffleId}).done(r2 => {
                             switch(r2.code) {
                                 case 0:
-                                    this.list[data.raffleId] = new Helper.countdown(r2.data.time + 30, () => this.getAward(roomID, data.raffleId));
+                                    this.list[data.raffleId] = new Helper.countdown(60, () => this.getAward(roomID, data.raffleId));
                                     break;
                                 case -400: //已参加抽奖
                                     break;
@@ -91,6 +91,7 @@ class ALPlugin_Activity {
             switch(result.code) {
                 case 0:
                     delete this.list[raffleID];
+                    if(result.data.gift_name === '') return;
                     let award = {awardNumber: result.data.gift_num, awardName: result.data.gift_name, roomID, raffleID};
                     // ModuleStore.addStatinfo('smallTV', result.reward.id, result.reward.num);
                     // ModuleStore.addTimes('smallTV', 1);

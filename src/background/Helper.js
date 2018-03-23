@@ -1,44 +1,24 @@
 /* globals ModuleStore,ModuleLogger */
-if(window.Helper !== undefined) throw Error('Not Error!');
 window.Helper = {
-    // DOM: {},
     userInfo: {},
-    showID: location.pathname.substr(1),
-
-    addScriptByFile(path) {
-        let scriptDom = $('<script>').attr('src', chrome.extension.getURL(path));
-        $('head').append(scriptDom);
-        return scriptDom;
-    },
-    addScriptByText(script) {
-        let scriptDom = $('<script>').text(script);
-        $('head').append(scriptDom);
-        return scriptDom;
+    options: {},
+    info: {
+        version: chrome.runtime.getManifest().version,
+        extensionID: chrome.i18n.getMessage('@@extension_id'),
     },
 
-    addStylesheetByFile(path) {
-        let linkDom = $('<link>').attr('rel', 'stylesheet').attr('href', chrome.extension.getURL(path));
-        $('head').append(linkDom);
-        return linkDom;
-    },
-    addStylesheetByText(style) {
-        let styleDom = $('<style>').attr('type', 'text/css').text(style);
-        $('head').append(styleDom);
-        return styleDom;
-    },
-
-    getRoomID(showID) {
+    getRoomID(shortID) {
         return new Promise(resolve => {
-            let rid = ModuleStore.getRoomID(showID);
+            let rid = ModuleStore.getRoomID(shortID);
             if(rid) {
                 resolve(rid);
                 return;
             }
-            $.getJSON('//api.live.bilibili.com/room/v1/Room/room_init', {id: showID}).done(r => {
+            $.getJSON('https://api.live.bilibili.com/room/v1/Room/room_init', {id: shortID}).done(r => {
                 switch(r.code) {
                     case 0:
                         rid = r.data.room_id;
-                        ModuleStore.addRoomID(showID, rid);
+                        ModuleStore.addRoomID(shortID, rid);
                         break;
                     case 1: //房间不存在
                         break;
@@ -52,7 +32,7 @@ window.Helper = {
     },
     getUserInfo() {
         return new Promise(resolve => {
-            $.getJSON('//api.live.bilibili.com/live_user/v1/UserInfo/get_info_in_room', {roomid: '1'}).done(r => {
+            $.getJSON('https://api.live.bilibili.com/live_user/v1/UserInfo/get_info_in_room', {roomid: '1'}).done(r => {
                 switch(r.code) {
                     case 0:
                         Helper.userInfo.isVIP = Number.parseInt(r.data.level.vip) == 1;
@@ -80,46 +60,8 @@ window.Helper = {
         let keys = Object.keys(data);
         let dataList = keys.map(key => data[key]);
         return new Function(keys.join(','), 'return `' + template + '`;').apply(null, dataList); //jshint ignore:line
-    }
+    },
 };
-
-// Helper.escape = string => {
-//     return string.replace(/([\\'"&])+?/g, '\\$1');
-// };
-// Helper.localize = {//TODO 重构 去除不必要文本
-//     helper: '哔哩哔哩助手',
-//     enabled: '已启用',
-//     noLogin: '未登录',
-//     noPhone: '未绑定手机',
-//     exist: '已在直播间${showID}启动',
-//     sign: {
-//         title: '自动签到',
-//         action: {
-//             award: '签到成功, 获得${award}',
-//             signed: '今日已签到',
-//         }
-//     },
-//     treasure: {
-//         title: '自动领瓜子',
-//         action: {
-//             award: '已领取${award}瓜子',
-//             totalSilver: '总瓜子:${silver}',
-//             end: '领取完毕',
-//         }
-//     },
-//     smallTV: {
-//         title: '自动小电视',
-//         action: {
-//             award: '获得${awardName}x${awardNumber} RaffleID:${raffleID} RoomID:${roomID}',
-//         }
-//     },
-//     activity: {
-//         title: '活动抽奖',
-//         action: {
-//             award: '获得${awardName}x${awardNumber} RaffleID:${raffleID} RoomID:${roomID}',
-//         }
-//     }
-// };
 
 Helper.countdown = function(time, callback, element) {
     if(!time || (!(time instanceof Date) && isNaN(time))) {
@@ -151,7 +93,6 @@ Helper.countdown = function(time, callback, element) {
 Helper.countdown.prototype.clearCountdown = function() {
     clearInterval(this.countdown);
 };
-
 Helper.timer = function(ms, callback) {
     if(!ms || isNaN(ms)) {
         ModuleLogger.error('时间设置错误!');
@@ -166,10 +107,3 @@ Helper.timer = function(ms, callback) {
 Helper.timer.prototype.clearTimer = function() {
     clearInterval(this.timer);
 };
-
-Helper.sendMessage = (msg, callback) => chrome.runtime.sendMessage(msg, response => typeof callback == 'function' && callback(response));
-Helper.getMessage = callback => chrome.runtime.onMessage.addListener((request, sender, sendResponse) => callback(request, sender, sendResponse));
-
-$.fn.stopPropagation = function() {return this.on('click', e => e.stopPropagation());};
-// $.fn.getTop = function() {return !this.parent().is('body') ? this[0].offsetTop + this.parent().getTop() : 0;};
-// $.fn.getLeft = function() {return !this.parent().is('body') ? this[0].offsetLeft + this.parent().getLeft() : 0;};

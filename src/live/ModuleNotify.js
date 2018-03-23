@@ -39,7 +39,7 @@ class ModuleNotify {
                 msg += sign.action.signed;
                 break;
         }
-        Helper.option.notify_autoSign && this.create('sign_' + key, icon, Helper.localize.helper + ' - ' + sign.title, msg);
+        if(Helper.option.notify_autoSign) this.create('sign_' + key, icon, Helper.localize.helper + ' - ' + sign.title, msg);
     }
     static treasure(key, param) {
         if(Helper.option['notify_autoTreasure_' + key] === false) {
@@ -64,7 +64,7 @@ class ModuleNotify {
             case 'end':
                 msg = treasure.action.end;
         }
-        Helper.option.notify_autoTreasure && this.create('treasure_' + key, icon, Helper.localize.helper + ' - ' + treasure.title, msg);
+        if(Helper.option.notify_autoTreasure) this.create('treasure_' + key, icon, Helper.localize.helper + ' - ' + treasure.title, msg);
     }
     static smallTV(key, param) {
         if(Helper.option['notify_autoSmallTV_' + key] === false) {
@@ -81,7 +81,7 @@ class ModuleNotify {
                 msg = Helper.format(smallTV.action.award, param);
                 break;
         }
-        Helper.option.notify_autoSmallTV && this.create('smallTV_' + key, icon, Helper.localize.helper + ' - ' + smallTV.title, msg);
+        if(Helper.option.notify_autoSmallTV) this.create('smallTV_' + key, icon, Helper.localize.helper + ' - ' + smallTV.title, msg);
     }
     static activity(key) {
         if(Helper.option['notify_autoActivity_' + key] === false) {
@@ -98,6 +98,6 @@ class ModuleNotify {
                 msg = activity.action.award;
                 break;
         }
-        Helper.option.notify_autoActivity && this.create('summer_' + key, icon, Helper.localize.helper + ' - ' + activity.title, msg);
+        if(Helper.option.notify_autoActivity) this.create('summer_' + key, icon, Helper.localize.helper + ' - ' + activity.title, msg);
     }
 }

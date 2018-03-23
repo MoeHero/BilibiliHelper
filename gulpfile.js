@@ -1,20 +1,20 @@
-var gulp = require('gulp');
-var $ = require('gulp-load-plugins')();
-var lazypipe = require('lazypipe');
-var fs = require('fs');
-var pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+let gulp = require('gulp');
+let $ = require('gulp-load-plugins')();
+let lazypipe = require('lazypipe');
+let fs = require('fs');
+let pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
-var filename = 'BilibiliHelper-V' + pkg.version + '.' + (process.env.TRAVIS_BUILD_NUMBER || 0);
-var path = 'release';
-var mainTask = ['html', 'style', 'copy', 'manifest'];
+let filename = 'MoeGardenHelper-V' + pkg.version + '.' + (process.env.TRAVIS_BUILD_NUMBER || 0);
+let path = 'release';
+let mainTask = ['html', 'style', 'copy', 'manifest'];
 
 $.jshintChannel = lazypipe()
     .pipe($.jshint)
     .pipe($.jshint.reporter, 'jshint-stylish')
     .pipe($.jshint.reporter, 'fail');
 
-gulp.task('debug', $.sequence('set:d', ['script', 'live'], mainTask));
-gulp.task('release', $.sequence('set:r', ['script', 'live'], mainTask, 'zip'));
+gulp.task('debug', $.sequence('set:d', ['script', 'live', 'background'], mainTask));
+gulp.task('release', $.sequence('set:r', ['script', 'live', 'background'], mainTask, 'zip'));
 gulp.task('default', function() {
     console.log('Please use `release` or `debug` task!');
 });
@@ -28,6 +28,14 @@ gulp.task('set:d', function() {
     return;
 });
 
+gulp.task('background', function() {
+    return gulp.src('src/background/*.js')
+        .pipe($.order(['Helper.js', 'Module*.js', 'Func*.js', '!Core.js', 'Core.js']))
+        .pipe($.jshintChannel())
+        .pipe($.concat('background.min.js'))
+        .pipe($.if(path == 'release', $.babel({presets: ['env', 'minify']})))
+        .pipe(gulp.dest(path + '/src/'));
+});
 gulp.task('live', function() {
     return gulp.src('src/live/*.js')
         .pipe($.order(['Helper.js', 'Module*.js', 'Func*.js', '!Core.js', 'Core.js']))
@@ -38,7 +46,7 @@ gulp.task('live', function() {
         .pipe(gulp.dest(path + '/src/'));
 });
 gulp.task('script', function() {
-    return gulp.src(['src/**/!(*.min).js', '!src/live/*.js'])
+    return gulp.src(['src/**/!(*.min).js', '!src/live/*.js', '!src/background/*.js'])
         .pipe($.jshintChannel())
         .pipe($.if(path == 'release', $.babel({presets: ['env', 'minify']})))
         .pipe($.rename({suffix: '.min'}))
@@ -66,10 +74,10 @@ gulp.task('copy', function() {
         .pipe(gulp.dest(path + '/src/'));
 });
 gulp.task('manifest', function() {
-    var manifest = JSON.parse(fs.readFileSync('./src/manifest.json', 'utf8'));
+    let manifest = JSON.parse(fs.readFileSync('./src/manifest.json', 'utf8'));
     manifest.version = pkg.version + '.' + (path == 'release' ? process.env.TRAVIS_BUILD_NUMBER : '0');
     manifest.description = pkg.description;
-    if (!fs.existsSync(path + '/src')) {
+    if(!fs.existsSync(path + '/src')) {
         fs.mkdirSync(path);
         fs.mkdirSync(path + '/src');
     }

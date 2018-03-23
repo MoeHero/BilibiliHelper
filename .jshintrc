@@ -1,28 +1,22 @@
 {
-  "bitwise": true,
-  "curly": true,
   "esversion": 6,
-  "freeze": true,
-  "funcscope": true,
   "latedef": "nofunc",
-  "noarg": true,
   "nocomma": true,
-  "nonbsp": true,
-  "nonew": true,
   "notypeof": true,
-  "expr": true,
-  "shadow": false,
   "undef": true,
+  "varstmt": true,
   "eqnull": true,
-  "sub": true,
+
   "browser": true,
   "jquery": true,
   "node": true,
-  "multistr": true,
-  "loopfunc": true,
   "quotmark": "single",
+
+  "loopfunc": true,
+
   "globals": {
     "chrome": true,
-    "Helper": true
+    "Helper": true,
+    "Fingerprint2": true
   }
 }

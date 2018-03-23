@@ -6,7 +6,7 @@ $(function() {
     }
     $('#video').on('click', openVideo);
     $('#av-number').on('keypress', e => {
-        e.keyCode == 13 && openVideo();
+        if(e.keyCode == 13) openVideo();
     });
     $('#reload').on('click', () => {
         let background = chrome.extension.getBackgroundPage();

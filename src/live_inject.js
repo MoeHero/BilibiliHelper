@@ -1,5 +1,4 @@
 /* globals extensionID */
-'use strict';
 //消息拦截
 window.server_callback = window._playerEventMap.player_event_0.callback;
 window._playerEventMap.player_event_0.callback = json => {

@@ -1,8 +1,7 @@
 /* jshint evil:true */
-'use strict';
-console.log('Start Loading...');
+console.log('脚本初始化...');
 
-class RoomInfo {
+class TabInfo {
     constructor() {
         this.showID = false;
         this.tabID = false;
@@ -20,12 +19,12 @@ class RoomInfo {
         this.tabID = false;
     }
 }
-var Sign = new RoomInfo();
-var Treasure = new RoomInfo();
-var SmallTV = new RoomInfo();
-var Activity = new RoomInfo();
+let Sign = new TabInfo();
+let Treasure = new TabInfo();
+let SmallTV = new TabInfo();
+let Activity = new TabInfo();
 
-var Options = {
+let Options = {
     idle_treasureOn: false,
     live_autoSign: true,
     live_autoTreasure: true,
@@ -73,44 +72,40 @@ var Options = {
     notify_autoActivity: true,
     notify: true
 };
-var Info = {
+let Info = {
     version: chrome.runtime.getManifest().version,
     extensionID: chrome.i18n.getMessage('@@extension_id')
 };
 
 function saveOptions() {
-    window.localStorage.bh_option = JSON.stringify(Options);
+    window.localStorage.setItem('MGH_Option', JSON.stringify(Options));
 }
 function createNotifications(param) {
     let xhr = new XMLHttpRequest();
     xhr.open('get', param.icon);
     xhr.responseType = 'blob';
     xhr.onload = function() {
-        if (this.status == 200) {
-            chrome.notifications.create('bh-' + param.id, {
-                type: 'basic',
-                iconUrl: window.URL.createObjectURL(this.response),
-                title: param.title,
-                message: param.message
-            });
-        }
+        if(this.status != 200) return;
+        chrome.notifications.create('MGH-' + param.id, {
+            type: 'basic',
+            iconUrl: window.URL.createObjectURL(this.response),
+            title: param.title,
+            message: param.message,
+        });
     };
     xhr.send();
 }
 
-if(window.localStorage.bh_option) {
-    $.extend(Options, JSON.parse(window.localStorage.bh_option));
+if(window.localStorage.getItem('MGH_Options')) {
+    $.extend(Options, JSON.parse(window.localStorage.getItem('MGH_Options')));
 }
 saveOptions();
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
-    if(changeInfo.status == 'complete' &&
-        tabInfo.status == 'complete' &&
-        tabInfo.url.includes('live.bilibili.com')) {
-        chrome.tabs.executeScript(tabId, {file: './resources/js/jquery-3.1.1.min.js'});
-        chrome.tabs.executeScript(tabId, {file: './resources/js/store.min.js'});
-        chrome.tabs.executeScript(tabId, {file: './live.min.js'});
-        console.log('Execute Script: ' + tabInfo.url);
+chrome.tabs.onUpdated.addListener((tabID, changeInfo, tabInfo) => {
+    if(changeInfo.status == 'complete' && tabInfo.title == '哔哩哔哩直播，二次元弹幕直播平台' && tabInfo.url.includes('live.bilibili.com')) {
+        chrome.tabs.executeScript(tabID, {file: './resources/js/jquery-3.1.1.min.js'});
+        chrome.tabs.executeScript(tabID, {file: './live.min.js'});
+        console.log(`执行脚本: TabID:${tabID} Url:${tabInfo.url}`);
     }
 });
 
@@ -123,11 +118,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse(Options);
             break;
         case 'changeTab':
-            if(Treasure.tabID) {
-                chrome.tabs.get(Treasure.tabID, r => {
-                    chrome.tabs.highlight({windowId: r.windowID, tabs: r.index});
-                });
-            }
+            if(!Treasure.tabID) return;
+            chrome.tabs.get(Treasure.tabID, r => {
+                chrome.tabs.highlight({windowId: r.windowID, tabs: r.index});
+            });
             break;
         case 'createNotifications':
             createNotifications(request.param);
@@ -152,4 +146,4 @@ chrome.runtime.onMessageExternal.addListener((request, sender) => chrome.tabs.se
 //     return {cancel: (Options.live_autoTreasure || Options.idle_treasureOn) && details.url.includes('getCurrentTask') && !details.url.endsWith('bh')};
 // }, {urls: ['*://*.bilibili.com/*']}, ['blocking']);
 
-console.log('Loaded');
+console.log('初始化完毕');

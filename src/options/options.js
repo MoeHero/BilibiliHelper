@@ -1,4 +1,3 @@
-'use strict';
 $(function() {
     let background = chrome.extension.getBackgroundPage();
 

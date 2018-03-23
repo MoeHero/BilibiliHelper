@@ -39,7 +39,7 @@ class ALPlugin_SmallTV {
     //     Helper.DOM.funcInfoRow.prepend(this.stateIcon, ' ', this.stateText, this.statePanel);
     // }
     static addEvent() {
-        var $this = this;
+        let $this = this;
         //this.stateText.on('click', () => this.openStatePanel()).stopPropagation();
         //this.statePanel.stopPropagation();
         //$(document).on('click', () => this.statePanel.fadeOut(200));
@@ -48,7 +48,7 @@ class ALPlugin_SmallTV {
                 $(window).on('beforeunload', () => Helper.sendMessage({cmd: 'del', type: 'SmallTV'}));
                 Helper.sendMessage({cmd: 'set', type: 'SmallTV', showID: Helper.showID});
                 $(document).on('DOMNodeInserted', '.small-tv', function() {
-                    var info = $(this).find('div a');
+                    let info = $(this).find('div a');
                     Helper.getRoomID(info.attr('href').match(/\/(\d+)/)[1]).then(roomID => {
                         $this.join(roomID);
                     });
